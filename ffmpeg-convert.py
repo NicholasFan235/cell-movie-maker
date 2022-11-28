@@ -1,10 +1,17 @@
 
 import sys
+import os
 
-simulation_number = 1
+assert len(sys.argv)==2, f"Missing simulation index. Usage: {sys.argv[0]} <simulation-index>."
 
-files = f"visualisations/sim_{simulation_number}/frame_%d.png"
-output = f"visualisations/sim_{simulation_number}.mp4"
+#simulation_number = 1
+simulation_number = sys.argv[1]
+
+assert os.path.exists(os.path.join('visualisations', f'sim_{simulation_number}')),\
+    f"No visualisations for simulation #{simulation_number}"
+
+files = os.path.join("visualisations", f"sim_{simulation_number}", "frame_%d.png")
+output = os.path.join("visualisations", f"sim_{simulation_number}.mp4")
 fps = 30
 
 
