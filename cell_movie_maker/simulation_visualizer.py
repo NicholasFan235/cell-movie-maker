@@ -30,6 +30,6 @@ class SimulationVisualiser:
             shutil.rmtree(self.output_folder)
         os.mkdir(self.output_folder)
 
-        self.tp = TimepointPlotter(markeredgecolor='black', markeredgewidth=0.2, markersize=8)
+        self.tp = TimepointPlotter(marker='o', edgecolors='black', linewidths=0.2, s=20)
         self.sim.for_timepoint(self.visualise_frame, step=step)
 

@@ -6,26 +6,30 @@ class TimepointPlotter:
     
     def plot_stroma(self, ax, simulation_timepoint):
         sel = simulation_timepoint.data.potency == -1
-        ax.plot(
+        ax.scatter(
             simulation_timepoint.data.loc[sel, 'x'],
             simulation_timepoint.data.loc[sel, 'y'],
-            '.', color='lightblue',
+            color='lightblue',
             **self.plot_kwargs)
 
     def plot_tumour(self, ax, simulation_timepoint):
         sel = simulation_timepoint.data.potency == -2
-        ax.plot(
+        ax.scatter(
             simulation_timepoint.data.loc[sel, 'x'],
             simulation_timepoint.data.loc[sel, 'y'],
-            '.', color='red',
+            cmap='Reds',
+            c=1-simulation_timepoint.data.loc[sel, 'damage'],
+            vmin=0, vmax=1,
             **self.plot_kwargs)
 
     def plot_cytotoxic(self, ax, simulation_timepoint):
         sel = simulation_timepoint.data.potency >= 0
-        ax.plot(
+        ax.scatter(
             simulation_timepoint.data.loc[sel, 'x'],
             simulation_timepoint.data.loc[sel, 'y'],
-            '.', color='darkorange',
+            cmap='Wistia',
+            c=simulation_timepoint.data.loc[sel, 'potency'],
+            vmin=0, vmax=1,
             **self.plot_kwargs)
 
     def plot(self, ax, simulation_timepoint):
