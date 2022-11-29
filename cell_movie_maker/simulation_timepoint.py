@@ -51,3 +51,15 @@ class SimulationTimepoint:
     
     def load_value(self, raw, name):
         self.data[name] = raw[name]
+
+    @property
+    def cytotoxic_data(self):
+        return self.data.loc[self.data.potency >= 0]
+    
+    @property
+    def stroma_data(self):
+        return self.data.loc[self.data.potency == -1]
+
+    @property
+    def tumour_data(self):
+        return self.data.loc[self.data.potency == -2]
