@@ -28,11 +28,8 @@ class SimulationVisualiser:
         simulation_timepoint = self.sim.read_timepoint(frame)
 
         fig, ax = plt.subplots(1,1, figsize=(8,8))
-        ax.set_xticks([])
-        ax.set_yticks([])
-        ax.set_title(f'{self.sim_name}/{self.sim_id} #{id} t={frame/60/24:.1f}d')
         ax.margins(0.01)
-        self.tp.plot(ax, simulation_timepoint)
+        self.tp.plot(ax, simulation_timepoint, self.sim_name, self.sim_id, frame)
         fig.savefig(os.path.join(self.output_folder_standard, 'frame_{}.png'.format(id)))
         plt.close(fig)
 
@@ -50,11 +47,7 @@ class SimulationVisualiser:
         simulation_timepoint = self.sim.read_timepoint(frame)
 
         fig, axs = plt.subplot_mosaic("AB;AC", figsize=(16,8))
-        axs['A'].set_xticks([])
-        axs['A'].set_yticks([])
-        axs['A'].margins(0.01)
-        axs['A'].set_title(f'{self.sim_name}/{self.sim_id} #{id} t={frame/60/24:.1f}d')
-        self.tp.plot(axs['A'], simulation_timepoint)
+        self.tp.plot(axs['A'], simulation_timepoint, self.sim_name, self.sim_id, frame)
         self.tp.cytotoxic_histogram(axs['B'], simulation_timepoint)
         self.tp.tumour_histogram(axs['C'], simulation_timepoint)
 

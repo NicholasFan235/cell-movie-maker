@@ -29,7 +29,11 @@ class TimepointPlotter:
             vmin=0, vmax=1,
             **self.plot_kwargs)
 
-    def plot(self, ax, simulation_timepoint):
+    def plot(self, ax, simulation_timepoint, sim_name, sim_id, frame_num):
+        ax.set_xticks([])
+        ax.set_yticks([])
+        ax.margins(0.01)
+        ax.set_title(f'{sim_name}/{sim_id} #{id} t={frame_num/60/24:.1f}d')
         self.plot_stroma(ax, simulation_timepoint)
         self.plot_tumour(ax, simulation_timepoint)
         self.plot_cytotoxic(ax, simulation_timepoint)
