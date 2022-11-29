@@ -3,6 +3,7 @@ from .simulation_timepoint import SimulationTimepoint
 import os
 import re
 import multiprocessing
+import tqdm
 
 
 class Simulation:
@@ -24,9 +25,11 @@ class Simulation:
         results_file = 'results_{}.vtu'.format(timestep)
         return SimulationTimepoint(os.path.join(self.results_folder, results_file))
 
-    def for_timepoint(self, func, step=1):
+    def for_timepoint(self, func, start=0, stop=None, step=1):
         with multiprocessing.Pool() as pool:
-            pool.map(func, enumerate(self.results_timesteps[::step]))
+            _=list(tqdm.tqdm(pool.imap(func,
+                enumerate(self.results_timesteps[start:stop:step], start=start)),
+                total=len(self.results_timesteps[start:stop:step])))
     
     def for_final_timepoint(self, func):
         func((len(self.results_timesteps)-1, self.results_timesteps[-1]))
