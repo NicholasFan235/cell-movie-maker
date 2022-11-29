@@ -27,4 +27,7 @@ class Simulation:
     def for_timepoint(self, func, step=1):
         with multiprocessing.Pool() as pool:
             pool.map(func, enumerate(self.results_timesteps[::step]))
+    
+    def for_final_timepoint(self, func):
+        func((len(self.results_timesteps)-1, self.results_timesteps[-1]))
 
