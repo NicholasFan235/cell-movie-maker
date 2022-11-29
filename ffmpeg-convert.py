@@ -11,7 +11,7 @@ assert os.path.exists(os.path.join('visualisations', f'sim_{simulation_number}')
     f"No visualisations for simulation #{simulation_number}"
 
 files = os.path.join("visualisations", f"sim_{simulation_number}", "frame_%d.png")
-output = os.path.join("visualisations", f"sim_{simulation_number}.mp4")
+output = os.path.join("visualisations", "_movies", f"sim_{simulation_number}.mp4")
 fps = 30
 
 
