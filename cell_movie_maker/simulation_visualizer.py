@@ -7,16 +7,16 @@ import shutil
 import numpy as np
 
 class SimulationVisualiser:
-    def __init__(self, simulation_folder):
+    def __init__(self, simulation_folder, output_parent_folder = 'visualisations'):
         results_folder = os.path.join(simulation_folder, 'results_from_time_0')
         self.sim_id = os.path.basename(os.path.dirname(results_folder))
         self.sim_name = os.path.basename(os.path.dirname(os.path.dirname(results_folder)))
         self.sim = Simulation(results_folder)
-        if (not os.path.exists('visualisations')):
-            os.mkdir('visualisations')
-        if (not os.path.exists(os.path.join('visualisations', self.sim_name))):
-            os.mkdir(os.path.join('visualisations', self.sim_name))
-        self.output_folder = os.path.join('visualisations', self.sim_name, self.sim_id)
+        if (not os.path.exists(output_parent_folder)):
+            os.mkdir(output_parent_folder)
+        if (not os.path.exists(os.path.join(output_parent_folder, self.sim_name))):
+            os.mkdir(os.path.join(output_parent_folder, self.sim_name))
+        self.output_folder = os.path.join(output_parent_folder, self.sim_name, self.sim_id)
         if not os.path.exists(self.output_folder):
             os.mkdir(self.output_folder)
 
@@ -33,10 +33,11 @@ class SimulationVisualiser:
 
         fig.savefig(os.path.join(self.output_folder_standard, 'frame_{}.png'.format(frame_num)))
         plt.close(fig)
+        return
 
-    def visualise(self, start=0, stop=None, step=1,
+    def visualise(self, name='standard', start=0, stop=None, step=1,
                   postprocess=None, clean_dir=True, cmap=False):
-        self.output_folder_standard = os.path.join(self.output_folder, 'standard')
+        self.output_folder_standard = os.path.join(self.output_folder, name)
         if os.path.exists(self.output_folder_standard) and clean_dir:
             shutil.rmtree(self.output_folder_standard)
         if not os.path.exists(self.output_folder_standard):
@@ -60,13 +61,14 @@ class SimulationVisualiser:
         if self.postprocess_histogram is not None:
             self.postprocess_histogram(axs)
 
-        fig.savefig(os.path.join(self.output_folder_histogram, 'frame_histogram_{}.png'.format(frame_num)))
+        fig.savefig(os.path.join(self.output_folder_histogram, 'frame_{}.png'.format(frame_num)))
         plt.close(fig)
+        return
 
 
-    def visualise_histogram(self, start=0, stop=None, step=1,
+    def visualise_histogram(self, name='histogram', start=0, stop=None, step=1,
                             postprocess=None, clean_dir=True, cmap=False):
-        self.output_folder_histogram = os.path.join(self.output_folder, 'histogram')
+        self.output_folder_histogram = os.path.join(self.output_folder, name)
         if os.path.exists(self.output_folder_histogram) and clean_dir:
             shutil.rmtree(self.output_folder_histogram)
         if not os.path.exists(self.output_folder_histogram):

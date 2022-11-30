@@ -43,9 +43,9 @@ class GridVisualiser:
         fig.savefig(os.path.join(self.output_folder_grid, 'frame_{}.png'.format(frame_num)))
         plt.close(fig)
 
-    def visualise(self, grid_name='grid', start=0, stop=None, step=1,
+    def visualise(self, name='grid', start=0, stop=None, step=1,
                   postprocess=None, clean_dir=True, cmap=False):
-        self.output_folder_grid = os.path.join(self.output_folder, grid_name)
+        self.output_folder_grid = os.path.join(self.output_folder, name)
         if os.path.exists(self.output_folder_grid) and clean_dir:
             shutil.rmtree(self.output_folder_grid)
         if not os.path.exists(self.output_folder_grid):
