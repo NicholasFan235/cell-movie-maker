@@ -3,16 +3,20 @@ import vtk
 from vtk.numpy_interface import dataset_adapter as dsa
 import numpy as np
 import pandas as pd
+import pathlib
 
 
 class SimulationTimepoint:
-    def __init__(self, results_file:str):
-        self.results_file = results_file
+    def __init__(self, id, name, results_folder:pathlib.Path, timestep:int):
+        self.id = id
+        self.name = name
+        self.results_folder = results_folder
+        self.results_file = pathlib.Path(self.results_folder, 'results_{}.vtu'.format(timestep))
+        self.timestep = timestep
         raw = self.read_data()
         self.n_points = raw.GetNumberOfPoints()
         self.data = pd.DataFrame(
-            index=np.arange(self.n_points),
-            columns=["x", "y", "z", "volume", "potency", "damage", "oxygen", "il10"])
+            index=np.arange(self.n_points))
         self.load_locations(raw)
         self.load_data(raw.PointData)
 
@@ -26,40 +30,66 @@ class SimulationTimepoint:
         self.data.loc[:,["x", "y", "z"]] = raw.Points
 
     def load_data(self, raw):
-        self.load_volume(raw)
-        self.load_potency(raw)
-        self.load_damage(raw)
-        self.load_oxygen(raw)
-        self.load_il10(raw)
-        self.load_damage(raw)
-        self.load_potency(raw)
-    
-    def load_volume(self, raw):
-        self.load_value(raw, "volume")
-    
-    def load_potency(self, raw):
+        self.load_value(raw, 'volume')
         self.load_value(raw, "potency")
-    
-    def load_damage(self, raw):
         self.load_value(raw, "damage")
-    
-    def load_oxygen(self, raw):
         self.load_value(raw, "oxygen")
-    
-    def load_il10(self, raw):
-        self.load_value(raw, "il10")
+        self.load_value(raw, "ccl5")
+        self.load_value(raw, "cxcl9")
+        self.load_value(raw, "ifn-gamma")
+        
+        def potency_to_celltype(potency):
+            if potency >= 0: return 'T Cell'
+            elif potency == -1: return 'Stroma'
+            elif potency == -2: return 'Tumour'
+            elif potency == -3: return 'Macrophage'
+            else: return 'Unknown'
+        self.data['cell_type'] = list(map(potency_to_celltype, self.data.potency))
+        self.data.loc[self.data.potency < 0, 'potency'] = np.nan
+        self.data.loc[self.data.damage < 0, 'damage'] = np.nan
+
     
     def load_value(self, raw, name):
         self.data[name] = raw[name]
 
     @property
     def cytotoxic_data(self):
-        return self.data.loc[self.data.potency >= 0]
+        return self.data.loc[self.data.cell_type == 'T Cell']
     
     @property
     def stroma_data(self):
-        return self.data.loc[self.data.potency == -1]
+        return self.data.loc[self.data.cell_type == 'Stroma']
 
     @property
     def tumour_data(self):
-        return self.data.loc[self.data.potency == -2]
+        return self.data.loc[self.data.cell_type == 'Tumour']
+    
+    @property
+    def macrophages_data(self):
+        return self.data.loc[self.data.cell_type == 'Macrophage']
+
+    @property
+    def ccl5_data(self):
+        return self.read_pde('ccl5')
+
+    @property
+    def cxcl9_data(self):
+        return self.read_pde('cxcl9')
+
+    @property
+    def ifng_data(self):
+        return self.read_pde('ifn-gamma')
+
+    @property
+    def oxygen_data(self):
+        return self.read_pde('oxygen')
+
+    def read_pde(self, chemokine):
+        p = pathlib.Path(self.results_folder, f"pde_results_{chemokine}_{self.timestep}.vtu")
+        reader = vtk.vtkXMLUnstructuredGridReader()
+        reader.SetFileName(p)
+        reader.Update()
+        output = dsa.WrapDataObject(reader.GetOutput())
+        shape = output.Points.max(axis=0)
+        shape = (int(shape[0]+1), int(shape[1]+1))
+        return output.PointData[chemokine].reshape(shape)
