@@ -4,11 +4,17 @@ import os
 import re
 import multiprocessing
 import tqdm
+import pathlib
 
 
 class Simulation:
     def __init__(self, results_folder:str, sampling_timestep_multiple:int=60, timesteps_per_hour:int=120):
-        self.results_folder = results_folder
+        self.results_folder = pathlib.Path(results_folder)
+        assert self.results_folder.is_dir(), f'{self.results_folder} does not exist, or is a file.'
+
+        self.id = os.path.basename(os.path.dirname(results_folder))
+        self.name = os.path.basename(os.path.dirname(os.path.dirname(results_folder)))
+
         self.sampling_timestep_multiple = sampling_timestep_multiple
         self.timesteps_per_hour = timesteps_per_hour
         
@@ -22,8 +28,7 @@ class Simulation:
             map(lambda x: int(p.match(x)[1]), filter(p.match, self.all_files))))
     
     def read_timepoint(self, timestep:int):
-        results_file = 'results_{}.vtu'.format(timestep)
-        return SimulationTimepoint(os.path.join(self.results_folder, results_file))
+        return SimulationTimepoint(self.id, self.name, self.results_folder, timestep)
 
     def for_timepoint(self, func, start=0, stop=None, step=1):
         with multiprocessing.Pool() as pool:
