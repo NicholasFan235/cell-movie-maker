@@ -28,10 +28,13 @@ class Simulation:
             map(lambda x: int(p.match(x)[1]), filter(p.match, self.all_files))))
     
     def read_timepoint(self, timestep:int):
+        if timestep > max(self.results_timesteps):
+            return SimulationTimepoint(self.id, self.name, self.results_folder, max(self.results_timesteps))
+        if timestep not in self.results_timesteps: return None
         return SimulationTimepoint(self.id, self.name, self.results_folder, timestep)
 
     def for_timepoint(self, func, start=0, stop=None, step=1):
-        with multiprocessing.Pool() as pool:
+        with multiprocessing.Pool(processes=min(multiprocessing.cpu_count()-1, 32)) as pool:
             _=list(tqdm.tqdm(pool.imap(func,
                 enumerate(self.results_timesteps[start:stop:step], start=start)),
                 total=len(self.results_timesteps[start:stop:step])))
