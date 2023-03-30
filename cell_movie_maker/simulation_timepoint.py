@@ -22,7 +22,7 @@ class SimulationTimepoint:
 
     def read_data(self):
         reader = vtk.vtkXMLUnstructuredGridReader()
-        reader.SetFileName(self.results_file)
+        reader.SetFileName(str(self.results_file))
         reader.Update()
         return dsa.WrapDataObject(reader.GetOutput())
     
@@ -37,20 +37,33 @@ class SimulationTimepoint:
         self.load_value(raw, "ccl5")
         self.load_value(raw, "cxcl9")
         self.load_value(raw, "ifn-gamma")
+        self.load_value(raw, "cell_type")
         
-        def potency_to_celltype(potency):
+        def interpret_cell_type(cell_type):
+            if cell_type == 0: return 'Stroma'
+            elif cell_type == 1: return 'Tumour'
+            elif cell_type == 2: return 'T Cell'
+            elif cell_type == 3: return 'Macrophage'
+            elif cell_type == 4: return 'Blood Vessel'
+            else: return 'Unknown'
+        def potency_map(potency):
             if potency >= 0: return 'T Cell'
             elif potency == -1: return 'Stroma'
             elif potency == -2: return 'Tumour'
             elif potency == -3: return 'Macrophage'
+            elif potency == -4: return 'Blood Vessel'
             else: return 'Unknown'
-        self.data['cell_type'] = list(map(potency_to_celltype, self.data.potency))
+        self.data['cell_type'] = list(map(interpret_cell_type, self.data.cell_type))
+        #self.data['cell_type'] = list(map(potency_map, self.data.potency))
         self.data.loc[self.data.potency < 0, 'potency'] = np.nan
         self.data.loc[self.data.damage < 0, 'damage'] = np.nan
 
     
     def load_value(self, raw, name):
-        self.data[name] = raw[name]
+        if name in raw.keys():
+            self.data[name] = raw[name]
+        else:
+            self.data[name] = np.nan
 
     @property
     def cytotoxic_data(self):
@@ -67,6 +80,10 @@ class SimulationTimepoint:
     @property
     def macrophages_data(self):
         return self.data.loc[self.data.cell_type == 'Macrophage']
+    
+    @property
+    def blood_vessel_data(self):
+        return self.data.loc[self.data.cell_type == 'Blood Vessel']
 
     @property
     def ccl5_data(self):
@@ -87,7 +104,7 @@ class SimulationTimepoint:
     def read_pde(self, chemokine):
         p = pathlib.Path(self.results_folder, f"pde_results_{chemokine}_{self.timestep}.vtu")
         reader = vtk.vtkXMLUnstructuredGridReader()
-        reader.SetFileName(p)
+        reader.SetFileName(str(p))
         reader.Update()
         output = dsa.WrapDataObject(reader.GetOutput())
         shape = output.Points.max(axis=0)

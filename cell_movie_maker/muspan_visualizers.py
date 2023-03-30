@@ -42,9 +42,9 @@ class MuspanPCFVisualiser(AbstractMuspanVisualiser):
 
         fig, axs = plt.subplot_mosaic("AAB;AAC;AAD", figsize=(16,12))
         self.tp.plot(axs['A'], tp, frame_num, timepoint)
-        self.mp.plot_tcell_tcell_pcf(axs['B'], pc)
-        self.mp.plot_tcell_tumour_pcf(axs['C'], pc)
-        self.mp.plot_tumour_tumour_pcf(axs['D'], pc)
+        self.mp.plot_tcell_tcell_pcf(fig, axs['B'], pc)
+        self.mp.plot_tcell_tumour_pcf(fig, axs['C'], pc)
+        self.mp.plot_tumour_tumour_pcf(fig, axs['D'], pc)
 
         if self.postprocess is not None:
             self.postprocess(fig, axs)
@@ -83,9 +83,9 @@ class MuspanWeightedPCFVisualiser(AbstractMuspanVisualiser):
         frame_num, timepoint = info
 
         fig, axs = plt.subplot_mosaic("AAB;AAC", figsize=(16,12))
-        self.tp.plot(axs['A'], tp, frame_num, timepoint)
-        self.mp.plot_potency_tumour_pcf(axs['B'], pc)
-        self.mp.plot_damage_tcell_pcf(axs['C'], pc)
+        self.tp.plot(fig, axs['A'], tp, frame_num, timepoint)
+        self.mp.plot_potency_tumour_pcf(fig, axs['B'], pc)
+        self.mp.plot_damage_tcell_pcf(fig, axs['C'], pc)
         
         if self.postprocess is not None:
             self.postprocess(fig, axs)
@@ -102,6 +102,6 @@ class MuspanWeightedPCFVisualiser(AbstractMuspanVisualiser):
 
         self.mp = MuspanWeightedPCFPlotter()
 
-        self.sim.for_final_timepoint(self.visualise_frame)
-        #self.sim.for_timepoint(self.visualise_frame, start=self.start, stop=self.stop, step=self.step)
+        #self.sim.for_final_timepoint(self.visualise_frame)
+        self.sim.for_timepoint(self.visualise_frame, start=self.start, stop=self.stop, step=self.step)
 

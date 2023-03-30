@@ -1,6 +1,6 @@
 
 from .simulation import Simulation
-from .timepoint_plotter import TimepointPlotter, HistogramPlotter
+from .timepoint_plotter import TimepointPlotter, HistogramPlotter, TumourTimepointPlotter
 import matplotlib.pylab as plt
 import os
 import shutil
@@ -45,7 +45,7 @@ class SimulationVisualiser(AbstractSimulationVisualiser):
 
         fig, ax = plt.subplots(1,1, figsize=(8,8))
         ax.margins(0.01)
-        self.tp.plot(ax, simulation_timepoint, frame_num, timepoint)
+        self.tp.plot(fig, ax, simulation_timepoint, frame_num, timepoint)
 
         if self.postprocess is not None:
             self.postprocess(fig, ax)
@@ -61,6 +61,34 @@ class SimulationVisualiser(AbstractSimulationVisualiser):
         self.tp.cmap=True
         self.sim.for_timepoint(self.visualise_frame, start=self.start, stop=self.stop, step=self.step)
 
+
+class TumourSimulationVisualiser(AbstractSimulationVisualiser):
+    def __init__(self, simulation:Simulation, visualisation_name='standard_tumour', **kwargs):
+        super().__init__(simulation, visualisation_name=visualisation_name, **kwargs)
+
+    def visualise_frame(self, info):
+        frame_num, timepoint = info
+        simulation_timepoint = self.sim.read_timepoint(timepoint)
+
+        fig, ax = plt.subplots(1,1, figsize=(8,8))
+        ax.margins(0.01)
+        self.tp.plot(fig, ax, simulation_timepoint, frame_num, timepoint)
+
+        if self.postprocess is not None:
+            self.postprocess(fig, ax)
+
+        fig.savefig(os.path.join(self.output_folder, 'frame_{}.png'.format(frame_num)))
+        plt.close(fig)
+        return
+
+    def visualise(self, *args, **kwargs):
+        super().visualise(*args, **kwargs)
+
+        self.tp = TumourTimepointPlotter(marker='o', edgecolors='black', linewidths=0.2, s=20)
+        self.tp.cmap=True
+        self.sim.for_timepoint(self.visualise_frame, start=self.start, stop=self.stop, step=self.step)
+
+
 class HistogramVisualiser(AbstractSimulationVisualiser):
     def __init__(self, simulation:Simulation, visualisation_name='histogram', **kwargs):
         super().__init__(simulation, visualisation_name=visualisation_name, **kwargs)
@@ -70,9 +98,9 @@ class HistogramVisualiser(AbstractSimulationVisualiser):
         simulation_timepoint = self.sim.read_timepoint(timepoint)
 
         fig, axs = plt.subplot_mosaic("AB;AC", figsize=(16,8))
-        self.tp.plot(axs['A'], simulation_timepoint, frame_num, timepoint)
-        self.hp.cytotoxic_histogram(axs['B'], simulation_timepoint)
-        self.hp.tumour_histogram(axs['C'], simulation_timepoint)
+        self.tp.plot(fig, axs['A'], simulation_timepoint, frame_num, timepoint)
+        self.hp.cytotoxic_histogram(fig, axs['B'], simulation_timepoint)
+        self.hp.tumour_histogram(fig, axs['C'], simulation_timepoint)
 
         if self.postprocess is not None:
             self.postprocess(fig, axs)
@@ -109,7 +137,7 @@ class ChemokineVisualiser(AbstractSimulationVisualiser):
         fig.colorbar(pos, ax=ax)
 
         if self.postprocess is not None:
-            self.postprocess(fig, ax)
+            self.postprocess(fig, ax, data=data)
 
         fig.savefig(os.path.join(self.output_folder, 'frame_{}.png'.format(frame_num)))
         plt.close(fig)
