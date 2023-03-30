@@ -22,7 +22,7 @@ class SimulationTimepoint:
 
     def read_data(self):
         reader = vtk.vtkXMLUnstructuredGridReader()
-        reader.SetFileName(self.results_file)
+        reader.SetFileName(str(self.results_file))
         reader.Update()
         return dsa.WrapDataObject(reader.GetOutput())
     
@@ -104,7 +104,7 @@ class SimulationTimepoint:
     def read_pde(self, chemokine):
         p = pathlib.Path(self.results_folder, f"pde_results_{chemokine}_{self.timestep}.vtu")
         reader = vtk.vtkXMLUnstructuredGridReader()
-        reader.SetFileName(p)
+        reader.SetFileName(str(p))
         reader.Update()
         output = dsa.WrapDataObject(reader.GetOutput())
         shape = output.Points.max(axis=0)
