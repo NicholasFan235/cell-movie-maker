@@ -31,7 +31,7 @@ class MuspanPCFPlotter:
         }
         self.pcf_kwargs.update(pcf_kwargs)
     
-    def plot_tcell_tcell_pcf(self, ax, pc):
+    def plot_tcell_tcell_pcf(self, fig, ax, pc):
         categories = pc.labels['Celltype']['categories']
         ax.set_title('T Cell - T Cell')
         if not 'T Cell' in categories:
@@ -46,7 +46,7 @@ class MuspanPCFPlotter:
         ax.set_ylim(ymin=0)
         ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
 
-    def plot_tcell_tumour_pcf(self, ax, pc):
+    def plot_tcell_tumour_pcf(self, fig, ax, pc):
         categories = pc.labels['Celltype']['categories']
         ax.set_title('T Cell - Tumour')
         if not ('T Cell' in categories and 'Tumour' in categories):
@@ -61,7 +61,7 @@ class MuspanPCFPlotter:
         ax.set_ylim(ymin=0)
         ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
 
-    def plot_tumour_tumour_pcf(self, ax, pc):
+    def plot_tumour_tumour_pcf(self, fig, ax, pc):
         categories = pc.labels['Celltype']['categories']
         ax.set_title('Tumour - Tumour')
         if not 'Tumour' in categories:
@@ -85,7 +85,7 @@ class MuspanWeightedPCFPlotter:
         }
         self.pcf_kwargs.update(pcf_kwargs)
     
-    def plot_potency_tumour_pcf(self, ax, pc):
+    def plot_potency_tumour_pcf(self, fig, ax, pc):
         ax.set_title('Tumour - T Cell Potency wPCF')
         categories = pc.labels['Celltype']['categories']
         if not ('T Cell' in categories and 'Tumour' in categories):
@@ -98,7 +98,7 @@ class MuspanWeightedPCFPlotter:
         ax.set_ylim(ymin=0)
         ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
     
-    def plot_damage_tcell_pcf(self, ax, pc):
+    def plot_damage_tcell_pcf(self, fig, ax, pc):
         ax.set_title('T Cell - Tumour Damage wPCF')
         categories = pc.labels['Celltype']['categories']
         if not ('T Cell' in categories and 'Tumour' in categories):
