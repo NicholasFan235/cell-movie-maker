@@ -20,6 +20,17 @@ chemokine = sys.argv[2]
 
 simulation = cmm.Simulation(results_folder)
 
+def draw_contour(fig, ax, **kwargs):
+        data = kwargs['data']
+        ax.contour(data, levels=sorted([0.2]), colors='black')
+
+def postprocess(chemokine):
+    if chemokine == "ccl5":
+        return draw_contour
+    return None
+        
+
+
 visualiser = cmm.ChemokineVisualiser(simulation, visualisation_name=chemokine)
-visualiser.visualise(step=1)
+visualiser.visualise(step=1, postprocess=postprocess(chemokine))
 
