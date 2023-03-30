@@ -102,6 +102,6 @@ class MuspanWeightedPCFVisualiser(AbstractMuspanVisualiser):
 
         self.mp = MuspanWeightedPCFPlotter()
 
-        self.sim.for_final_timepoint(self.visualise_frame)
-        #self.sim.for_timepoint(self.visualise_frame, start=self.start, stop=self.stop, step=self.step)
+        #self.sim.for_final_timepoint(self.visualise_frame)
+        self.sim.for_timepoint(self.visualise_frame, start=self.start, stop=self.stop, step=self.step)
 
