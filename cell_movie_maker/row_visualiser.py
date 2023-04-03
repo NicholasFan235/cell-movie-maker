@@ -35,7 +35,7 @@ class RowVisualiser:
         for i,(simulation,plotter, sim_id) in enumerate(zip(self.simulations, self.tp_grid, self.sim_ids)):
             simulation_timepoint = simulation.read_timepoint(timepoint)
             if simulation_timepoint is not None:
-                plotter.plot(axs[i], simulation_timepoint, frame_num, timepoint)
+                plotter.plot(fig, axs[i], simulation_timepoint, frame_num, timepoint)
         for ax in axs:
             ax.margins(0.01)
 
