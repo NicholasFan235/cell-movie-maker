@@ -20,13 +20,19 @@ chemokine = sys.argv[2]
 
 simulation = cmm.Simulation(results_folder)
 
-def draw_contour(fig, ax, **kwargs):
-        data = kwargs['data']
-        ax.contour(data, levels=sorted([0.2]), colors='black')
+def draw_contour_ccl5(fig, ax, **kwargs):
+    data = kwargs['data']
+    ax.contour(data, levels=sorted([0.2]), colors='black')
+
+def draw_contour_oxygen(fig, ax, **kwargs):
+    data = kwargs['data']
+    ax.contour(data, levels=sorted([0.01]), colors='black')
 
 def postprocess(chemokine):
     if chemokine == "ccl5":
-        return draw_contour
+        return draw_contour_ccl5
+    elif chemokine == "oxygen":
+        return draw_contour_oxygen
     return None
         
 
