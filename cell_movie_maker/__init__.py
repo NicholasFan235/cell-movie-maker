@@ -5,3 +5,4 @@ from .muspan_plotter import MuspanPCFPlotter
 from .simulation_visualizer import SimulationVisualiser, TumourSimulationVisualiser, HistogramVisualiser, ChemokineVisualiser
 from .muspan_visualizers import MuspanPCFVisualiser, MuspanWeightedPCFVisualiser
 from .grid_visualiser import GridVisualiser
+from .row_visualiser import RowVisualiser
