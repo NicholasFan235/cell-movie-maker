@@ -35,7 +35,7 @@ class GridVisualiser:
         for i,(_simulations,_plotters, _ids) in enumerate(zip(self.simulation_grid, self.tp_grid, self.sim_ids)):
             for j,(simulation,plotter, sim_id) in enumerate(zip(_simulations, _plotters, _ids)):
                 simulation_timepoint = simulation.read_timepoint(timepoint)
-                plotter.plot(axs[i][j], simulation_timepoint, self.sim_name, sim_id, frame_num, timepoint)
+                plotter.plot(fig, axs[i][j], simulation_timepoint, self.sim_name, sim_id, frame_num, timepoint)
 
         if self.postprocess_grid is not None:
             self.postprocess_grid(axs)
