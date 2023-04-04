@@ -38,6 +38,7 @@ class SimulationTimepoint:
         self.load_value(raw, "cxcl9")
         self.load_value(raw, "ifn-gamma")
         self.load_value(raw, "cell_type")
+        self.load_value(raw, "damping_coefficient")
         
         def interpret_cell_type(cell_type):
             if cell_type == 0: return 'Stroma'
