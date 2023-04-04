@@ -1,5 +1,6 @@
 *.pyc
 */__pycache
+venv
 
 test.ipynb
 test-muspan.ipynb
