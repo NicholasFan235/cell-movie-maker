@@ -1,6 +1,7 @@
 
 from .simulation import Simulation
 from .timepoint_plotter import TimepointPlotter, HistogramPlotter, TumourTimepointPlotter
+from .timepoint_plotter_v2 import TimepointPlotterV2, TumourTimepointPlotterV2
 import matplotlib.pylab as plt
 import os
 import shutil
@@ -44,7 +45,8 @@ class SimulationVisualiser(AbstractSimulationVisualiser):
         simulation_timepoint = self.sim.read_timepoint(timepoint)
 
         fig, ax = plt.subplots(1,1, figsize=(8,8))
-        ax.margins(0.01)
+        #ax.margins(0.01)
+        fig.tight_layout()
         self.tp.plot(fig, ax, simulation_timepoint, frame_num, timepoint)
 
         if self.postprocess is not None:
@@ -54,12 +56,15 @@ class SimulationVisualiser(AbstractSimulationVisualiser):
         plt.close(fig)
         return
 
-    def visualise(self, *args, **kwargs):
+    def visualise(self, auto_execute=True, *args, **kwargs):
         super().visualise(*args, **kwargs)
 
-        self.tp = TimepointPlotter(marker='o', edgecolors='black', linewidths=0.2, s=20)
-        self.tp.cmap=True
-        self.sim.for_timepoint(self.visualise_frame, start=self.start, stop=self.stop, step=self.step)
+        #self.tp = TimepointPlotter(marker='o', edgecolors='black', linewidths=0.2, s=20)
+        #self.tp.cmap=True
+        self.tp = TimepointPlotterV2()
+
+        if auto_execute:
+            self.sim.for_timepoint(self.visualise_frame, start=self.start, stop=self.stop, step=self.step)
 
 
 class TumourSimulationVisualiser(AbstractSimulationVisualiser):
@@ -71,7 +76,8 @@ class TumourSimulationVisualiser(AbstractSimulationVisualiser):
         simulation_timepoint = self.sim.read_timepoint(timepoint)
 
         fig, ax = plt.subplots(1,1, figsize=(8,8))
-        ax.margins(0.01)
+        #ax.margins(0.01)
+        fig.tight_layout()
         self.tp.plot(fig, ax, simulation_timepoint, frame_num, timepoint)
 
         if self.postprocess is not None:
@@ -81,12 +87,15 @@ class TumourSimulationVisualiser(AbstractSimulationVisualiser):
         plt.close(fig)
         return
 
-    def visualise(self, *args, **kwargs):
+    def visualise(self, auto_execute=True, *args, **kwargs):
         super().visualise(*args, **kwargs)
 
-        self.tp = TumourTimepointPlotter(marker='o', edgecolors='black', linewidths=0.2, s=20)
-        self.tp.cmap=True
-        self.sim.for_timepoint(self.visualise_frame, start=self.start, stop=self.stop, step=self.step)
+        #self.tp = TumourTimepointPlotter(marker='o', edgecolors='black', linewidths=0.2, s=20)
+        #self.tp.cmap=True
+        self.tp = TumourTimepointPlotterV2()
+
+        if auto_execute:
+            self.sim.for_timepoint(self.visualise_frame, start=self.start, stop=self.stop, step=self.step)
 
 
 class HistogramVisualiser(AbstractSimulationVisualiser):
@@ -110,15 +119,17 @@ class HistogramVisualiser(AbstractSimulationVisualiser):
         return
 
 
-    def visualise(self, *args, **kwargs):
+    def visualise(self, auto_execute=True, *args, **kwargs):
         super().visualise(*args, **kwargs)
         
-        self.tp = TimepointPlotter(marker='o', edgecolors='black', linewidths=0.2, s=20)
-        self.tp.cmap = True
+        #self.tp = TimepointPlotter(marker='o', edgecolors='black', linewidths=0.2, s=20)
+        #self.tp.cmap = True
+        self.tp = TimepointPlotterV2()
 
         self.hp = HistogramPlotter()
 
-        self.sim.for_timepoint(self.visualise_frame, start=self.start, stop=self.stop, step=self.step)
+        if auto_execute:
+            self.sim.for_timepoint(self.visualise_frame, start=self.start, stop=self.stop, step=self.step)
         #self.sim.for_final_timepoint(self.visualise_frame)
 
 class ChemokineVisualiser(AbstractSimulationVisualiser):
@@ -132,7 +143,8 @@ class ChemokineVisualiser(AbstractSimulationVisualiser):
         data = simulation_timepoint.read_pde(self.chemokine_name)
         fig, ax = plt.subplots(1,1, figsize=(8,8))
 
-        ax.margins(0.01)
+        #ax.margins(0.01)
+        fig.tight_layout()
         pos = ax.imshow(data, cmap=self.chemokine_cmap, vmin=data.min(), vmax=data.max(), **self.chemokine_kwargs)
         fig.colorbar(pos, ax=ax)
 
@@ -143,11 +155,12 @@ class ChemokineVisualiser(AbstractSimulationVisualiser):
         plt.close(fig)
         return
 
-    def visualise(self, chemokine_cmap='jet', chemokine_kwargs={}, *args, **kwargs):
+    def visualise(self, chemokine_cmap='jet', chemokine_kwargs={}, auto_execute=True, *args, **kwargs):
         super().visualise(*args, **kwargs)
 
         self.chemokine_name = self.visualisation_name
         self.chemokine_cmap = chemokine_cmap
         self.chemokine_kwargs = chemokine_kwargs
         
-        self.sim.for_timepoint(self.visualise_frame, start=self.start, stop=self.stop, step=self.step)
+        if auto_execute:
+            self.sim.for_timepoint(self.visualise_frame, start=self.start, stop=self.stop, step=self.step)

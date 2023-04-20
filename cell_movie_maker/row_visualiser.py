@@ -1,6 +1,7 @@
 
 from .simulation import Simulation
 from .timepoint_plotter import TimepointPlotter
+from .timepoint_plotter_v2 import TimepointPlotterV2
 import matplotlib.pylab as plt
 import os
 import shutil
@@ -31,6 +32,7 @@ class RowVisualiser:
 
         fig, axs = plt.subplots(1,self.n,figsize=(self.n*8, 8), facecolor='white')
         #fig.subplots_adjust(left=0.1, right=0.9, bottom=0.1, top=0.9, wspace=0.1, hspace=0.1)
+        fig.tight_layout()
 
         for i,(simulation,plotter, sim_id) in enumerate(zip(self.simulations, self.tp_grid, self.sim_ids)):
             simulation_timepoint = simulation.read_timepoint(timepoint)
@@ -40,7 +42,7 @@ class RowVisualiser:
             ax.margins(0.01)
 
         if self.postprocess_grid is not None:
-            self.postprocess_grid(axs)
+            self.postprocess_grid(fig, axs)
 
         fig.savefig(os.path.join(self.output_folder_grid, 'frame_{}.png'.format(frame_num)))
         plt.close(fig)
@@ -56,7 +58,7 @@ class RowVisualiser:
         self.postprocess_grid = postprocess
 
         self.tp_grid = [
-            TimepointPlotter(marker='o', edgecolors='black', linewidths=0.2, s=40)
+            TimepointPlotterV2()#(marker='o', edgecolors='black', linewidths=0.2, s=40)
             for i in self.simulations]
         for tp in self.tp_grid:
             tp.cmap=cmap

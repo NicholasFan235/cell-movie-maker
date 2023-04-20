@@ -1,6 +1,7 @@
 
 from .simulation import Simulation
 from .timepoint_plotter import TimepointPlotter
+from .timepoint_plotter_v2 import TimepointPlotterV2
 import matplotlib.pylab as plt
 import os
 import shutil
@@ -29,8 +30,10 @@ class GridVisualiser:
     def visualise_frame(self, info):
         frame_num, timepoint = info
 
-        fig, axs = plt.subplots(self.shape[0],self.shape[1],figsize=(self.shape[0]*8,self.shape[1]*8))
+        fig, axs = plt.subplots(self.shape[0],self.shape[1],figsize=(self.shape[1]*8,self.shape[0]*8))
         #fig.subplots_adjust(left=0.1, right=0.9, bottom=0.1, top=0.9, wspace=0.1, hspace=0.1)
+        #fig.subplots_adjust(left=0.02, right=0.98, bottom=0.02, top=0.98)
+        fig.tight_layout()
 
         for i,(_simulations,_plotters, _ids) in enumerate(zip(self.simulation_grid, self.tp_grid, self.sim_ids)):
             for j,(simulation,plotter, sim_id) in enumerate(zip(_simulations, _plotters, _ids)):
@@ -38,7 +41,7 @@ class GridVisualiser:
                 plotter.plot(fig, axs[i][j], simulation_timepoint, frame_num, timepoint)
 
         if self.postprocess_grid is not None:
-            self.postprocess_grid(axs)
+            self.postprocess_grid(fig, axs)
 
         fig.savefig(os.path.join(self.output_folder_grid, 'frame_{}.png'.format(frame_num)))
         plt.close(fig)
@@ -54,7 +57,7 @@ class GridVisualiser:
         self.postprocess_grid = postprocess
 
         self.tp_grid = [[
-            TimepointPlotter(marker='o', edgecolors='black', linewidths=0.2, s=40)
+            TimepointPlotterV2()#(marker='o', edgecolors='black', linewidths=0.2, s=60)
             for i in j] for j in self.simulation_grid]
         for tps in self.tp_grid:
             for tp in tps:
