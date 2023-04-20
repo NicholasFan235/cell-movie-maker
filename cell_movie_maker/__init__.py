@@ -6,3 +6,4 @@ from .simulation_visualizer import SimulationVisualiser, TumourSimulationVisuali
 from .muspan_visualizers import MuspanPCFVisualiser, MuspanWeightedPCFVisualiser
 from .grid_visualiser import GridVisualiser
 from .row_visualiser import RowVisualiser
+from .timepoint_plotter_v2 import TimepointPlotterV2, TumourTimepointPlotterV2

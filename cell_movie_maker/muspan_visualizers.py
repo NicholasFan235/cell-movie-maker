@@ -1,6 +1,7 @@
 from .simulation import Simulation
 from .simulation_visualizer import AbstractSimulationVisualiser
 from .timepoint_plotter import TimepointPlotter
+from .timepoint_plotter_v2 import TimepointPlotterV2
 from .muspan_plotter import MuspanPCFPlotter, MuspanWeightedPCFPlotter
 import matplotlib.pylab as plt
 import os
@@ -41,6 +42,7 @@ class MuspanPCFVisualiser(AbstractMuspanVisualiser):
         frame_num, timepoint = info
 
         fig, axs = plt.subplot_mosaic("AAB;AAC;AAD", figsize=(16,12))
+        fig.tight_layout()
         self.tp.plot(axs['A'], tp, frame_num, timepoint)
         self.mp.plot_tcell_tcell_pcf(fig, axs['B'], pc)
         self.mp.plot_tcell_tumour_pcf(fig, axs['C'], pc)
@@ -56,8 +58,9 @@ class MuspanPCFVisualiser(AbstractMuspanVisualiser):
     def visualise(self, *args, **kwargs):
         super().visualise(*args, **kwargs)
 
-        self.tp = TimepointPlotter(marker='o', edgecolors='black', linewidths=0.2, s=20)
-        self.tp.cmap=True
+        #self.tp = TimepointPlotter(marker='o', edgecolors='black', linewidths=0.2, s=20)
+        #self.tp.cmap=True
+        self.tp = TimepointPlotterV2()
 
         self.mp = MuspanPCFPlotter()
 
@@ -83,6 +86,7 @@ class MuspanWeightedPCFVisualiser(AbstractMuspanVisualiser):
         frame_num, timepoint = info
 
         fig, axs = plt.subplot_mosaic("AAB;AAC", figsize=(16,12))
+        fig.tight_layout()
         self.tp.plot(fig, axs['A'], tp, frame_num, timepoint)
         self.mp.plot_potency_tumour_pcf(fig, axs['B'], pc)
         self.mp.plot_damage_tcell_pcf(fig, axs['C'], pc)
@@ -97,8 +101,9 @@ class MuspanWeightedPCFVisualiser(AbstractMuspanVisualiser):
     def visualise(self, *args, **kwargs):
         super().visualise(*args, **kwargs)
 
-        self.tp = TimepointPlotter(marker='o', edgecolors='black', linewidths=0.2, s=20)
-        self.tp.cmap=True
+        #self.tp = TimepointPlotter(marker='o', edgecolors='black', linewidths=0.2, s=20)
+        #self.tp.cmap=True
+        self.tp = TimepointPlotterV2()
 
         self.mp = MuspanWeightedPCFPlotter()
 

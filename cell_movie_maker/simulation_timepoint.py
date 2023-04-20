@@ -31,6 +31,7 @@ class SimulationTimepoint:
 
     def load_data(self, raw):
         self.load_value(raw, 'volume')
+        self.data['radius'] = np.sqrt(self.data.volume/np.pi)
         self.load_value(raw, "potency")
         self.load_value(raw, "damage")
         self.load_value(raw, "oxygen")
