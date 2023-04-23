@@ -33,8 +33,8 @@ class Simulation:
         if timestep not in self.results_timesteps: return None
         return SimulationTimepoint(self.id, self.name, self.results_folder, timestep)
 
-    def for_timepoint(self, func, start=0, stop=None, step=1):
-        with multiprocessing.Pool(processes=min(multiprocessing.cpu_count()-1, 64)) as pool:
+    def for_timepoint(self, func, start=0, stop=None, step=1, maxproc=64):
+        with multiprocessing.Pool(processes=min(multiprocessing.cpu_count()-1, maxproc)) as pool:
             _=list(tqdm.tqdm(pool.imap(func,
                 enumerate(self.results_timesteps[start:stop:step], start=start)),
                 total=len(self.results_timesteps[start:stop:step])))

@@ -27,10 +27,13 @@ class GridVisualiser:
         if not os.path.exists(self.output_folder):
             os.mkdir(self.output_folder)
 
+        self.figsize = 8
+        self.dpi = 100
+
     def visualise_frame(self, info):
         frame_num, timepoint = info
 
-        fig, axs = plt.subplots(self.shape[0],self.shape[1],figsize=(self.shape[1]*8,self.shape[0]*8))
+        fig, axs = plt.subplots(self.shape[0],self.shape[1],figsize=(self.shape[1]*self.figsize,self.shape[0]*self.figsize))
         #fig.subplots_adjust(left=0.1, right=0.9, bottom=0.1, top=0.9, wspace=0.1, hspace=0.1)
         #fig.subplots_adjust(left=0.02, right=0.98, bottom=0.02, top=0.98)
         fig.tight_layout()
@@ -43,7 +46,7 @@ class GridVisualiser:
         if self.postprocess_grid is not None:
             self.postprocess_grid(fig, axs)
 
-        fig.savefig(os.path.join(self.output_folder_grid, 'frame_{}.png'.format(frame_num)))
+        fig.savefig(os.path.join(self.output_folder_grid, 'frame_{}.png'.format(frame_num)), dpi=self.dpi)
         plt.close(fig)
 
     def visualise(self, name='grid', start=0, stop=None, step=1,
@@ -59,9 +62,9 @@ class GridVisualiser:
         self.tp_grid = [[
             TimepointPlotterV2()#(marker='o', edgecolors='black', linewidths=0.2, s=60)
             for i in j] for j in self.simulation_grid]
-        for tps in self.tp_grid:
-            for tp in tps:
-                tp.cmap=cmap
+        #for tps in self.tp_grid:
+        #    for tp in tps:
+        #        tp.cmap=cmap
 
         if auto_execute:
             self.simulation_grid[0][0].for_timepoint(self.visualise_frame, start=start, stop=stop, step=step)
