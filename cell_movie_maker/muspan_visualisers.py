@@ -1,5 +1,5 @@
 from .simulation import Simulation
-from .simulation_visualizer import AbstractSimulationVisualiser
+from .simulation_visualiser import AbstractSimulationVisualiser
 from .timepoint_plotter import TimepointPlotter
 from .timepoint_plotter_v2 import TimepointPlotterV2
 from .muspan_plotter import MuspanPCFPlotter, MuspanWeightedPCFPlotter
