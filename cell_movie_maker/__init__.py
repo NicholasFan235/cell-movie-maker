@@ -2,7 +2,7 @@ from .simulation import Simulation
 from .simulation_timepoint import SimulationTimepoint
 from .timepoint_plotter import TimepointPlotter, HistogramPlotter, TumourTimepointPlotter
 from .muspan_plotter import MuspanPCFPlotter
-from .simulation_visualiser import SimulationVisualiser, TumourSimulationVisualiser, HistogramVisualiser, ChemokineVisualiser
+from .simulation_visualiser import SimulationVisualiser, TumourSimulationVisualiser, HistogramVisualiser, ChemokineVisualiser, PressureVisualiser
 from .muspan_visualisers import MuspanPCFVisualiser, MuspanWeightedPCFVisualiser
 from .grid_visualiser import GridVisualiser
 from .row_visualiser import RowVisualiser
