@@ -39,6 +39,11 @@ class Simulation:
                 enumerate(self.results_timesteps[start:stop:step], start=start)),
                 total=len(self.results_timesteps[start:stop:step])))
     
+    def for_timepoint_single_thread(self, func, start=0, stop=None, step=1):
+        for info in tqdm.tqdm(enumerate(self.results_timesteps[start:stop:step], start=start),
+                                     total=len(self.results_timesteps[start:stop:step])):
+            func(info)
+
     def for_final_timepoint(self, func):
         func((len(self.results_timesteps)-1, self.results_timesteps[-1]))
 
