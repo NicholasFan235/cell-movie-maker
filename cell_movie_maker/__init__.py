@@ -6,5 +6,5 @@ from .simulation_visualiser import SimulationVisualiser, TumourSimulationVisuali
 from .muspan_visualisers import MuspanPCFVisualiser, MuspanWeightedPCFVisualiser
 from .grid_visualiser import GridVisualiser
 from .row_visualiser import RowVisualiser
-from .timepoint_plotter_v2 import TimepointPlotterV2, TumourTimepointPlotterV2
+from .timepoint_plotter_v2 import TimepointPlotterV2, TumourTimepointPlotterV2, PressureTimepointPlotterV2
 from .simulation_visualiser_tcellabm_chemokines import TCellABMChemokineVisualiser

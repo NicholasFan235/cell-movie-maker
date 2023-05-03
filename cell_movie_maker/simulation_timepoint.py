@@ -40,7 +40,9 @@ class SimulationTimepoint:
         self.load_value(raw, "ifn-gamma")
         self.load_value(raw, "cell_type")
         self.load_value(raw, "damping_coefficient")
-        
+        self.load_value(raw, "pressure")
+        self.load_value(raw, "target_radius")
+
         def interpret_cell_type(cell_type):
             if cell_type == 0: return 'Stroma'
             elif cell_type == 1: return 'Tumour'

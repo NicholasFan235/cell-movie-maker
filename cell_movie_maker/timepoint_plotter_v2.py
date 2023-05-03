@@ -93,6 +93,7 @@ class TimepointPlotterV2:
         self.plot_tumour(fig, ax, simulation_timepoint)
         self.plot_cytotoxic(fig, ax, simulation_timepoint)
         ax.relim()
+        ax.set_aspect(1.0/ax.get_data_ratio(), adjustable='box')
 
 
 class TumourTimepointPlotterV2:
@@ -149,4 +150,30 @@ class TumourTimepointPlotterV2:
         self.plot_blood_vessels(fig, ax, simulation_timepoint)
         self.plot_tumour(fig, ax, simulation_timepoint)
         ax.relim()
+        ax.set_aspect(1.0/ax.get_data_ratio(), adjustable='box')
 
+class PressureTimepointPlotterV2:
+    def __init__(self):
+        pass
+        
+    def plot_cells(self, fig, ax, simulation_timepoint):
+        data = simulation_timepoint.data
+        norm = mpl.colors.Normalize(vmin=0, vmax=data.pressure.max())
+        cmap = mpl.colormaps['cividis']
+        for _, cell in data.iterrows():
+            artist = mpl.patches.Circle((cell.x, cell.y), cell.radius,
+                ec='none', fc=cmap(norm(cell.pressure)), alpha=0.8)
+            ax.add_artist(artist)
+        fig.colorbar(mpl.cm.ScalarMappable(norm=norm, cmap=cmap), ax=ax)
+
+    def plot(self, fig, ax, simulation_timepoint, frame_num, timepoint):
+        ax.set_xticks([])
+        ax.set_yticks([])
+        ax.set_xlabel(f'{float(timepoint)/60/24:.1f} days')
+        ax.margins(0.01)
+        ax.set_title(f'{simulation_timepoint.name}/{simulation_timepoint.id} #{frame_num}')
+        
+        self.plot_cells(fig, ax, simulation_timepoint)
+
+        ax.relim()
+        ax.set_aspect(1.0/ax.get_data_ratio(), adjustable='box')
