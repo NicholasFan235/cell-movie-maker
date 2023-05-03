@@ -1,7 +1,7 @@
 
 from .simulation import Simulation
 from .timepoint_plotter import TimepointPlotter, HistogramPlotter, TumourTimepointPlotter
-from .timepoint_plotter_v2 import TimepointPlotterV2, TumourTimepointPlotterV2
+from .timepoint_plotter_v2 import TimepointPlotterV2, TumourTimepointPlotterV2, PressureTimepointPlotterV2
 import matplotlib.pylab as plt
 import os
 import shutil
@@ -162,5 +162,33 @@ class ChemokineVisualiser(AbstractSimulationVisualiser):
         self.chemokine_cmap = chemokine_cmap
         self.chemokine_kwargs = chemokine_kwargs
         
+        if auto_execute:
+            self.sim.for_timepoint(self.visualise_frame, start=self.start, stop=self.stop, step=self.step)
+
+class PressureVisualiser(AbstractSimulationVisualiser):
+    def __init__(self, simulation:Simulation, visualisation_name='pressure', **kwargs):
+        super().__init__(simulation, visualisation_name=visualisation_name, **kwargs)
+
+    def visualise_frame(self, info):
+        frame_num, timepoint = info
+        simulation_timepoint = self.sim.read_timepoint(timepoint)
+
+        fig, ax = plt.subplots(1,1, figsize=(8,8))
+        #ax.margins(0.01)
+        fig.tight_layout()
+        self.tp.plot(fig, ax, simulation_timepoint, frame_num, timepoint)
+
+        if self.postprocess is not None:
+            self.postprocess(fig, ax)
+
+        fig.savefig(os.path.join(self.output_folder, 'frame_{}.png'.format(frame_num)))
+        plt.close(fig)
+        return
+
+    def visualise(self, auto_execute=True, *args, **kwargs):
+        super().visualise(*args, **kwargs)
+
+        self.tp = PressureTimepointPlotterV2()
+
         if auto_execute:
             self.sim.for_timepoint(self.visualise_frame, start=self.start, stop=self.stop, step=self.step)
