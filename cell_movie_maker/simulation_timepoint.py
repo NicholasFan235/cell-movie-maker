@@ -32,8 +32,9 @@ class SimulationTimepoint:
     def load_data(self, raw):
         self.load_value(raw, 'volume')
         self.data['radius'] = np.sqrt(self.data.volume/np.pi)
+        self.load_value(raw, 'Ages')
         self.load_value(raw, "potency")
-        self.load_value(raw, "damage")
+        self.load_value(raw, "damage", 0)
         self.load_value(raw, "oxygen")
         self.load_value(raw, "ccl5")
         self.load_value(raw, "cxcl9")
@@ -63,11 +64,11 @@ class SimulationTimepoint:
         self.data.loc[self.data.damage < 0, 'damage'] = np.nan
 
     
-    def load_value(self, raw, name):
+    def load_value(self, raw, name, default=np.nan):
         if name in raw.keys():
             self.data[name] = raw[name]
         else:
-            self.data[name] = np.nan
+            self.data[name] = default
 
     @property
     def cytotoxic_data(self):

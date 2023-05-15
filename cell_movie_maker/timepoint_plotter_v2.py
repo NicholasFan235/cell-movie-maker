@@ -93,7 +93,7 @@ class TimepointPlotterV2:
         self.plot_tumour(fig, ax, simulation_timepoint)
         self.plot_cytotoxic(fig, ax, simulation_timepoint)
         ax.relim()
-        ax.set_aspect(1.0/ax.get_data_ratio(), adjustable='box')
+        ax.set_aspect(1.0-ax.get_data_ratio(), adjustable='box')
 
 
 class TumourTimepointPlotterV2:
@@ -150,7 +150,7 @@ class TumourTimepointPlotterV2:
         self.plot_blood_vessels(fig, ax, simulation_timepoint)
         self.plot_tumour(fig, ax, simulation_timepoint)
         ax.relim()
-        ax.set_aspect(1.0/ax.get_data_ratio(), adjustable='box')
+        ax.set_aspect(1.0-ax.get_data_ratio(), adjustable='box')
 
 class PressureTimepointPlotterV2:
     def __init__(self):
@@ -176,4 +176,4 @@ class PressureTimepointPlotterV2:
         self.plot_cells(fig, ax, simulation_timepoint)
 
         ax.relim()
-        ax.set_aspect(1.0/ax.get_data_ratio(), adjustable='box')
+        ax.set_aspect(1.0-ax.get_data_ratio(), adjustable='box')

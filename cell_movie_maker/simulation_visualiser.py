@@ -145,7 +145,7 @@ class ChemokineVisualiser(AbstractSimulationVisualiser):
 
         #ax.margins(0.01)
         fig.tight_layout()
-        pos = ax.imshow(data, cmap=self.chemokine_cmap, vmin=data.min(), vmax=data.max(), **self.chemokine_kwargs)
+        pos = ax.imshow(data, cmap=self.chemokine_cmap, vmin=0, vmax=max(data.max(),1.0), **self.chemokine_kwargs)
         fig.colorbar(pos, ax=ax)
 
         if self.postprocess is not None:
