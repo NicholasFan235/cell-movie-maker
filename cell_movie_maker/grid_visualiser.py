@@ -27,13 +27,13 @@ class GridVisualiser:
         if not os.path.exists(self.output_folder):
             os.mkdir(self.output_folder)
 
-        self.figsize = 8
+        self.figsize = (8,8)
         self.dpi = 100
 
     def visualise_frame(self, info):
         frame_num, timepoint = info
 
-        fig, axs = plt.subplots(self.shape[0],self.shape[1],figsize=(self.shape[1]*self.figsize,self.shape[0]*self.figsize))
+        fig, axs = plt.subplots(self.shape[0],self.shape[1],figsize=(self.shape[1]*self.figsize[0],self.shape[0]*self.figsize[1]))
         #fig.subplots_adjust(left=0.1, right=0.9, bottom=0.1, top=0.9, wspace=0.1, hspace=0.1)
         #fig.subplots_adjust(left=0.02, right=0.98, bottom=0.02, top=0.98)
         fig.tight_layout()
@@ -41,12 +41,15 @@ class GridVisualiser:
         for i,(_simulations,_plotters, _ids) in enumerate(zip(self.simulation_grid, self.tp_grid, self.sim_ids)):
             for j,(simulation,plotter, sim_id) in enumerate(zip(_simulations, _plotters, _ids)):
                 simulation_timepoint = simulation.read_timepoint(timepoint)
-                plotter.plot(fig, axs[i][j], simulation_timepoint, frame_num, timepoint)
+                if len(axs.shape)==1:
+                    plotter.plot(fig, axs[i+j], simulation_timepoint, frame_num, timepoint)
+                else:
+                    plotter.plot(fig, axs[i][j], simulation_timepoint, frame_num, timepoint)
 
         if self.postprocess_grid is not None:
             self.postprocess_grid(fig, axs)
 
-        fig.savefig(os.path.join(self.output_folder_grid, 'frame_{}.png'.format(frame_num)), dpi=self.dpi)
+        fig.savefig(os.path.join(self.output_folder_grid, 'frame_{}.png'.format(frame_num)), dpi=self.dpi, facecolor='white', transparent=False)
         plt.close(fig)
 
     def visualise(self, name='grid', start=0, stop=None, step=1,
