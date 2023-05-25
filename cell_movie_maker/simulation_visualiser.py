@@ -11,6 +11,7 @@ class AbstractSimulationVisualiser:
     def __init__(self, simulation:Simulation, output_parent_folder = 'visualisations', visualisation_name = 'abstract'):
         self.sim = simulation
         self.visualisation_name = visualisation_name
+        self.figsize = (8,8)
         
         if (not os.path.exists(output_parent_folder)):
             os.mkdir(output_parent_folder)
@@ -44,7 +45,7 @@ class SimulationVisualiser(AbstractSimulationVisualiser):
         frame_num, timepoint = info
         simulation_timepoint = self.sim.read_timepoint(timepoint)
 
-        fig, ax = plt.subplots(1,1, figsize=(8,8))
+        fig, ax = plt.subplots(1,1, figsize=self.figsize)
         #ax.margins(0.01)
         fig.tight_layout()
         self.tp.plot(fig, ax, simulation_timepoint, frame_num, timepoint)
@@ -75,7 +76,7 @@ class TumourSimulationVisualiser(AbstractSimulationVisualiser):
         frame_num, timepoint = info
         simulation_timepoint = self.sim.read_timepoint(timepoint)
 
-        fig, ax = plt.subplots(1,1, figsize=(8,8))
+        fig, ax = plt.subplots(1,1, figsize=self.figsize)
         #ax.margins(0.01)
         fig.tight_layout()
         self.tp.plot(fig, ax, simulation_timepoint, frame_num, timepoint)
@@ -106,7 +107,7 @@ class HistogramVisualiser(AbstractSimulationVisualiser):
         frame_num, timepoint = info
         simulation_timepoint = self.sim.read_timepoint(timepoint)
 
-        fig, axs = plt.subplot_mosaic("AB;AC", figsize=(16,8))
+        fig, axs = plt.subplot_mosaic("AB;AC", figsize=self.figsize)
         self.tp.plot(fig, axs['A'], simulation_timepoint, frame_num, timepoint)
         self.hp.cytotoxic_histogram(fig, axs['B'], simulation_timepoint)
         self.hp.tumour_histogram(fig, axs['C'], simulation_timepoint)
@@ -141,7 +142,7 @@ class ChemokineVisualiser(AbstractSimulationVisualiser):
         simulation_timepoint = self.sim.read_timepoint(timepoint)
 
         data = simulation_timepoint.read_pde(self.chemokine_name)
-        fig, ax = plt.subplots(1,1, figsize=(8,8))
+        fig, ax = plt.subplots(1,1, figsize=self.figsize)
 
         #ax.margins(0.01)
         fig.tight_layout()
@@ -173,7 +174,7 @@ class PressureVisualiser(AbstractSimulationVisualiser):
         frame_num, timepoint = info
         simulation_timepoint = self.sim.read_timepoint(timepoint)
 
-        fig, ax = plt.subplots(1,1, figsize=(8,8))
+        fig, ax = plt.subplots(1,1, figsize=self.figsize)
         #ax.margins(0.01)
         fig.tight_layout()
         self.tp.plot(fig, ax, simulation_timepoint, frame_num, timepoint)
