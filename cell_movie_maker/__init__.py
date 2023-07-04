@@ -10,5 +10,6 @@ from .timepoint_plotter_v2 import TimepointPlotterV2, TumourTimepointPlotterV2, 
 from .simulation_visualiser_tcellabm_chemokines import TCellABMChemokineVisualiser
 from .simulation_visualiser_tcelalbm_oxygen import TCellABMOxygenVisualiser
 from .simulation_visualiser_tcelalbm_pressure import TCellABMPressureVisualiser, TCellABMPressureVisualiser2
+from .simulation_visualiser_tcellabm_tumour import TCellABMTumourVisualiser
 
 from .strip_distribution_plotter import StripPressureDistributionPlotter
