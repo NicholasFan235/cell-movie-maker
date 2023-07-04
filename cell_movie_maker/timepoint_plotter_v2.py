@@ -51,7 +51,7 @@ class TimepointPlotterV2:
         data = simulation_timepoint.cytotoxic_data
         for _, cell in data.iterrows():
             artist = mpl.patches.Circle((cell.x, cell.y), cell.radius,
-                ec='black', fc='darkorange',
+                ec='darkorange', fc='darkorange',
                 alpha=max(0.1, cell.potency))
             ax.add_artist(artist)
         #if self.cmap:
