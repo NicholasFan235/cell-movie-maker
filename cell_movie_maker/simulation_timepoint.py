@@ -39,8 +39,10 @@ class SimulationTimepoint:
         self.load_value(raw, "ccl5")
         self.load_value(raw, "cxcl9")
         self.load_value(raw, "ifn-gamma")
+        self.load_value(raw, "density")
         self.load_value(raw, "cell_type")
         self.load_value(raw, "damping_coefficient")
+        self.load_value(raw, "friction")
         self.load_value(raw, "pressure")
         self.load_value(raw, "target_radius")
 
@@ -92,22 +94,27 @@ class SimulationTimepoint:
 
     @property
     def ccl5_data(self):
-        return self.read_pde('ccl5')
+        return self.read_pde('tcellpdes', 'ccl5')
 
     @property
     def cxcl9_data(self):
-        return self.read_pde('cxcl9')
+        return self.read_pde('tcellpdes', 'cxcl9')
 
     @property
     def ifng_data(self):
-        return self.read_pde('ifn-gamma')
+        return self.read_pde('tcellpdes', 'ifn-gamma')
+
+    @property
+    def ecm_density_data(self):
+        return self.read_pde('tcellpdes', 'density')
 
     @property
     def oxygen_data(self):
         return self.read_pde('oxygen')
 
-    def read_pde(self, chemokine):
-        p = pathlib.Path(self.results_folder, f"pde_results_{chemokine}_{self.timestep}.vtu")
+    def read_pde(self, file, chemokine=None):
+        if (chemokine is None): chemokine = file
+        p = pathlib.Path(self.results_folder, f"pde_results_{file}_{self.timestep}.vtu")
         reader = vtk.vtkXMLUnstructuredGridReader()
         reader.SetFileName(str(p))
         reader.Update()
