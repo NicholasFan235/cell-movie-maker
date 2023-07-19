@@ -31,20 +31,20 @@ class TCellABMChemokineVisualiser(AbstractSimulationVisualiser):
         axs['C'].set_title('CCL5 (Chemoattractant)')
         axs['C'].set_yticks([])
         axs['C'].set_xticks([])
-        ccl5data = simulation_timepoint.read_pde('ccl5')
+        ccl5data = simulation_timepoint.ccl5_data
         ccl5 = axs['C'].imshow(ccl5data, cmap='magma', vmin=0, vmax=ccl5data.max(), origin='lower')
         fig.colorbar(ccl5, ax=axs['C'])
 
         axs['D'].set_title('IFN-g (Produced by activated T-cells)')
         axs['D'].set_yticks([])
         axs['D'].set_xticks([])
-        ifng = axs['D'].imshow(simulation_timepoint.read_pde('ifn-gamma'), cmap='binary', vmin=0, vmax=1, origin='lower')
+        ifng = axs['D'].imshow(simulation_timepoint.ifng_data, cmap='binary', vmin=0, vmax=1, origin='lower')
         fig.colorbar(ifng, ax=axs['D'])
 
         axs['E'].set_title('CXCL-9 (Reduce T-cell motility)')
         axs['E'].set_yticks([])
         axs['E'].set_xticks([])
-        cxcl9 = axs['E'].imshow(simulation_timepoint.read_pde('cxcl9'), cmap='binary', vmin=0, vmax=1, origin='lower')
+        cxcl9 = axs['E'].imshow(simulation_timepoint.cxcl9_data, cmap='binary', vmin=0, vmax=1, origin='lower')
         fig.colorbar(cxcl9, ax=axs['E'])
 
 
