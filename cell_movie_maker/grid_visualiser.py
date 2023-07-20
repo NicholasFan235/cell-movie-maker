@@ -6,6 +6,7 @@ import matplotlib.pylab as plt
 import os
 import shutil
 import numpy as np
+import pathlib
 
 class GridVisualiser:
     def __init__(self, simulation_folder_grid, output_parent_folder = 'visualisations'):
@@ -22,10 +23,10 @@ class GridVisualiser:
         self.shape = (len(simulation_folder_grid), len(simulation_folder_grid[0]))
 
         if (not os.path.exists(output_parent_folder)):
-            os.mkdir(output_parent_folder)
+            pathlib.Path(output_parent_folder).mkdir(exist_ok=True)
         self.output_folder = os.path.join(output_parent_folder, self.sim_name)
         if not os.path.exists(self.output_folder):
-            os.mkdir(self.output_folder)
+            pathlib.Path(self.output_folder).mkdir(exist_ok=True)
 
         self.figsize = (8,8)
         self.dpi = 100
@@ -58,7 +59,7 @@ class GridVisualiser:
         if os.path.exists(self.output_folder_grid) and clean_dir:
             shutil.rmtree(self.output_folder_grid)
         if not os.path.exists(self.output_folder_grid):
-            os.mkdir(self.output_folder_grid)
+            pathlib.Path(self.output_folder_grid).mkdir(exist_ok=True)
 
         self.postprocess_grid = postprocess
 
