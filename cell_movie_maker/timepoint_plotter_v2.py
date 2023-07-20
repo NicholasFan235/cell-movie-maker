@@ -124,14 +124,14 @@ class TumourTimepointPlotterV2:
                 ec='black', fc=c)
             ax.add_artist(artist)
     
-    def plot_tumour(self, fig, ax, simulation_timepoint):
-        data = simulation_timepoint.tumour_data
-        necrotic = data[data.oxygen <= 0.01]
-        hypoxic = data[(data.oxygen > 0.01) & (data.oxygen <= 0.01)]
-        healthy = data[data.oxygen > 0.01]
-        ax.scatter(necrotic.x, necrotic.y, c='white', **self.plot_kwargs)
-        ax.scatter(hypoxic.x, hypoxic.y, c='yellow', **self.plot_kwargs)
-        ax.scatter(healthy.x, healthy.y, c='purple', **self.plot_kwargs)
+#    def plot_tumour(self, fig, ax, simulation_timepoint):
+#        data = simulation_timepoint.tumour_data
+#        necrotic = data[data.oxygen <= 0.01]
+#        hypoxic = data[(data.oxygen > 0.01) & (data.oxygen <= 0.01)]
+#        healthy = data[data.oxygen > 0.01]
+#        ax.scatter(necrotic.x, necrotic.y, c='white', **self.plot_kwargs)
+#        ax.scatter(hypoxic.x, hypoxic.y, c='yellow', **self.plot_kwargs)
+#        ax.scatter(healthy.x, healthy.y, c='purple', **self.plot_kwargs)
 
     def plot_blood_vessels(self, fig, ax, simulation_timepoint):
         data = simulation_timepoint.blood_vessel_data

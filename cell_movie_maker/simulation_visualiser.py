@@ -6,6 +6,7 @@ import matplotlib.pylab as plt
 import os
 import shutil
 import numpy as np
+import pathlib
 
 class AbstractSimulationVisualiser:
     def __init__(self, simulation:Simulation, output_parent_folder = 'visualisations', visualisation_name = 'abstract'):
@@ -14,12 +15,12 @@ class AbstractSimulationVisualiser:
         self.figsize = (8,8)
         
         if (not os.path.exists(output_parent_folder)):
-            os.mkdir(output_parent_folder)
+            pathlib.Path(output_parent_folder).mkdir(exist_ok=True)
         if (not os.path.exists(os.path.join(output_parent_folder, self.sim.name))):
-            os.mkdir(os.path.join(output_parent_folder, self.sim.name))
+            pathlib.Path(os.path.join(output_parent_folder, self.sim.name)).mkdir(exist_ok=True)
         self.output_folder = os.path.join(output_parent_folder, self.sim.name, self.sim.id)
         if not os.path.exists(self.output_folder):
-            os.mkdir(self.output_folder)
+            pathlib.Path(self.output_folder).mkdir(exist_ok=True)
         
     def visualise_frame(self, info):
         raise NotImplementedError()
@@ -29,7 +30,7 @@ class AbstractSimulationVisualiser:
         if os.path.exists(self.output_folder) and clean_dir:
             shutil.rmtree(self.output_folder)
         if not os.path.exists(self.output_folder):
-            os.mkdir(self.output_folder)
+            pathlib.Path(self.output_folder).mkdir(exist_ok=True)
 
         self.postprocess = postprocess
 
