@@ -66,13 +66,14 @@ class TCellABMTumourVisualiserV2(AbstractSimulationVisualiser):
         #ax.margins(0.01)
         self.tp.plot(fig, axs['A'], simulation_timepoint, frame_num, timepoint)
 
-        self.pressure_tp.plot(fig, axs['B'], simulation_timepoint, frame_num, timepoint)
-        axs['B'].set_title('Pressure')
+        axs['B'].set_title('Oxygen')
         axs['B'].set_yticks([])
         axs['B'].set_xticks([])
+        ox = axs['B'].imshow(simulation_timepoint.oxygen_data, cmap='cividis', vmin=0, vmax=1, origin='lower')
+        fig.colorbar(ox, ax=axs['B'])
 
-        self.oxygen_tp.plot(fig, axs['C'], simulation_timepoint, frame_num, timepoint)
-        axs['C'].set_title('Oxygen')
+        self.pressure_tp.plot(fig, axs['C'], simulation_timepoint, frame_num, timepoint)
+        axs['C'].set_title('Pressure')
         axs['C'].set_yticks([])
         axs['C'].set_xticks([])
 
@@ -80,7 +81,7 @@ class TCellABMTumourVisualiserV2(AbstractSimulationVisualiser):
         axs['D'].set_yticks([])
         axs['D'].set_xticks([])
         ccl5data = simulation_timepoint.ccl5_data
-        ccl5 = axs['D'].imshow(ccl5data, cmap='magma', vmin=0, vmax=ccl5data.max(), origin='lower')
+        ccl5 = axs['D'].imshow(ccl5data, cmap='magma', vmin=0, vmax=100, origin='lower')
         fig.colorbar(ccl5, ax=axs['D'])
 
         axs['E'].set_title('ECM Density')

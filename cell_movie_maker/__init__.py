@@ -13,3 +13,4 @@ from .simulation_visualiser_tcelalbm_pressure import TCellABMPressureVisualiser,
 from .simulation_visualiser_tcellabm_tumour import TCellABMTumourVisualiser, TCellABMTumourVisualiserV2
 
 from .strip_distribution_plotter import StripPressureDistributionPlotter
+from . import svg
