@@ -158,7 +158,7 @@ class PressureTimepointPlotterV2:
         
     def plot_cells(self, fig, ax, simulation_timepoint):
         data = simulation_timepoint.data
-        norm = mpl.colors.Normalize(vmin=0, vmax=data.pressure.max())
+        norm = mpl.colors.Normalize(vmin=0, vmax=10)#data.pressure.max())
         cmap = mpl.colormaps['cividis']
         for _, cell in data.iterrows():
             artist = mpl.patches.Circle((cell.x, cell.y), cell.radius,

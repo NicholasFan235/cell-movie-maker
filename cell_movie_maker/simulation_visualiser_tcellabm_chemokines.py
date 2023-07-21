@@ -25,7 +25,7 @@ class TCellABMChemokineVisualiser(AbstractSimulationVisualiser):
         axs['B'].set_title('Oxygen')
         axs['B'].set_yticks([])
         axs['B'].set_xticks([])
-        ox = axs['B'].imshow(simulation_timepoint.read_pde('oxygen'), cmap='cividis', vmin=0, vmax=1, origin='lower')
+        ox = axs['B'].imshow(simulation_timepoint.oxygen_data, cmap='cividis', vmin=0, vmax=1, origin='lower')
         fig.colorbar(ox, ax=axs['B'])
 
         axs['C'].set_title('CCL5 (Chemoattractant)')
