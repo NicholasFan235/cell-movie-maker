@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # set verbose level to info
-__LOG_LEVEL=6
-FFMPEG_LOG_LEVEL=info
-#FFMPEG_LOG_LEVEL=warning
+__LOG_LEVEL=5
+#FFMPEG_LOG_LEVEL=info
+FFMPEG_LOG_LEVEL=warning
 MAX_PROC=16
 
 set -eo pipefail
@@ -22,7 +22,7 @@ function .log () {
 
 VIS_FOLDER=$1
 
-vis_types="tcell-svg tumour-svg hypoxia-svg pressure-svg oxygen-svg"
+vis_types="tcell-svg tumour-svg hypoxia-svg pressure-svg oxygen-svg ccl5-svg"
 
 cd $VIS_FOLDER
 for vis_type in $vis_types; do
@@ -36,7 +36,7 @@ for vis_type in $vis_types; do
     if [ ! -d ../$vis_type-png ]; then
         mkdir ../$vis_type-png
     else
-        rm ../$vis_type-png/frame_*.png
+        rm -f ../$vis_type-png/frame_*.png
     fi
     wait
     i=0
