@@ -1,5 +1,5 @@
 from ..simulation_visualiser import AbstractSimulationVisualiser
-from .svg_writer import SVGWriter, TumourSVGWriter, HypoxiaSVGWriter, PressureSVGWriter, OxygenSVGWriter
+from .svg_writer import SVGWriter, TumourSVGWriter, HypoxiaSVGWriter, PressureSVGWriter, OxygenSVGWriter, CCL5SVGWriter
 import os
 import shutil
 import pathlib
@@ -30,7 +30,8 @@ class SVGVisualiser(AbstractSimulationVisualiser):
             TumourSVGWriter(width=width, height=height),
             HypoxiaSVGWriter(width=width, height=height, tumour_hypoxic_concentration=tumour_hypoxic_concentration, tumour_necrotic_concentration=tumour_necrotic_concentration, stroma_hypoxic_concentration=stroma_hypoxic_concentration,stroma_necrotic_concentration=stroma_necrotic_concentration),
             PressureSVGWriter(width=width, height=height, p_max=p_max),
-            OxygenSVGWriter(width=width, height=height)
+            OxygenSVGWriter(width=width, height=height),
+            CCL5SVGWriter(width=width, height=height)
         ]
 
         for w in self.writers:

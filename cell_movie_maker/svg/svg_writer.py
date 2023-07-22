@@ -21,6 +21,7 @@ class SVGWriter:
         self.width, self.height = width, height
         self.name = "tcell-svg"
         self.background = 'ecm'
+        self.background_max = None
     
     def plot_ecm(self, simulation_timepoint):
         os = '<g stroke-width="0.1">'
@@ -28,12 +29,14 @@ class SVGWriter:
         for i in range(density.shape[0]):
             for j in range(density.shape[1]):
                 x = 255-int(density[i][j]*255)
+                if (self.background_max != None):
+                    x = min(self.background_max, x)
                 f = f'rgb({x},{x},{x})'
-                os += f'\t<rect x="{j-.5}" y="{i-.5}" fill="{f}" width="1" height="1" stroke="{f}" />\n'
+                os += f'<rect x="{j-.5}" y="{i-.5}" fill="{f}" width="1" height="1" stroke="{f}" />\n'
         return os + '</g>\n'
 
     def plot_oxygen(self, simulation_timepoint):
-        norm = mpl.colors.Normalize(vmin=0, vmax=self.p_max)
+        norm = mpl.colors.Normalize(vmin=0, vmax=1)
         cmap = mpl.colormaps['cividis']
         os = '<g stroke-width="0.1">'
         ox = simulation_timepoint.oxygen_data
@@ -41,11 +44,11 @@ class SVGWriter:
             for j in range(ox.shape[1]):
                 colour = cmap(norm(ox[i][j]))
                 f = f'rgb({int(255*colour[0])},{int(255*colour[1])},{int(255*colour[2])})'
-                os += f'\t<rect x="{j-.5}" y="{i-.5}" fill="{f}" width="1" height="1" stroke="{f}" />\n'
+                os += f'<rect x="{j-.5}" y="{i-.5}" fill="{f}" width="1" height="1" stroke="{f}" />\n'
         return os + '</g>\n'
     
     def plot_ccl5(self, simulation_timepoint):
-        norm = mpl.colors.Normalize(vmin=0, vmax=self.p_max)
+        norm = mpl.colors.Normalize(vmin=0, vmax=50)
         cmap = mpl.colormaps['magma']
         os = '<g stroke-width="0.1">'
         ccl5 = simulation_timepoint.ccl5_data
@@ -53,7 +56,7 @@ class SVGWriter:
             for j in range(ccl5.shape[1]):
                 colour = cmap(norm(ccl5[i][j]))
                 f = f'rgb({int(255*colour[0])},{int(255*colour[1])},{int(255*colour[2])})'
-                os += f'\t<rect x="{j-.5}" y="{i-.5}" fill="{f}" width="1" height="1" stroke="{f}" />\n'
+                os += f'<rect x="{j-.5}" y="{i-.5}" fill="{f}" width="1" height="1" stroke="{f}" />\n'
         return os + '</g>\n'
     
     def plot_stroma(self, simulation_timepoint):
@@ -139,7 +142,7 @@ class HypoxiaSVGWriter(SVGWriter):
         self.stroma_necrotic_concentration = stroma_necrotic_concentration
         self.stroma_hypoxic_concentration = max(stroma_hypoxic_concentration, stroma_necrotic_concentration)
         self.name = "hypoxia-svg"
-        self.background = None
+        self.background = 'ecm'
 
     def plot_stroma(self, simulation_timepoint):
         os = '<g stroke-width="0" fill="lightblue">'
@@ -211,4 +214,38 @@ class OxygenSVGWriter(SVGWriter):
         os = f'<svg width="{self.width}" height="{self.height}">'
         os += self.plot_background(simulation_timepoint)
         os += self.plot_cells(simulation_timepoint)
+        return os + '</svg>\n'
+
+class CCL5SVGWriter(SVGWriter):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.name = "ccl5-svg"
+        self.background = 'ecm'
+        self.background_max = 192
+        
+    def plot_ccl5(self, simulation_timepoint):
+        norm = mpl.colors.Normalize(vmin=0, vmax=50)
+        cmap = mpl.colormaps['magma']
+        ccl5 = simulation_timepoint.ccl5_data
+        os = '<g><g stroke-width="0">'
+        rotations = -90+np.arctan2(*np.gradient(ccl5)) * 180/np.pi
+        for i in range(ccl5.shape[0]):
+            for j in range(ccl5.shape[1]):
+                colour = cmap(norm(ccl5[i][j]))
+                r=min(0.4, max(0.2,norm(ccl5[i][j])))*2
+                f = f'rgb({int(255*colour[0])},{int(255*colour[1])},{int(255*colour[2])})'
+                os += f'<polygon points=".05,0 .05,.25 .2,.25 0,.5 -.2,.25 -.05,.25 -.05,0" fill="{f}" transform="translate({j} {i})scale({r})rotate({int(rotations[i][j])})"/>'
+        os += '</g>\n<g stroke-width="0.1">'
+        for i in range(ccl5.shape[0]):
+            for j in range(ccl5.shape[1]):
+                colour = cmap(norm(ccl5[i][j]))
+                f = f'rgb({int(255*colour[0])},{int(255*colour[1])},{int(255*colour[2])})'
+                r=min(0.4, max(0.2,norm(ccl5[i][j])))/2
+                os += f'<circle cx="{j}" cy="{i}" fill="{f}" r="{r}" stroke="{f}"/>'
+        return os + '</g></g>\n'
+
+    def to_svg(self, simulation_timepoint):
+        os = f'<svg width="{self.width}" height="{self.height}">'
+        os += self.plot_background(simulation_timepoint)
+        os += self.plot_ccl5(simulation_timepoint)
         return os + '</svg>\n'
