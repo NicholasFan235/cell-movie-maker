@@ -8,6 +8,6 @@ if [ ! -z $3 ]; then
 fi
 
 for ((i=$start_it; i<=$stop_it; i++)) do
-    python3 run-visualise-svgs.py $CHASTE_TEST_OUTPUT/TCellABM/$sim_name/sim_$i;
-    ./svg-to-mp4.sh visualisations/$sim_name/sim_$i
+    python3 run-svg-stitch-tumour.py $CHASTE_TEST_OUTPUT/TCellABM/$sim_name/sim_$i;
+    #python3 ffmpeg-convert.py visualisations/$sim_name/sim_$i/tumour-stitched
 done
