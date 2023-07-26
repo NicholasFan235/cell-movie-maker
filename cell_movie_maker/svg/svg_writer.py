@@ -32,7 +32,7 @@ class SVGWriter:
                 if (self.background_max != None):
                     x = min(self.background_max, x)
                 f = f'rgb({x},{x},{x})'
-                os += f'<rect x="{j-.5}" y="{i-.5}" fill="{f}" width="1" height="1" stroke="{f}" />\n'
+                os += f'<rect x="{j-.5}" y="{i-.5}" fill="{f}" width="1" height="1" stroke="{f}"/>'
         return os + '</g>\n'
 
     def plot_oxygen(self, simulation_timepoint):
@@ -44,7 +44,7 @@ class SVGWriter:
             for j in range(ox.shape[1]):
                 colour = cmap(norm(ox[i][j]))
                 f = f'rgb({int(255*colour[0])},{int(255*colour[1])},{int(255*colour[2])})'
-                os += f'<rect x="{j-.5}" y="{i-.5}" fill="{f}" width="1" height="1" stroke="{f}" />\n'
+                os += f'<rect x="{j-.5}" y="{i-.5}" fill="{f}" width="1" height="1" stroke="{f}"/>'
         return os + '</g>\n'
     
     def plot_ccl5(self, simulation_timepoint):
@@ -56,7 +56,7 @@ class SVGWriter:
             for j in range(ccl5.shape[1]):
                 colour = cmap(norm(ccl5[i][j]))
                 f = f'rgb({int(255*colour[0])},{int(255*colour[1])},{int(255*colour[2])})'
-                os += f'<rect x="{j-.5}" y="{i-.5}" fill="{f}" width="1" height="1" stroke="{f}" />\n'
+                os += f'<rect x="{j-.5}" y="{i-.5}" fill="{f}" width="1" height="1" stroke="{f}"/>'
         return os + '</g>\n'
     
     def plot_stroma(self, simulation_timepoint):
@@ -193,7 +193,30 @@ class PressureSVGWriter(SVGWriter):
         os += self.plot_background(simulation_timepoint)
         os += self.plot_cells(simulation_timepoint)
         return os + '</svg>\n'
-    
+
+
+class DensitySVGWriter(SVGWriter):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.name = "density-svg"
+        self.background = 'ecm'
+        
+    def plot_cells(self, simulation_timepoint):
+        norm = mpl.colors.Normalize(vmin=0, vmax=1)
+        cmap = mpl.colormaps['Wistia']
+        os = '<g stroke-width="0" opacity=".8">'
+        for _, c in simulation_timepoint.data.iterrows():
+            colour = cmap(norm(c.density))
+            f=f'rgb({int(255*colour[0])},{int(255*colour[1])},{int(255*colour[2])})'
+            os += f'<circle cx="{c.x:.4f}" cy="{c.y:.4f}" r="{c.radius:.3f}" fill="{f}"/>'
+        return os + '</g>\n'
+
+    def to_svg(self, simulation_timepoint):
+        os = f'<svg width="{self.width}" height="{self.height}">'
+        os += self.plot_background(simulation_timepoint)
+        os += self.plot_cells(simulation_timepoint)
+        return os + '</svg>\n'
+
 class OxygenSVGWriter(SVGWriter):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

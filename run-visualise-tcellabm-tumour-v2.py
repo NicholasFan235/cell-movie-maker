@@ -20,5 +20,5 @@ assert os.path.exists(results_folder), f"Folder not found: {results_folder}."
 simulation = cmm.Simulation(results_folder)
 
 visualiser = cmm.TCellABMTumourVisualiserV2(simulation, visualisation_name='tcellabm-tumour')
-visualiser.visualise(step=1)
+visualiser.visualise(step=1, maxproc=1, clean_dir=False)
 

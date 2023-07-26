@@ -14,3 +14,6 @@ from .simulation_visualiser_tcellabm_tumour import TCellABMTumourVisualiser, TCe
 
 from .strip_distribution_plotter import StripPressureDistributionPlotter
 from . import svg
+from . import preprocessor
+from .preprocessor import Preprocessor
+
