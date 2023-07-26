@@ -15,5 +15,6 @@ assert os.path.exists(results_folder), f"Folder not found: {results_folder}."
 simulation = cmm.Simulation(results_folder)
 
 visualiser = cmm.SimulationVisualiser(simulation)
-visualiser.visualise(step=1)
-
+visualiser.visualise(step=1, auto_execute=False)
+visualiser.sim.for_timepoint(visualiser.visualise_frame, step=1, maxproc=4)
+#visualiser.sim.for_timepoint_single_thread(visualiser.visualise_frame, step=1)

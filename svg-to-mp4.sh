@@ -22,7 +22,7 @@ function .log () {
 
 VIS_FOLDER=$1
 
-vis_types="tcell-svg tumour-svg hypoxia-svg pressure-svg oxygen-svg ccl5-svg"
+vis_types="tcell-svg tumour-svg hypoxia-svg pressure-svg oxygen-svg ccl5-svg density-svg"
 
 cd $VIS_FOLDER
 for vis_type in $vis_types; do

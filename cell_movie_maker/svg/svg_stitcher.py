@@ -5,6 +5,8 @@ import pathlib
 import re
 import tqdm
 import multiprocessing
+import pandas as pd
+from ..simulation_timepoint import SimulationTimepoint
 
 
 class SVGStitcher:
@@ -17,6 +19,9 @@ class SVGStitcher:
         self.probe_vis_type = 'tcell-svg-png'
 
         self.figsize=(16,8)
+        self.ccl5_max=None
+        self.ifng_max=None
+        self.cxcl9_max=None
 
     def process_frame(self, n):
         raise NotImplementedError
@@ -68,21 +73,21 @@ class SVGStitcher:
         ax.set_title('CCL5 (Chemoattractant)')
         ccl5data = simulation_timepoint.ccl5_data
         if ccl5data is not None:
-            ccl5 = ax.imshow(ccl5data, cmap='magma', vmin=0, vmax=ccl5data.max(), origin='lower')
+            ccl5 = ax.imshow(ccl5data, cmap='magma', vmin=0, vmax=self.ccl5_max if self.ccl5_max is not None else ccl5data.max(), origin='lower')
             fig.colorbar(ccl5, ax=ax)
 
     def plot_ifng(self, fig, ax, simulation_timepoint):
         ax.set_title('IFN-g (Produced by activated T-cells)')
         ifng_data = simulation_timepoint.ifng_data
         if ifng_data is not None:
-            ifng = ax.imshow(simulation_timepoint.ifng_data, cmap='binary', vmin=0, vmax=1, origin='lower')
+            ifng = ax.imshow(simulation_timepoint.ifng_data, cmap='binary', vmin=0, vmax=self.ifng_max if self.ifng_max is not None else ifng_data.max(), origin='lower')
             fig.colorbar(ifng, ax=ax)
 
     def plot_cxcl9(self, fig, ax, simulation_timepoint):
         ax.set_title('CXCL-9 (Reduce T-cell motility)')
         cxcl9_data = simulation_timepoint.cxcl9_data
         if cxcl9_data is not None:
-            cxcl9 = ax.imshow(cxcl9_data, cmap='binary', vmin=0, vmax=1, origin='lower')
+            cxcl9 = ax.imshow(cxcl9_data, cmap='binary', vmin=0, vmax=self.cxcl9_max if self.cxcl9_max is not None else cxcl9_data.max(), origin='lower')
             fig.colorbar(cxcl9, ax=ax)
 
     def plot_ecm_density(self, fig, ax, simulation_timepoint):
@@ -91,6 +96,14 @@ class SVGStitcher:
         if ecm_density_data is not None:
             density = ax.imshow(ecm_density_data, cmap='binary', vmin=0, vmax=1, origin='lower')
             fig.colorbar(density, ax=ax)
+    
+    def plot_tumour_count(self, fig, ax, simulation_timepoint:SimulationTimepoint):
+        ax.set_title('N-Tumour cells')
+        if not hasattr(self, 'info'): info = pd.read_csv(pathlib.Path(self.vis_folder, 'info.csv')).set_index('timestep')
+        ax.plot(info.index, info['n_tumour'], '-k')
+        ax.plot(simulation_timepoint.timestep, info.loc[simulation_timepoint.timestep, 'n_tumour'], 'ro')
+        ax.set_yticks([0, info.loc[simulation_timepoint.timestep, 'n_tumour'], info.n_tumour.max()])
+
 
 class TCellSVGStitcher(SVGStitcher):
     def __init__(self, simulation, visualisation_name='tcell-stitched', *args, **kwargs):
@@ -126,6 +139,5 @@ class TumourSVGStitcher(SVGStitcher):
         axs['C'].imshow(self.get_frame('pressure-svg-png', n))
         plt.colorbar(mpl.cm.ScalarMappable(cmap='cividis', norm=mpl.colors.Normalize(vmin=0, vmax=self.p_max)), ax=axs['C'])
         self.plot_ccl5(fig, axs['D'], simulation_timepoint)
-        self.plot_ecm_density(fig, axs['E'], simulation_timepoint)
+        self.plot_tumour_count(fig, axs['E'], simulation_timepoint)
         self.post(fig, axs, n)
-    

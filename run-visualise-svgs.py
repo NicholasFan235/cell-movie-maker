@@ -17,7 +17,7 @@ if len(sys.argv)>2: tumour_necrotic_concentration = float(sys.argv[2])
 
 simulation = cmm.Simulation(results_folder)
 visualiser = cmm.svg.SVGVisualiser(simulation)
-visualiser.visualise(step=4, maxproc=8, tumour_necrotic_concentration=tumour_necrotic_concentration,
+visualiser.visualise(step=1, maxproc=8, tumour_necrotic_concentration=tumour_necrotic_concentration,
                      tumour_hypoxic_concentration=0.2,
                      stroma_hypoxic_concentration=.4, stroma_necrotic_concentration=.2,
                      p_max=5)
