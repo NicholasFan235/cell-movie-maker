@@ -3,6 +3,7 @@
 */__pycache
 venv
 
+visualisations/*
 test.ipynb
 test-muspan.ipynb
 
