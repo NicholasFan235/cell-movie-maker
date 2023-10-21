@@ -17,7 +17,7 @@ if len(sys.argv)>2: tumour_necrotic_concentration = float(sys.argv[2])
 
 simulation = cmm.Simulation(results_folder)
 stitcher = cmm.svg.TumourSVGStitcher(simulation)
-stitcher.ccl5_max=50
+stitcher.ccl5_max=20
 stitcher.cxcl9_max=20
 stitcher.ifng_max=20
 

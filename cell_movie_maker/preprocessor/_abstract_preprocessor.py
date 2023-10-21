@@ -1,5 +1,6 @@
 from ..simulation import Simulation
 from ..simulation_timepoint import SimulationTimepoint
+from ._abstract_analyser import AbstractAnalyser
 import os
 import pathlib
 import numpy as np
@@ -33,11 +34,14 @@ class AbstractPreprocessor:
 class Preprocessor(AbstractPreprocessor):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-    def process(self, start=0, stop=None, step=1):
         self.analysers = [
             TumourCount(),
             TCellCount(),
             BloodVesselCount(),
         ]
+
+    def process(self, start=0, stop=None, step=1):
         super().process(start, stop, step)
+
+    def add_analyser(self, analyser:AbstractAnalyser):
+        self.analysers.append(analyser)

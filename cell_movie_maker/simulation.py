@@ -1,5 +1,5 @@
 
-from .simulation_timepoint import SimulationTimepoint
+from .simulation_timepoint import SimulationTimepoint, MacrophageSimulationTimepoint
 import os
 import re
 import multiprocessing
@@ -12,8 +12,8 @@ class Simulation:
         self.results_folder = pathlib.Path(results_folder)
         assert self.results_folder.is_dir(), f'{self.results_folder} does not exist, or is a file.'
 
-        self.id = os.path.basename(os.path.dirname(results_folder))
-        self.name = os.path.basename(os.path.dirname(os.path.dirname(results_folder)))
+        self.id = os.path.basename(os.path.dirname(self.results_folder))
+        self.name = os.path.basename(os.path.dirname(os.path.dirname(self.results_folder)))
 
         self.sampling_timestep_multiple = sampling_timestep_multiple
         self.timesteps_per_hour = timesteps_per_hour
@@ -47,3 +47,10 @@ class Simulation:
     def for_final_timepoint(self, func):
         func((len(self.results_timesteps)-1, self.results_timesteps[-1]))
 
+
+class MacrophageSimulation(Simulation):
+    def read_timepoint(self, timestep:int):
+        if timestep > max(self.results_timesteps):
+            return MacrophageSimulationTimepoint(self.id, self.name, self.results_folder, max(self.results_timesteps))
+        if timestep not in self.results_timesteps: return None
+        return MacrophageSimulationTimepoint(self.id, self.name, self.results_folder, timestep)

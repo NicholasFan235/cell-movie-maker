@@ -11,7 +11,9 @@ assert os.path.exists(frames_folder),\
 outfile = os.path.join(
     os.path.dirname(frames_folder), f'{os.path.basename(frames_folder)}.mp4')
 files = os.path.join(frames_folder, 'frame_%d.png')
+
 fps = 30
+if len(sys.argv) > 2: fps = int(sys.argv[2])
 
 
 cmd = ["ffmpeg",

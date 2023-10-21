@@ -7,10 +7,7 @@ import matplotlib.pylab as plt
 import os
 import shutil
 import numpy as np
-
-import sys
-sys.path.append('/home/linc4121/Code/projects/MuSpAn')
-import MuSpAn as ms
+import muspan as ms
 
 
 class AbstractMuspanVisualiser(AbstractSimulationVisualiser):
@@ -20,6 +17,8 @@ class AbstractMuspanVisualiser(AbstractSimulationVisualiser):
     def visualise_frame(self, info):
         _, timepoint = info
         tp = self.sim.read_timepoint(timepoint)
+        tp.data['tmp'] = tp.data.cell_type
+        tp.data.loc[(tp.data.cell_type=='Tumour') & (tp.data.damage > 1), 'tmp'] = 'Dead Tumour'
         pc = ms.pointcloud.generatePointCloud('Test',tp.data[['x', 'y']].to_numpy())
         pc.addLabels('Celltype', 'categorical', tp.data.cell_type.to_numpy())
         pc.addLabels('potency', 'continuous', tp.data.potency.to_numpy())
@@ -43,7 +42,7 @@ class MuspanPCFVisualiser(AbstractMuspanVisualiser):
 
         fig, axs = plt.subplot_mosaic("AAB;AAC;AAD", figsize=(16,12))
         fig.tight_layout()
-        self.tp.plot(axs['A'], tp, frame_num, timepoint)
+        self.tp.plot(fig, axs['A'], tp, frame_num, timepoint)
         self.mp.plot_tcell_tcell_pcf(fig, axs['B'], pc)
         self.mp.plot_tcell_tumour_pcf(fig, axs['C'], pc)
         self.mp.plot_tumour_tumour_pcf(fig, axs['D'], pc)
