@@ -2,6 +2,9 @@ import sys
 import os
 import cell_movie_maker as cmm
 
+import warnings
+warnings.filterwarnings("ignore")
+
 assert len(sys.argv)>=2, f"Missing simulation folder. Usage: {sys.argv[0]} <simulaton-directory>."
 
 
@@ -17,9 +20,29 @@ if len(sys.argv)>2: tumour_necrotic_concentration = float(sys.argv[2])
 
 simulation = cmm.Simulation(results_folder)
 stitcher = cmm.svg.TCellSVGStitcher(simulation)
-stitcher.ccl5_max=50
-stitcher.cxcl9_max=20
-stitcher.ifng_max=20
+stitcher.ccl5_max=20
+stitcher.cxcl9_max=1
+stitcher.ifng_max=1
 
-stitcher.run()
+#stitcher.run()
+
+stitcher2 = cmm.svg.TCellSVGStitcherCXCL9IFNg(simulation)
+stitcher2.ccl5_max=20
+stitcher2.cxcl9_max=1
+stitcher2.ifng_max=1
+
+#stitcher2.run()
+
+stitcher3 = cmm.svg.TCellSVGStitcherExhaustion(simulation)
+stitcher3.ccl5_max=20
+stitcher3.cxcl9_max=1
+stitcher3.ifng_max=1
+
+stitcher3.run()
+
+stitcher4 = cmm.svg.SVGStitcherPCF(simulation)
+#stitcher4.run(maxproc=4)
+
+stitcher5 = cmm.svg.SVGStitcherGraphStats(simulation)
+#stitcher5.run(maxproc=8)
 

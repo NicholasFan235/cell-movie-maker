@@ -64,7 +64,7 @@ class TimepointPlotterV2:
         data = simulation_timepoint.macrophages_data
         for _, cell in data.iterrows():
             artist = mpl.patches.Circle((cell.x, cell.y), cell.radius,
-                ec='none', fc='lightgreen', alpha=0.5)
+                ec='none', fc='lightblue', alpha=0.5)
             ax.add_artist(artist)
         #ax.scatter(
         #    data.x, data.y,

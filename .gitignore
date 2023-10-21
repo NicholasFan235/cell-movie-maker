@@ -4,6 +4,7 @@
 venv
 
 /visualisations
+/macrophage-visualisations
 test.ipynb
 test-muspan.ipynb
 

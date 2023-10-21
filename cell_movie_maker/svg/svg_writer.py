@@ -82,7 +82,7 @@ class SVGWriter:
         return os + '</g>\n'
 
     def plot_macrophages(self, simulation_timepoint):
-        os = '<g stroke-width="0" fill="lightgreen" opacity=".5">'
+        os = '<g stroke-width="0" fill="lightblue" opacity=".5">'
         for _, c in simulation_timepoint.macrophages_data.iterrows():
             os += f'<circle cx="{c.x:.4f}" cy="{c.y:.4f}" r="{c.radius:.3f}"/>'
         return os + '</g>\n'
@@ -271,4 +271,43 @@ class CCL5SVGWriter(SVGWriter):
         os = f'<svg width="{self.width}" height="{self.height}">'
         os += self.plot_background(simulation_timepoint)
         os += self.plot_ccl5(simulation_timepoint)
+        return os + '</svg>\n'
+
+
+
+class MacrophageSVGWriter(SVGWriter):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.name = "macrophage-svg"
+        self.background = None
+
+    def plot_stroma(self, simulation_timepoint):
+        os = '<g stroke-width="0" fill="lightblue" opacity=".5">'
+        for _, c in simulation_timepoint.stroma_data.iterrows():
+            os += f'<circle cx="{c.x:.4f}" cy="{c.y:.4f}" r="{c.radius:.3f}"/>'
+        return os + '</g>\n'
+
+    def plot_macrophages(self, simulation_timepoint):
+        norm = mpl.colors.Normalize(vmin=0.0, vmax=1)
+        cmap = truncate_colormap('summer_r', 0.0, 1.0)
+        os = '<g stroke-width="0" stroke="black">'
+        for _,c in simulation_timepoint.macrophages_data.iterrows():
+            colour = cmap(norm(c.phenotype))
+            f=f'rgb({int(255*colour[0])},{int(255*colour[1])},{int(255*colour[2])})'
+            os += f'<circle cx="{c.x:.4f}" cy="{c.y:.4f}" r="{c.radius:.3f}" fill="{f}"/>'
+        return os + '</g>\n'
+
+    def plot_tumour(self, simulation_timepoint):
+        os = '<g stroke-width="0" stroke="lightpink" fill="lightpink">'
+        for _, c in simulation_timepoint.tumour_data.iterrows():
+            os += f'<circle cx="{c.x:.4f}" cy="{c.y:.4f}" r="{c.radius:.3f}"/>'
+        return os + '</g>\n'
+    
+    def to_svg(self, simulation_timepoint):
+        os = f'<svg width="{self.width}" height="{self.height}">\n'
+        os += self.plot_background(simulation_timepoint)
+        os += self.plot_stroma(simulation_timepoint)
+        os += self.plot_macrophages(simulation_timepoint)
+        os += self.plot_blood_vessels(simulation_timepoint)
+        os += self.plot_tumour(simulation_timepoint)
         return os + '</svg>\n'

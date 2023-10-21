@@ -22,7 +22,9 @@ function .log () {
 
 VIS_FOLDER=$1
 
-vis_types="tcell-svg tumour-svg hypoxia-svg pressure-svg oxygen-svg ccl5-svg density-svg"
+vis_types="tcell-svg tumour-svg hypoxia-svg pressure-svg oxygen-svg ccl5-svg density-svg macrophage-svg"
+fps=30
+if [ -z $2 ]; then fps=$2; fi
 
 cd $VIS_FOLDER
 for vis_type in $vis_types; do
@@ -54,8 +56,8 @@ for vis_type in $vis_types; do
     cd ..
 
     .log 5 "png to mp4 $VIS_FOLDER $vis_type"
-    ffmpeg -y -framerate 30 -i $vis_type-png/frame_%d.png \
-        -start_number 0 -c:v libx264 -r 30 -pix_fmt yuv420p \
+    ffmpeg -y -framerate $fps -i $vis_type-png/frame_%d.png \
+        -start_number 0 -c:v libx264 -r $fps -pix_fmt yuv420p \
         -loglevel $FFMPEG_LOG_LEVEL \
         $vis_type.mp4
     

@@ -14,7 +14,10 @@ class SVGVisualiser(AbstractSimulationVisualiser):
 
         for w in self.writers:
             svg = w.to_svg(simulation_timepoint)
-            with open(os.path.join(self.output_folder, w.name, f'frame_{frame_num}.svg'), 'w') as f:
+            p = pathlib.Path(self.output_folder, w.name)
+            if not p.exists():
+                p.mkdir(exist_ok=True)
+            with open(pathlib.Path(p, f'frame_{frame_num}.svg'), 'w') as f:
                 f.write(svg)
 
     def visualise(self, auto_execute=True, maxproc=64, start=0, stop=None, step=1, clean_dir=True,
@@ -35,10 +38,11 @@ class SVGVisualiser(AbstractSimulationVisualiser):
             DensitySVGWriter(width=width, height=height),
         ]
 
-        for w in self.writers:
-            if os.path.exists(os.path.join(self.output_folder, w.name)) and clean_dir:
-                shutil.rmtree(os.path.join(self.output_folder, w.name))
-            pathlib.Path(os.path.join(self.output_folder, w.name)).mkdir(exist_ok=True,parents=True)
+        if auto_execute:
+            for w in self.writers:
+                if os.path.exists(os.path.join(self.output_folder, w.name)) and clean_dir:
+                    shutil.rmtree(os.path.join(self.output_folder, w.name))
+                pathlib.Path(os.path.join(self.output_folder, w.name)).mkdir(exist_ok=True,parents=True)
         
         self.start = start
         self.stop = stop

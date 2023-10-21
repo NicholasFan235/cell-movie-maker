@@ -1,7 +1,7 @@
-from .simulation import Simulation
-from .simulation_timepoint import SimulationTimepoint
+from .simulation import Simulation, MacrophageSimulation
+from .simulation_timepoint import SimulationTimepoint, MacrophageSimulationTimepoint
 from .timepoint_plotter import TimepointPlotter, HistogramPlotter, TumourTimepointPlotter
-from .muspan_plotter import MuspanPCFPlotter
+from .muspan_plotter import MuspanPCFPlotter, MuspanMacrophagePCFPlotter, MuspanWeightedPCFPlotter
 from .simulation_visualiser import SimulationVisualiser, TumourSimulationVisualiser, HistogramVisualiser, ChemokineVisualiser, PressureVisualiser
 from .muspan_visualisers import MuspanPCFVisualiser, MuspanWeightedPCFVisualiser
 from .grid_visualiser import GridVisualiser
@@ -11,6 +11,8 @@ from .simulation_visualiser_tcellabm_chemokines import TCellABMChemokineVisualis
 from .simulation_visualiser_tcelalbm_oxygen import TCellABMOxygenVisualiser
 from .simulation_visualiser_tcelalbm_pressure import TCellABMPressureVisualiser, TCellABMPressureVisualiser2
 from .simulation_visualiser_tcellabm_tumour import TCellABMTumourVisualiser, TCellABMTumourVisualiserV2
+
+from . import multisim_stitchers
 
 from .strip_distribution_plotter import StripPressureDistributionPlotter
 from . import svg
