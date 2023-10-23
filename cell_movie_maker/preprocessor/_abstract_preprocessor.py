@@ -24,7 +24,7 @@ class AbstractPreprocessor:
             tp = self.sim.read_timepoint(t)
             row = [0 for _ in range(len(self.analysers))]
             for i, analyser in enumerate(self.analysers):
-                row[i] = analyser.analyse(tp)
+                row[i] = analyser.analyse(tp, self.sim)
             data.loc[t] = row
         data.to_csv(self.output_file)
 

@@ -1,35 +1,44 @@
 from ._abstract_analyser import AbstractAnalyser
 from ..simulation_timepoint import SimulationTimepoint
+from ..simulation import Simulation
 
 
 class TumourCount(AbstractAnalyser):
     def __init__(self, name='n_tumour', dtype=int):
         super().__init__(name, dtype)
 
-    def analyse(self, tp:SimulationTimepoint):
+    def analyse(self, tp:SimulationTimepoint, sim=None):
         return int(tp.tumour_data.shape[0])
     
 class HypoxicCount(AbstractAnalyser):
     def __init__(self, name='n_tumour_hypoxic', dtype=int, hypoxia_threshold=0.04):
         super().__init__(name, dtype)
         self.hypoxia_threshold=hypoxia_threshold
+        self.use_params_if_exists = True
     
-    def analyse(self, tp:SimulationTimepoint):
+    def analyse(self, tp:SimulationTimepoint, sim=None):
+        if self.use_params_if_exists and sim is not None and sim.parameters is not None:
+            if 'TumourHypoxicConcentration' in sim.parameters:
+                return int(len(tp.tumour_data[tp.tumour_data.oxygen < sim.parameters['TumourHypoxicConcentration']]))
         return int(len(tp.tumour_data[tp.tumour_data.oxygen < self.hypoxia_threshold]))
 
 class NecroticCount(AbstractAnalyser):
     def __init__(self, name='n_tumour_necrotic', dtype=int, necrosis_threshold=0.01):
         super().__init__(name, dtype)
         self.necrosis_threshold=necrosis_threshold
+        self.use_params_if_exists = True
     
-    def analyse(self, tp:SimulationTimepoint):
+    def analyse(self, tp:SimulationTimepoint, sim=None):
+        if self.use_params_if_exists and sim is not None and sim.parameters is not None:
+            if 'TumourNecroticConcentration' in sim.parameters:
+                return int(len(tp.tumour_data[tp.tumour_data.oxygen < sim.parameters['TumourNecroticConcentration']]))
         return int(len(tp.tumour_data[tp.tumour_data.oxygen < self.necrosis_threshold]))
 
 class TCellCount(AbstractAnalyser):
     def __init__(self, name='n_t-cells', dtype=int):
         super().__init__(name, dtype)
     
-    def analyse(self, tp:SimulationTimepoint):
+    def analyse(self, tp:SimulationTimepoint, sim=None):
         return int(tp.cytotoxic_data.shape[0])
     
 class TCellPotencyCount(AbstractAnalyser):
@@ -37,7 +46,7 @@ class TCellPotencyCount(AbstractAnalyser):
         super().__init__(name + str(potency_percent), dtype)
         self.threshold = potency_percent
     
-    def analyse(self, tp:SimulationTimepoint):
+    def analyse(self, tp:SimulationTimepoint, sim=None):
         return int(len(tp.cytotoxic_data[tp.cytotoxic_data.potency*100 < self.threshold]))
 
 class TumourDamageCount(AbstractAnalyser):
@@ -45,13 +54,13 @@ class TumourDamageCount(AbstractAnalyser):
         super().__init__(name + str(damage_percent), dtype)
         self.threshold = damage_percent
     
-    def analyse(self, tp:SimulationTimepoint):
+    def analyse(self, tp:SimulationTimepoint, sim=None):
         return int(len(tp.tumour_data[tp.tumour_data.damage*100 > self.threshold]))
     
 class BloodVesselCount(AbstractAnalyser):
     def __init__(self, name='vessels', dtype=int):
         super().__init__(name, dtype)
     
-    def analyse(self, tp:SimulationTimepoint):
+    def analyse(self, tp:SimulationTimepoint, sim=None):
         return int(tp.cytotoxic_data.shape[0])
 
