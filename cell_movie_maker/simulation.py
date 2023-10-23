@@ -5,11 +5,12 @@ import re
 import multiprocessing
 import tqdm
 import pathlib
+import json
 
 
 class Simulation:
     def __init__(self, results_folder:str, sampling_timestep_multiple:int=60, timesteps_per_hour:int=120):
-        self.results_folder = pathlib.Path(results_folder)
+        self.results_folder = pathlib.Path(results_folder) # Path to results_from_time_0
         assert self.results_folder.is_dir(), f'{self.results_folder} does not exist, or is a file.'
 
         self.id = os.path.basename(os.path.dirname(self.results_folder))
@@ -19,6 +20,7 @@ class Simulation:
         self.timesteps_per_hour = timesteps_per_hour
         
         self.get_filenames()
+        self.read_parameters()
         
     def get_filenames(self):
         self.all_files = os.listdir(self.results_folder)
@@ -26,6 +28,13 @@ class Simulation:
         p = re.compile('^results_(\d+)\.vtu$')
         self.results_timesteps = sorted(list(
             map(lambda x: int(p.match(x)[1]), filter(p.match, self.all_files))))
+    
+    def read_parameters(self):
+        self.parameters = None
+        params_path = pathlib.Path(self.results_folder.parent, 'params.json')
+        if params_path.exists() and params_path.is_file():
+            with open(params_path, 'r') as f:
+                self.parameters = json.load(f)
     
     def read_timepoint(self, timestep:int):
         if timestep > max(self.results_timesteps):
@@ -54,3 +63,4 @@ class MacrophageSimulation(Simulation):
             return MacrophageSimulationTimepoint(self.id, self.name, self.results_folder, max(self.results_timesteps))
         if timestep not in self.results_timesteps: return None
         return MacrophageSimulationTimepoint(self.id, self.name, self.results_folder, timestep)
+    
