@@ -137,6 +137,16 @@ class HypoxiaSVGWriter(SVGWriter):
     def __init__(self, tumour_necrotic_concentration=0, tumour_hypoxic_concentration=0,
                  stroma_necrotic_concentration=0, stroma_hypoxic_concentration=0, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.use_params_if_exists = True
+        if self.use_params_if_exists and sim is not None and sim.parameters is not None:
+            if 'TumourHypoxicConcentration' in sim.parameters:
+                tumour_hypoxic_concentration = sim.parameters['TumourHypoxicConcentration']
+            if 'TumourNecroticConcentration' in sim.parameters:
+                tumour_necrotic_concentration = sim.parameters['TumourNecroticConcentration']
+            if 'StromaHypoxicConcentration' in sim.parameters:
+                stroma_hypoxic_concentration = sim.parameters['StromaHypoxicConcentration']
+            if 'StromaNecroticConcentration' in sim.parameters:
+                stroma_necrotic_concentration = sim.parameters['StromaNecroticConcentration']
         self.tumour_necrotic_concentration = tumour_necrotic_concentration
         self.tumour_hypoxic_concentratior = max(tumour_hypoxic_concentration, tumour_necrotic_concentration)
         self.stroma_necrotic_concentration = stroma_necrotic_concentration
