@@ -186,7 +186,7 @@ class PressureSVGWriter(SVGWriter):
         
     def plot_cells(self, simulation_timepoint, sim=None):
         norm = mpl.colors.Normalize(vmin=0, vmax=self.p_max)
-        cmap = mpl.colormaps['cividis']
+        cmap = mpl.colormaps['magma']
         os = '<g stroke-width="0" opacity=".8">'
         for _, c in simulation_timepoint.data.iterrows():
             colour = cmap(norm(c.pressure))

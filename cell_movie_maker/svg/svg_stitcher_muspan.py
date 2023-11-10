@@ -38,5 +38,5 @@ class SVGStitcherPCF(SVGStitcherMuspan):
         self.pcf_plotter.plot_tumour_tumour_pcf(fig, axs['D'], pc)
         self.pcf_plotter.plot_tcell_tcell_pcf(fig, axs['E'], pc)
         self.pcf_plotter.plot_tcell_tumour_pcf(fig, axs['C'], pc)
-        self.post(fig, axs, n)
+        return self.post(fig, axs, n)
         

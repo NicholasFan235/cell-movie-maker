@@ -22,5 +22,5 @@ class SVGStitcherRipser(SVGStitcher):
         self.rips_plotter.plot_damaged_tumour_rips(fig, axs['B'], simulation_timepoint)
         self.rips_plotter.plot_healthy_tumour_rips(fig, axs['C'], simulation_timepoint)
         
-        self.post(fig, axs, n)
+        return self.post(fig, axs, n)
 

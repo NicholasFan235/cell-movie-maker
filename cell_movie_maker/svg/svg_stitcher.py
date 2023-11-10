@@ -22,6 +22,7 @@ class SVGStitcher:
         self.ccl5_max=None
         self.ifng_max=None
         self.cxcl9_max=None
+        self.automated_post=True
 
     def process_frame(self, n):
         raise NotImplementedError
@@ -36,6 +37,7 @@ class SVGStitcher:
     def get_frame(self, vis_type, n):
         folder = pathlib.Path(self.vis_folder, vis_type)
         if not folder.exists(): raise FileNotFoundError
+        n = min(n, self.n_frames(vis_type)-1)
         return plt.imread(pathlib.Path(folder, f'frame_{n}.png'))
 
     def run(self, start=0, stop=None, step=1, maxproc=64):
@@ -60,9 +62,12 @@ class SVGStitcher:
         return fig, axs, simulation_timepoint
     
     def post(self, fig, axs, n):
-        fig.tight_layout()
-        fig.savefig(os.path.join(self.output_folder, f'frame_{n}.png'))
-        plt.close(fig)
+        if self.automated_post:
+            fig.tight_layout()
+            fig.savefig(os.path.join(self.output_folder, f'frame_{n}.png'))
+            plt.close(fig)
+        else:
+            return fig, axs
     
     def plot_oxygen(self, fig, ax, simulation_timepoint):
         ax.set_title('Oxygen')
@@ -140,8 +145,10 @@ class SVGStitcher:
     
     def plot_tcell_count(self, fig, ax, simulation_timepoint:SimulationTimepoint):
         ax.set_title('N T-Cells')
+        cmap = plt.get_cmap('Oranges')
         if not hasattr(self, 'info'): info = pd.read_csv(pathlib.Path(self.vis_folder, 'info.csv')).set_index('timestep')
         ax.plot(info.index/60/24, info['n_t-cells'], '-k')
+        ax.fill_between(info.index/60/24, info['n_t-cells'], color=cmap(0.99))
         ax.plot(simulation_timepoint.timestep/60/24, info.loc[simulation_timepoint.timestep, 'n_t-cells'], 'ro')
         ax.set_yticks([0, info.loc[simulation_timepoint.timestep, 'n_t-cells'], info['n_t-cells'].max()])
     
@@ -185,16 +192,16 @@ class TCellSVGStitcher(SVGStitcher):
     def process_frame(self, n):
         fig, axs, simulation_timepoint = self.prepare("AABC;AADE", n)
 
-        axs['A'].imshow(self.get_frame('tcell-svg-png', n), oriin='lower')
+        axs['A'].imshow(self.get_frame('tcell-svg-png', n), origin='lower')
         axs['A'].set_xticks([])
         axs['A'].set_yticks([])
         axs['A'].set_title(f'{self.sim.name}/{self.sim.id} #{n}', fontsize=30)
 
         self.plot_oxygen(fig, axs['B'], simulation_timepoint)
         self.plot_ccl5(fig, axs['C'], simulation_timepoint)
-        self.plot_tumour_count(fig, axs['D'], simulation_timepoint)
-        self.plot_tcell_count(fig, axs['E'], simulation_timepoint)
-        self.post(fig, axs, n)
+        self.plot_tumour_damage_count(fig, axs['D'], simulation_timepoint)
+        self.plot_tcell_exhaustion_count(fig, axs['E'], simulation_timepoint)
+        return self.post(fig, axs, n)
 
 
 class TCellSVGStitcherCXCL9IFNg(SVGStitcher):
@@ -217,9 +224,9 @@ class TCellSVGStitcherCXCL9IFNg(SVGStitcher):
         self.plot_ccl5(fig, axs['C'], simulation_timepoint)
         self.plot_ifng(fig, axs['E'], simulation_timepoint)
         self.plot_cxcl9(fig, axs['F'], simulation_timepoint)
-        self.plot_tumour_count(fig, axs['D'], simulation_timepoint)
-        self.plot_tcell_count(fig, axs['G'], simulation_timepoint)
-        self.post(fig, axs, n)
+        self.plot_tumour_damage_count(fig, axs['D'], simulation_timepoint)
+        self.plot_tcell_exhaustion_count(fig, axs['G'], simulation_timepoint)
+        return self.post(fig, axs, n)
 
 class TumourSVGStitcher(SVGStitcher):
     def __init__(self, simulation, visualisation_name='tumour-stitched', p_max=10, *args, **kwargs):
@@ -238,10 +245,10 @@ class TumourSVGStitcher(SVGStitcher):
         axs['C'].imshow(self.get_frame('pressure-svg-png', n))
         axs['C'].set_xticks([])
         axs['C'].set_yticks([])
-        plt.colorbar(mpl.cm.ScalarMappable(cmap='cividis', norm=mpl.colors.Normalize(vmin=0, vmax=self.p_max)), ax=axs['C'])
+        plt.colorbar(mpl.cm.ScalarMappable(cmap='magma', norm=mpl.colors.Normalize(vmin=0, vmax=self.p_max)), ax=axs['C'])
         self.plot_ccl5(fig, axs['D'], simulation_timepoint)
         self.plot_tumour_count(fig, axs['E'], simulation_timepoint)
-        self.post(fig, axs, n)
+        return self.post(fig, axs, n)
 
 class TCellSVGStitcherExhaustion(SVGStitcher):
     def __init__(self, simulation, visualisation_name='tcell-exhaustion-stitched', *args, **kwargs):
@@ -265,7 +272,7 @@ class TCellSVGStitcherExhaustion(SVGStitcher):
         self.plot_tcell_exhaustion_count(fig, axs['D'], simulation_timepoint)
         #self.plot_tumour_damage_histogram(fig, axs['F'], simulation_timepoint)
         #self.plot_tcell_exhaustion_histogram(fig, axs['G'], simulation_timepoint)
-        self.post(fig, axs, n)
+        return self.post(fig, axs, n)
 
 
 
