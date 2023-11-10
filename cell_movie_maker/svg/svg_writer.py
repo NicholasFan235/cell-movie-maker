@@ -23,7 +23,7 @@ class SVGWriter:
         self.background = 'ecm'
         self.background_max = None
     
-    def plot_ecm(self, simulation_timepoint):
+    def plot_ecm(self, simulation_timepoint, sim=None):
         os = '<g stroke-width="0.1">'
         density = simulation_timepoint.ecm_density_data
         for i in range(density.shape[0]):
@@ -35,7 +35,7 @@ class SVGWriter:
                 os += f'<rect x="{j-.5}" y="{i-.5}" fill="{f}" width="1" height="1" stroke="{f}"/>'
         return os + '</g>\n'
 
-    def plot_oxygen(self, simulation_timepoint):
+    def plot_oxygen(self, simulation_timepoint, sim=None):
         norm = mpl.colors.Normalize(vmin=0, vmax=1)
         cmap = mpl.colormaps['cividis']
         os = '<g stroke-width="0.1">'
@@ -47,7 +47,7 @@ class SVGWriter:
                 os += f'<rect x="{j-.5}" y="{i-.5}" fill="{f}" width="1" height="1" stroke="{f}"/>'
         return os + '</g>\n'
     
-    def plot_ccl5(self, simulation_timepoint):
+    def plot_ccl5(self, simulation_timepoint, sim=None):
         norm = mpl.colors.Normalize(vmin=0, vmax=50)
         cmap = mpl.colormaps['magma']
         os = '<g stroke-width="0.1">'
@@ -59,13 +59,13 @@ class SVGWriter:
                 os += f'<rect x="{j-.5}" y="{i-.5}" fill="{f}" width="1" height="1" stroke="{f}"/>'
         return os + '</g>\n'
     
-    def plot_stroma(self, simulation_timepoint):
+    def plot_stroma(self, simulation_timepoint, sim=None):
         os = '<g fill="lightblue" opacity=".5" stroke-width="0">'
         for _,c in simulation_timepoint.stroma_data.iterrows():
             os += f'<circle cx="{c.x:.4f}" cy="{c.y:.4f}" r="{c.radius:.3f}"/>'
         return os + "</g>\n"
 
-    def plot_tumour(self, simulation_timepoint):
+    def plot_tumour(self, simulation_timepoint, sim=None):
         norm = mpl.colors.Normalize(vmin=0.1, vmax=0.9)
         cmap = truncate_colormap('Purples_r', 0.2, 0.9)
         os = '<g stroke-width=".1" stroke="black">'
@@ -75,38 +75,38 @@ class SVGWriter:
             os += f'<circle cx="{c.x:.4f}" cy="{c.y:.4f}" r="{c.radius:.3f}" fill="{f}"/>'
         return os + '</g>\n'
 
-    def plot_cytotoxic(self, simulation_timepoint):
+    def plot_cytotoxic(self, simulation_timepoint, sim=None):
         os = '<g stroke-width=".1" stroke="darkorange" fill="darkorange">'
         for _, c in simulation_timepoint.cytotoxic_data.iterrows():
             os += f'<circle cx="{c.x:.4f}" cy="{c.y:.4f}" r="{c.radius:.3f}" opacity="{max(0.1, c.potency)}"/>'
         return os + '</g>\n'
 
-    def plot_macrophages(self, simulation_timepoint):
+    def plot_macrophages(self, simulation_timepoint, sim=None):
         os = '<g stroke-width="0" fill="lightblue" opacity=".5">'
         for _, c in simulation_timepoint.macrophages_data.iterrows():
             os += f'<circle cx="{c.x:.4f}" cy="{c.y:.4f}" r="{c.radius:.3f}"/>'
         return os + '</g>\n'
         
-    def plot_blood_vessels(self, simulation_timepoint):
+    def plot_blood_vessels(self, simulation_timepoint, sim=None):
         os = '<g fill="red" stroke-width="0">'
         for _,c in simulation_timepoint.blood_vessel_data.iterrows():
             os += f'<circle cx="{c.x:.5f}" cy="{c.y:.5f}" r="{c.radius:.5f}"/>'
         return os + '</g>\n'
 
-    def plot_background(self, simulation_timepoint):
-        if self.background == 'ecm': return self.plot_ecm(simulation_timepoint)
-        elif self.background == 'oxygen': return self.plot_oxygen(simulation_timepoint)
-        elif self.background == 'ccl5': return self.plot_ccl5(simulation_timepoint)
+    def plot_background(self, simulation_timepoint, sim=None):
+        if self.background == 'ecm': return self.plot_ecm(simulation_timepoint, sim)
+        elif self.background == 'oxygen': return self.plot_oxygen(simulation_timepoint, sim)
+        elif self.background == 'ccl5': return self.plot_ccl5(simulation_timepoint, sim)
         return '<rect width="100%" height="100%" fill="white"/>\n'
 
-    def to_svg(self, simulation_timepoint):
+    def to_svg(self, simulation_timepoint, sim=None):
         os = f'<svg width="{self.width}" height="{self.height}">\n'
-        os += self.plot_background(simulation_timepoint)
-        os += self.plot_stroma(simulation_timepoint)
-        os += self.plot_macrophages(simulation_timepoint)
-        os += self.plot_blood_vessels(simulation_timepoint)
-        os += self.plot_tumour(simulation_timepoint)
-        os += self.plot_cytotoxic(simulation_timepoint)
+        os += self.plot_background(simulation_timepoint, sim)
+        os += self.plot_stroma(simulation_timepoint, sim)
+        os += self.plot_macrophages(simulation_timepoint, sim)
+        os += self.plot_blood_vessels(simulation_timepoint, sim)
+        os += self.plot_tumour(simulation_timepoint, sim)
+        os += self.plot_cytotoxic(simulation_timepoint, sim)
         return os + '</svg>\n'
 
 class TumourSVGWriter(SVGWriter):
@@ -115,19 +115,19 @@ class TumourSVGWriter(SVGWriter):
         self.name = "tumour-svg"
         self.background = 'ecm'
 
-    def plot_stroma(self, simulation_timepoint):
+    def plot_stroma(self, simulation_timepoint, sim=None):
         os = '<g stroke-width="0" fill="lightblue" opacity=".5">'
         for _, c in simulation_timepoint.stroma_data.iterrows():
             os += f'<circle cx="{c.x:.4f}" cy="{c.y:.4f}" r="{c.radius:.3f}"/>'
         return os + '</g>\n'
 
-    def plot_macrophages(self, simulation_timepoint):
+    def plot_macrophages(self, simulation_timepoint, sim=None):
         os = '<g stroke-width="0" fill="lightblue" opacity=".5">'
         for _, c in simulation_timepoint.macrophages_data.iterrows():
             os += f'<circle cx="{c.x:.4f}" cy="{c.y:.4f}" r="{c.radius:.3f}"/>'
         return os + '</g>\n'
 
-    def plot_tumour(self, simulation_timepoint):
+    def plot_tumour(self, simulation_timepoint, sim=None):
         os = '<g stroke-width=".1" stroke="black" fill="purple">'
         for _, c in simulation_timepoint.tumour_data.iterrows():
             os += f'<circle cx="{c.x:.4f}" cy="{c.y:.4f}" r="{c.radius:.3f}"/>'
@@ -138,46 +138,42 @@ class HypoxiaSVGWriter(SVGWriter):
                  stroma_necrotic_concentration=0, stroma_hypoxic_concentration=0, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.use_params_if_exists = True
-        if self.use_params_if_exists and sim is not None and sim.parameters is not None:
-            if 'TumourHypoxicConcentration' in sim.parameters:
-                tumour_hypoxic_concentration = sim.parameters['TumourHypoxicConcentration']
-            if 'TumourNecroticConcentration' in sim.parameters:
-                tumour_necrotic_concentration = sim.parameters['TumourNecroticConcentration']
-            if 'StromaHypoxicConcentration' in sim.parameters:
-                stroma_hypoxic_concentration = sim.parameters['StromaHypoxicConcentration']
-            if 'StromaNecroticConcentration' in sim.parameters:
-                stroma_necrotic_concentration = sim.parameters['StromaNecroticConcentration']
         self.tumour_necrotic_concentration = tumour_necrotic_concentration
         self.tumour_hypoxic_concentratior = max(tumour_hypoxic_concentration, tumour_necrotic_concentration)
         self.stroma_necrotic_concentration = stroma_necrotic_concentration
         self.stroma_hypoxic_concentration = max(stroma_hypoxic_concentration, stroma_necrotic_concentration)
         self.name = "hypoxia-svg"
         self.background = 'ecm'
+    
+    def params_or(self, sim, name, default):
+        if self.use_params_if_exists and sim is not None and sim.parameters is not None:
+            if name in sim.parameters: return sim.parameters[name]
+        return default
 
-    def plot_stroma(self, simulation_timepoint):
+    def plot_stroma(self, simulation_timepoint, sim=None):
         os = '<g stroke-width="0" fill="lightblue">'
         for _, c in simulation_timepoint.stroma_data.iterrows():
             o = 1
-            if c.oxygen < self.stroma_necrotic_concentration: o = .2
-            elif c.oxygen < self.stroma_hypoxic_concentration: o = .8
+            if c.oxygen < self.params_or(sim, 'StromaNecroticConcentration', self.stroma_necrotic_concentration): o = .2
+            elif c.oxygen < self.params_or(sim, 'StromaHypoxicConcentration', self.stroma_hypoxic_concentration): o = .8
             os += f'<circle cx="{c.x:.4f}" cy="{c.y:.4f}" r="{c.radius:.3f}" opacity="{o}"/>'
         return os + '</g>\n'
 
-    def plot_macrophages(self, simulation_timepoint):
+    def plot_macrophages(self, simulation_timepoint, sim=None):
         os = '<g stroke-width="0" fill="lightblue">'
         for _, c in simulation_timepoint.macrophages_data.iterrows():
             o = 1
-            if c.oxygen < self.stroma_necrotic_concentration: o = .2
-            elif c.oxygen < self.stroma_hypoxic_concentration: o = .8
+            if c.oxygen < self.params_or(sim, 'StromaNecroticConcentration', self.stroma_necrotic_concentration): o = .2
+            elif c.oxygen < self.params_or(sim, 'StromaHypoxicConcentration', self.stroma_hypoxic_concentration): o = .8
             os += f'<circle cx="{c.x:.4f}" cy="{c.y:.4f}" r="{c.radius:.3f}" opacity="{o}"/>'
         return os + '</g>\n'
 
-    def plot_tumour(self, simulation_timepoint):
+    def plot_tumour(self, simulation_timepoint, sim=None):
         os = '<g stroke-width=".1" stroke="black">'
         for _, c in simulation_timepoint.tumour_data.iterrows():
             f = "purple"
-            if c.oxygen < self.tumour_necrotic_concentration: f = "white"
-            elif c.oxygen < self.tumour_hypoxic_concentratior: f = "mediumpurple"
+            if c.oxygen < self.params_or(sim, 'TumourNecroticConcentration', self.tumour_necrotic_concentration): f = "white"
+            elif c.oxygen < self.params_or(sim, 'TumourHypoxicConcentration', self.tumour_hypoxic_concentratior): f = "mediumpurple"
             os += f'<circle cx="{c.x:.4f}" cy="{c.y:.4f}" r="{c.radius:.3f}" fill="{f}"/>'
         return os + '</g>\n'
 
@@ -188,7 +184,7 @@ class PressureSVGWriter(SVGWriter):
         self.name = "pressure-svg"
         self.background = 'ecm'
         
-    def plot_cells(self, simulation_timepoint):
+    def plot_cells(self, simulation_timepoint, sim=None):
         norm = mpl.colors.Normalize(vmin=0, vmax=self.p_max)
         cmap = mpl.colormaps['cividis']
         os = '<g stroke-width="0" opacity=".8">'
@@ -198,10 +194,10 @@ class PressureSVGWriter(SVGWriter):
             os += f'<circle cx="{c.x:.4f}" cy="{c.y:.4f}" r="{c.radius:.3f}" fill="{f}"/>'
         return os + '</g>\n'
 
-    def to_svg(self, simulation_timepoint):
+    def to_svg(self, simulation_timepoint, sim=None):
         os = f'<svg width="{self.width}" height="{self.height}">'
-        os += self.plot_background(simulation_timepoint)
-        os += self.plot_cells(simulation_timepoint)
+        os += self.plot_background(simulation_timepoint, sim)
+        os += self.plot_cells(simulation_timepoint, sim)
         return os + '</svg>\n'
 
 
@@ -211,7 +207,7 @@ class DensitySVGWriter(SVGWriter):
         self.name = "density-svg"
         self.background = 'ecm'
         
-    def plot_cells(self, simulation_timepoint):
+    def plot_cells(self, simulation_timepoint, sim=None):
         norm = mpl.colors.Normalize(vmin=0, vmax=1)
         cmap = mpl.colormaps['Wistia']
         os = '<g stroke-width="0" opacity=".8">'
@@ -221,7 +217,7 @@ class DensitySVGWriter(SVGWriter):
             os += f'<circle cx="{c.x:.4f}" cy="{c.y:.4f}" r="{c.radius:.3f}" fill="{f}"/>'
         return os + '</g>\n'
 
-    def to_svg(self, simulation_timepoint):
+    def to_svg(self, simulation_timepoint, sim=None):
         os = f'<svg width="{self.width}" height="{self.height}">'
         os += self.plot_background(simulation_timepoint)
         os += self.plot_cells(simulation_timepoint)
@@ -233,7 +229,7 @@ class OxygenSVGWriter(SVGWriter):
         self.name = "oxygen-svg"
         self.background = None
         
-    def plot_cells(self, simulation_timepoint):
+    def plot_cells(self, simulation_timepoint, sim=None):
         norm = mpl.colors.Normalize(vmin=0, vmax=1)
         cmap = mpl.colormaps['inferno']
         os = '<g stroke-width="0" opacity=".8">'
@@ -243,10 +239,10 @@ class OxygenSVGWriter(SVGWriter):
             os += f'<circle cx="{c.x:.4f}" cy="{c.y:.4f}" r="{c.radius:.3f}" fill="{f}"/>'
         return os + '</g>\n'
 
-    def to_svg(self, simulation_timepoint):
+    def to_svg(self, simulation_timepoint, sim=None):
         os = f'<svg width="{self.width}" height="{self.height}">'
-        os += self.plot_background(simulation_timepoint)
-        os += self.plot_cells(simulation_timepoint)
+        os += self.plot_background(simulation_timepoint, sim)
+        os += self.plot_cells(simulation_timepoint, sim)
         return os + '</svg>\n'
 
 class CCL5SVGWriter(SVGWriter):
@@ -256,7 +252,7 @@ class CCL5SVGWriter(SVGWriter):
         self.background = 'ecm'
         self.background_max = 192
         
-    def plot_ccl5(self, simulation_timepoint):
+    def plot_ccl5(self, simulation_timepoint, sim=None):
         norm = mpl.colors.Normalize(vmin=0, vmax=50)
         cmap = mpl.colormaps['magma']
         ccl5 = simulation_timepoint.ccl5_data
@@ -277,10 +273,10 @@ class CCL5SVGWriter(SVGWriter):
                 os += f'<circle cx="{j}" cy="{i}" fill="{f}" r="{r}" stroke="{f}"/>'
         return os + '</g></g>\n'
 
-    def to_svg(self, simulation_timepoint):
+    def to_svg(self, simulation_timepoint, sim=None):
         os = f'<svg width="{self.width}" height="{self.height}">'
-        os += self.plot_background(simulation_timepoint)
-        os += self.plot_ccl5(simulation_timepoint)
+        os += self.plot_background(simulation_timepoint, sim)
+        os += self.plot_ccl5(simulation_timepoint, sim)
         return os + '</svg>\n'
 
 
@@ -291,13 +287,13 @@ class MacrophageSVGWriter(SVGWriter):
         self.name = "macrophage-svg"
         self.background = None
 
-    def plot_stroma(self, simulation_timepoint):
+    def plot_stroma(self, simulation_timepoint, sim=None):
         os = '<g stroke-width="0" fill="lightblue" opacity=".5">'
         for _, c in simulation_timepoint.stroma_data.iterrows():
             os += f'<circle cx="{c.x:.4f}" cy="{c.y:.4f}" r="{c.radius:.3f}"/>'
         return os + '</g>\n'
 
-    def plot_macrophages(self, simulation_timepoint):
+    def plot_macrophages(self, simulation_timepoint, sim=None):
         norm = mpl.colors.Normalize(vmin=0.0, vmax=1)
         cmap = truncate_colormap('summer_r', 0.0, 1.0)
         os = '<g stroke-width="0" stroke="black">'
@@ -307,17 +303,17 @@ class MacrophageSVGWriter(SVGWriter):
             os += f'<circle cx="{c.x:.4f}" cy="{c.y:.4f}" r="{c.radius:.3f}" fill="{f}"/>'
         return os + '</g>\n'
 
-    def plot_tumour(self, simulation_timepoint):
+    def plot_tumour(self, simulation_timepoint, sim=None):
         os = '<g stroke-width="0" stroke="lightpink" fill="lightpink">'
         for _, c in simulation_timepoint.tumour_data.iterrows():
             os += f'<circle cx="{c.x:.4f}" cy="{c.y:.4f}" r="{c.radius:.3f}"/>'
         return os + '</g>\n'
     
-    def to_svg(self, simulation_timepoint):
+    def to_svg(self, simulation_timepoint, sim=None):
         os = f'<svg width="{self.width}" height="{self.height}">\n'
-        os += self.plot_background(simulation_timepoint)
-        os += self.plot_stroma(simulation_timepoint)
-        os += self.plot_macrophages(simulation_timepoint)
-        os += self.plot_blood_vessels(simulation_timepoint)
-        os += self.plot_tumour(simulation_timepoint)
+        os += self.plot_background(simulation_timepoint, sim)
+        os += self.plot_stroma(simulation_timepoint, sim)
+        os += self.plot_macrophages(simulation_timepoint, sim)
+        os += self.plot_blood_vessels(simulation_timepoint, sim)
+        os += self.plot_tumour(simulation_timepoint, sim)
         return os + '</svg>\n'
