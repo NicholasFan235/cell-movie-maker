@@ -89,4 +89,4 @@ class MacrophageSVGStitcher(SVGStitcher):
 
         #self.plot_macrophage_tumour_pcf(fig, axs['F'], simulation_timepoint)
         #self.plot_macrophage_macrophage_pcf(fig, axs['G'], simulation_timepoint)
-        self.post(fig, axs, n)
+        return self.post(fig, axs, n)

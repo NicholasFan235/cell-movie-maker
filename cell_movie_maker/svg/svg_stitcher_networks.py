@@ -22,5 +22,5 @@ class SVGStitcherGraphStats(SVGStitcher):
         self.graph_stats_plotter.plot_associations(fig, axs['B'], simulation_timepoint)
         self.graph_stats_plotter.plot_morans_index_coefficients(fig, axs['C'], simulation_timepoint)
         
-        self.post(fig, axs, n)
+        return self.post(fig, axs, n)
 
