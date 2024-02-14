@@ -18,6 +18,7 @@ class AbstractMultisimStitcher:
         self.output_folder = pathlib.Path(self.vis_folder, visualisation_name)
         self.probe_vis_type = 'tcell-svg-png'
         self.n_rows = n_rows
+        self.postprocess = None
 
         self.resize(6)
     
@@ -45,6 +46,7 @@ class AbstractMultisimStitcher:
     def get_frame(self, sim, vis_type, n):
         folder = pathlib.Path(self.output_parent_folder, sim.name, sim.id, vis_type)
         if not folder.exists(): raise FileNotFoundError
+        n = min(n, self.n_frames(sim, vis_type)-1)
         return plt.imread(pathlib.Path(folder, f'frame_{n}.png'))
 
     def run(self, start=0, stop=None, step=1, maxproc=64):
@@ -71,6 +73,7 @@ class AbstractMultisimStitcher:
     
     def post(self, fig, axs, n):
         #fig.tight_layout()
+        if self.postprocess is not None: self.postprocess(fig, axs, n)
         fig.savefig(os.path.join(self.output_folder, f'frame_{n}.png'))
         plt.close(fig)
 
