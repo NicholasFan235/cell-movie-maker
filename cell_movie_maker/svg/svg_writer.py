@@ -178,15 +178,17 @@ class HypoxiaSVGWriter(SVGWriter):
         return os + '</g>\n'
 
 class PressureSVGWriter(SVGWriter):
-    def __init__(self, p_max=10, **kwargs):
+    def __init__(self, p_max=10, p_min=0, p_cmap='hot', **kwargs):
         super().__init__(**kwargs)
         self.p_max = p_max
+        self.p_min = p_min
+        self.p_cmap = p_cmap
         self.name = "pressure-svg"
         self.background = 'ecm'
         
     def plot_cells(self, simulation_timepoint, sim=None):
-        norm = mpl.colors.Normalize(vmin=0, vmax=self.p_max)
-        cmap = mpl.colormaps['magma']
+        norm = mpl.colors.Normalize(vmin=self.p_min, vmax=self.p_max)
+        cmap = mpl.colormaps[self.p_cmap]
         os = '<g stroke-width="0" opacity=".8">'
         for _, c in simulation_timepoint.data.iterrows():
             colour = cmap(norm(c.pressure))

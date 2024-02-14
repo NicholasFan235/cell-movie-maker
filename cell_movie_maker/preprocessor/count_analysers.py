@@ -35,14 +35,14 @@ class NecroticCount(AbstractAnalyser):
         return int(len(tp.tumour_data[tp.tumour_data.oxygen < self.necrosis_threshold]))
 
 class TCellCount(AbstractAnalyser):
-    def __init__(self, name='n_t-cells', dtype=int):
+    def __init__(self, name='n_tcells', dtype=int):
         super().__init__(name, dtype)
     
     def analyse(self, tp:SimulationTimepoint, sim=None):
         return int(tp.cytotoxic_data.shape[0])
     
 class TCellPotencyCount(AbstractAnalyser):
-    def __init__(self, name='n_t-cells_potency', dtype=int, potency_percent=90):
+    def __init__(self, name='n_tcells_potency_lt', dtype=int, potency_percent=90):
         super().__init__(name + str(potency_percent), dtype)
         self.threshold = potency_percent
     
@@ -50,7 +50,7 @@ class TCellPotencyCount(AbstractAnalyser):
         return int(len(tp.cytotoxic_data[tp.cytotoxic_data.potency*100 < self.threshold]))
 
 class TumourDamageCount(AbstractAnalyser):
-    def __init__(self, name='n_tumour_damage', dtype=int, damage_percent=90):
+    def __init__(self, name='n_tumour_damage_gt', dtype=int, damage_percent=90):
         super().__init__(name + str(damage_percent), dtype)
         self.threshold = damage_percent
     
@@ -58,9 +58,22 @@ class TumourDamageCount(AbstractAnalyser):
         return int(len(tp.tumour_data[tp.tumour_data.damage*100 > self.threshold]))
     
 class BloodVesselCount(AbstractAnalyser):
-    def __init__(self, name='vessels', dtype=int):
+    def __init__(self, name='n_vessels', dtype=int):
         super().__init__(name, dtype)
     
     def analyse(self, tp:SimulationTimepoint, sim=None):
-        return int(tp.cytotoxic_data.shape[0])
+        return int(len(tp.blood_vessel_data.target_radius > 0))
+
+class BloodVesselRadiusCount(AbstractAnalyser):
+    def __init__(self, name='n_vessels_radius_gt', dtype=int, radius_percent_threshold=90):
+        super().__init__(name + radius_percent_threshold, dtype)
+        self.threshold = radius_percent_threshold
+        self.use_params_if_exists = True
+    
+    def analyse(self, tp:Simulation, sim=None):
+        if self.use_params_if_exists and sim is not None and sim.parameters is not None:
+            if 'VesselMaxRadius' in sim.parameters and 'VesselMinRadius' in sim.parameters:
+                t = sim.parameters['VesselMinRadius'] + self.threshold/100 * (sim.parameters['VesselMaxRadius'] - sim.parameters['VesselMinRadius'])
+                return int(len(tp.blood_vessel_data[tp.blood_vessel_data.target_radius > t]))
+        return int(len(tp.blood_vessel_data[tp.blood_vessel_data.target_radius > self.threshold/100]))
 
