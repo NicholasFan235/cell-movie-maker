@@ -66,7 +66,7 @@ class BloodVesselCount(AbstractAnalyser):
 
 class BloodVesselRadiusCount(AbstractAnalyser):
     def __init__(self, name='n_vessels_radius_ge', dtype=int, radius_percent_threshold=90):
-        super().__init__(name + radius_percent_threshold, dtype)
+        super().__init__(name + str(radius_percent_threshold), dtype)
         self.threshold = radius_percent_threshold
         self.use_params_if_exists = True
     
