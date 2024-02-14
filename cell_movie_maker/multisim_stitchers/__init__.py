@@ -1,2 +1,4 @@
 from ._abstract_multisim_stitcher import AbstractMultisimStitcher
+from .multisim_stitcher_tcell import MultisimStitcherTCell
+from .multisim_stitcher_tumour import MultisimStitcherTumour
 from .multisim_stitcher_macrophages import MultisimStitcherMacrophages
