@@ -156,7 +156,7 @@ class SVGStitcher:
         ax.set_title('T-Cell Exhaustion')
         cmap = plt.get_cmap('Oranges')
         if not hasattr(self, 'info'): info = pd.read_csv(pathlib.Path(self.vis_folder, 'info.csv')).set_index('timestep')
-        ax.fill_between(info.index/60/24, info['n_t-cells'], color=cmap(0.99), label='0\% Exhausted')
+        ax.fill_between(info.index/60/24, info['n_t-cells'], color=cmap(0.99), label='0% Exhausted')
         ax.fill_between(info.index/60/24, info['n_t-cells_potency90'], color=cmap(0.8), label='10% Exhausted')
         ax.fill_between(info.index/60/24, info['n_t-cells_potency80'], color=cmap(0.6), label='20% Exhausted')
         ax.fill_between(info.index/60/24, info['n_t-cells_potency60'], color=cmap(0.4), label='40% Exhausted')
@@ -229,9 +229,11 @@ class TCellSVGStitcherCXCL9IFNg(SVGStitcher):
         return self.post(fig, axs, n)
 
 class TumourSVGStitcher(SVGStitcher):
-    def __init__(self, simulation, visualisation_name='tumour-stitched', p_max=10, *args, **kwargs):
+    def __init__(self, simulation, visualisation_name='tumour-stitched', p_max=10, p_min=0, p_cmap='inferno', *args, **kwargs):
         super().__init__(simulation, visualisation_name=visualisation_name, *args, **kwargs)
         self.p_max = p_max
+        self.p_min = p_min
+        self.p_cmap = p_cmap
 
     def process_frame(self, n):
         fig, axs, simulation_timepoint = self.prepare("AABC;AADE", n)
@@ -245,7 +247,7 @@ class TumourSVGStitcher(SVGStitcher):
         axs['C'].imshow(self.get_frame('pressure-svg-png', n))
         axs['C'].set_xticks([])
         axs['C'].set_yticks([])
-        plt.colorbar(mpl.cm.ScalarMappable(cmap='magma', norm=mpl.colors.Normalize(vmin=0, vmax=self.p_max)), ax=axs['C'])
+        plt.colorbar(mpl.cm.ScalarMappable(cmap=self.p_cmap, norm=mpl.colors.Normalize(vmin=self.p_min, vmax=self.p_max)), ax=axs['C'])
         self.plot_ccl5(fig, axs['D'], simulation_timepoint)
         self.plot_tumour_count(fig, axs['E'], simulation_timepoint)
         return self.post(fig, axs, n)
