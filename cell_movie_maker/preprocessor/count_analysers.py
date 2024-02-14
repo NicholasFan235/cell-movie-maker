@@ -62,7 +62,7 @@ class BloodVesselCount(AbstractAnalyser):
         super().__init__(name, dtype)
     
     def analyse(self, tp:SimulationTimepoint, sim=None):
-        return int(len(tp.blood_vessel_data.target_radius > 0))
+        return int(len(tp.blood_vessel_data[tp.blood_vessel_data.target_radius > 0]))
 
 class BloodVesselRadiusCount(AbstractAnalyser):
     def __init__(self, name='n_vessels_radius_gt', dtype=int, radius_percent_threshold=90):
