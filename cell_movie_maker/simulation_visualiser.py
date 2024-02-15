@@ -58,7 +58,7 @@ class SimulationVisualiser(AbstractSimulationVisualiser):
         plt.close(fig)
         return
 
-    def visualise(self, auto_execute=True, maxproc=64, *args, **kwargs):
+    def visualise(self, auto_execute=True, maxproc=64, disable_tqdm=False, *args, **kwargs):
         super().visualise(*args, **kwargs)
 
         #self.tp = TimepointPlotter(marker='o', edgecolors='black', linewidths=0.2, s=20)
@@ -66,7 +66,7 @@ class SimulationVisualiser(AbstractSimulationVisualiser):
         self.tp = TimepointPlotterV2()
 
         if auto_execute:
-            self.sim.for_timepoint(self.visualise_frame, start=self.start, stop=self.stop, step=self.step, maxproc=maxproc)
+            self.sim.for_timepoint(self.visualise_frame, start=self.start, stop=self.stop, step=self.step, maxproc=maxproc, disable_tqdm=disable_tqdm)
 
 
 class TumourSimulationVisualiser(AbstractSimulationVisualiser):
@@ -89,7 +89,7 @@ class TumourSimulationVisualiser(AbstractSimulationVisualiser):
         plt.close(fig)
         return
 
-    def visualise(self, auto_execute=True, *args, **kwargs):
+    def visualise(self, auto_execute=True, disable_tqdm=False, *args, **kwargs):
         super().visualise(*args, **kwargs)
 
         #self.tp = TumourTimepointPlotter(marker='o', edgecolors='black', linewidths=0.2, s=20)
@@ -97,7 +97,7 @@ class TumourSimulationVisualiser(AbstractSimulationVisualiser):
         self.tp = TumourTimepointPlotterV2()
 
         if auto_execute:
-            self.sim.for_timepoint(self.visualise_frame, start=self.start, stop=self.stop, step=self.step)
+            self.sim.for_timepoint(self.visualise_frame, start=self.start, stop=self.stop, step=self.step, disable_tqdm=disable_tqdm)
 
 
 class HistogramVisualiser(AbstractSimulationVisualiser):
@@ -121,7 +121,7 @@ class HistogramVisualiser(AbstractSimulationVisualiser):
         return
 
 
-    def visualise(self, auto_execute=True, *args, **kwargs):
+    def visualise(self, auto_execute=True, disable_tqdm=False, *args, **kwargs):
         super().visualise(*args, **kwargs)
         
         #self.tp = TimepointPlotter(marker='o', edgecolors='black', linewidths=0.2, s=20)
@@ -131,7 +131,7 @@ class HistogramVisualiser(AbstractSimulationVisualiser):
         self.hp = HistogramPlotter()
 
         if auto_execute:
-            self.sim.for_timepoint(self.visualise_frame, start=self.start, stop=self.stop, step=self.step)
+            self.sim.for_timepoint(self.visualise_frame, start=self.start, stop=self.stop, step=self.step, disable_tqdm=disable_tqdm)
         #self.sim.for_final_timepoint(self.visualise_frame)
 
 class ChemokineVisualiser(AbstractSimulationVisualiser):
@@ -157,7 +157,7 @@ class ChemokineVisualiser(AbstractSimulationVisualiser):
         plt.close(fig)
         return
 
-    def visualise(self, chemokine_cmap='jet', chemokine_kwargs={}, auto_execute=True, *args, **kwargs):
+    def visualise(self, chemokine_cmap='jet', chemokine_kwargs={}, auto_execute=True, disable_tqdm=False, *args, **kwargs):
         super().visualise(*args, **kwargs)
 
         self.chemokine_name = self.visualisation_name
@@ -165,7 +165,7 @@ class ChemokineVisualiser(AbstractSimulationVisualiser):
         self.chemokine_kwargs = chemokine_kwargs
         
         if auto_execute:
-            self.sim.for_timepoint(self.visualise_frame, start=self.start, stop=self.stop, step=self.step)
+            self.sim.for_timepoint(self.visualise_frame, start=self.start, stop=self.stop, step=self.step, disable_tqdm=disable_tqdm)
 
 class PressureVisualiser(AbstractSimulationVisualiser):
     def __init__(self, simulation:Simulation, visualisation_name='pressure', **kwargs):
@@ -187,10 +187,10 @@ class PressureVisualiser(AbstractSimulationVisualiser):
         plt.close(fig)
         return
 
-    def visualise(self, auto_execute=True, *args, **kwargs):
+    def visualise(self, auto_execute=True, disable_tqdm=False, *args, **kwargs):
         super().visualise(*args, **kwargs)
 
         self.tp = PressureTimepointPlotterV2()
 
         if auto_execute:
-            self.sim.for_timepoint(self.visualise_frame, start=self.start, stop=self.stop, step=self.step)
+            self.sim.for_timepoint(self.visualise_frame, start=self.start, stop=self.stop, step=self.step, disable_tqdm=disable_tqdm)

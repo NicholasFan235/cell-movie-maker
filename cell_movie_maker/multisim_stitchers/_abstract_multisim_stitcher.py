@@ -49,7 +49,7 @@ class AbstractMultisimStitcher:
         n = min(n, self.n_frames(sim, vis_type)-1)
         return plt.imread(pathlib.Path(folder, f'frame_{n}.png'))
 
-    def run(self, start=0, stop=None, step=1, maxproc=64):
+    def run(self, start=0, stop=None, step=1, maxproc=64, disable_tqdm=False):
         if not self.output_folder.exists():
             self.output_folder.mkdir(parents=True, exist_ok=True)
         
@@ -61,7 +61,7 @@ class AbstractMultisimStitcher:
         if maxproc > 1:
             with multiprocessing.Pool(processes=min(multiprocessing.cpu_count()-1, maxproc)) as pool:
                 _=list(tqdm.tqdm(pool.imap(self.process_frame, range(start, stop, step)),
-                                 total=(stop-start)//step))
+                                 total=(stop-start)//step, disable=disable_tqdm))
         else:
             for i in tqdm.tqdm(range(start, stop, step), total=(stop-start)//step):
                 self.process_frame(i)

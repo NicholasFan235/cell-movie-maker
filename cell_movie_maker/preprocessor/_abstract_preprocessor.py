@@ -18,9 +18,9 @@ class AbstractPreprocessor:
         if not os.path.exists(self.output_file.parent):
             self.output_file.parent.mkdir(exist_ok=True, parents=True)
 
-    def _process_internal(self, start=0, stop=None, step=1):
+    def _process_internal(self, start=0, stop=None, step=1, disable_tqdm=False):
         data = pd.DataFrame(columns=['timestep'] + [a.name for a in self.analysers], dtype=int).set_index('timestep')
-        for t in tqdm.tqdm(self.sim.results_timesteps[start:stop:step]):
+        for t in tqdm.tqdm(self.sim.results_timesteps[start:stop:step], disable=disable_tqdm):
             tp = self.sim.read_timepoint(t)
             row = [0 for _ in range(len(self.analysers))]
             for i, analyser in enumerate(self.analysers):
@@ -28,8 +28,8 @@ class AbstractPreprocessor:
             data.loc[t] = row
         data.to_csv(self.output_file)
 
-    def process(self, start=0, stop=None, step=1):
-        self._process_internal(start, stop, step)
+    def process(self, start=0, stop=None, step=1, disable_tqdm=False):
+        self._process_internal(start, stop, step, disable_tqdm)
 
 class Preprocessor(AbstractPreprocessor):
     def __init__(self, *args, **kwargs):
