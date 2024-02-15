@@ -56,7 +56,7 @@ class TCellABMChemokineVisualiser(AbstractSimulationVisualiser):
         plt.close(fig)
         return
 
-    def visualise(self, auto_execute=True, maxproc=64, *args, **kwargs):
+    def visualise(self, auto_execute=True, maxproc=64, disable_tqdm=False, *args, **kwargs):
         super().visualise(*args, **kwargs)
 
         #self.tp = TimepointPlotter(marker='o', edgecolors='black', linewidths=0.2, s=20)
@@ -64,5 +64,5 @@ class TCellABMChemokineVisualiser(AbstractSimulationVisualiser):
         self.tp = TimepointPlotterV2()
 
         if auto_execute:
-            self.sim.for_timepoint(self.visualise_frame, start=self.start, stop=self.stop, step=self.step, maxproc=maxproc)
+            self.sim.for_timepoint(self.visualise_frame, start=self.start, stop=self.stop, step=self.step, maxproc=maxproc, disable_tqdm=disable_tqdm)
 

@@ -54,7 +54,7 @@ class MuspanPCFVisualiser(AbstractMuspanVisualiser):
         plt.close(fig)
         return
 
-    def visualise(self, *args, **kwargs):
+    def visualise(self, auto_execute=True, disable_tqdm=False, *args, **kwargs):
         super().visualise(*args, **kwargs)
 
         #self.tp = TimepointPlotter(marker='o', edgecolors='black', linewidths=0.2, s=20)
@@ -64,7 +64,8 @@ class MuspanPCFVisualiser(AbstractMuspanVisualiser):
         self.mp = MuspanPCFPlotter()
 
         #self.sim.for_final_timepoint(self.visualise_frame)
-        self.sim.for_timepoint(self.visualise_frame, start=self.start, stop=self.stop, step=self.step)
+        if auto_execute:
+            self.sim.for_timepoint(self.visualise_frame, start=self.start, stop=self.stop, step=self.step, disable_tqdm=disable_tqdm)
 
 class MuspanWeightedPCFVisualiser(AbstractMuspanVisualiser):
     def __init__(self, simulation:Simulation, visualisation_name='w_pcf', **kwargs):
@@ -97,7 +98,7 @@ class MuspanWeightedPCFVisualiser(AbstractMuspanVisualiser):
         plt.close(fig)
         return
     
-    def visualise(self, *args, **kwargs):
+    def visualise(self, auto_execute=True, disable_tqdm=False, *args, **kwargs):
         super().visualise(*args, **kwargs)
 
         #self.tp = TimepointPlotter(marker='o', edgecolors='black', linewidths=0.2, s=20)
@@ -107,5 +108,6 @@ class MuspanWeightedPCFVisualiser(AbstractMuspanVisualiser):
         self.mp = MuspanWeightedPCFPlotter()
 
         #self.sim.for_final_timepoint(self.visualise_frame)
-        self.sim.for_timepoint(self.visualise_frame, start=self.start, stop=self.stop, step=self.step)
+        if auto_execute:
+            self.sim.for_timepoint(self.visualise_frame, start=self.start, stop=self.stop, step=self.step, disable_tqdm=disable_tqdm)
 

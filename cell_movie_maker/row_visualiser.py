@@ -49,7 +49,7 @@ class RowVisualiser:
         plt.close(fig)
 
     def visualise(self, name='grid', start=0, stop=None, step=1,
-                  postprocess=None, clean_dir=True, cmap=False, auto_execute=True):
+                  postprocess=None, clean_dir=True, cmap=False, auto_execute=True, disable_tqdm=False):
         self.output_folder_grid = os.path.join(self.output_folder, name)
         if os.path.exists(self.output_folder_grid) and clean_dir:
             shutil.rmtree(self.output_folder_grid)
@@ -65,5 +65,5 @@ class RowVisualiser:
             tp.cmap=cmap
 
         if auto_execute:
-            self.simulations[0].for_timepoint(self.visualise_frame, start=start, stop=stop, step=step)
+            self.simulations[0].for_timepoint(self.visualise_frame, start=start, stop=stop, step=step, disable_tqdm=disable_tqdm)
         
