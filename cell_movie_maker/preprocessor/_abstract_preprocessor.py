@@ -40,8 +40,8 @@ class Preprocessor(AbstractPreprocessor):
             BloodVesselCount(),
         ]
 
-    def process(self, start=0, stop=None, step=1):
-        super().process(start, stop, step)
+    def process(self, start=0, stop=None, step=1, disable_tqdm=False):
+        super().process(start, stop, step, disable_tqdm=disable_tqdm)
 
     def add_analyser(self, analyser:AbstractAnalyser):
         self.analysers.append(analyser)
