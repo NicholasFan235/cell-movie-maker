@@ -80,6 +80,55 @@ class MuspanPCFPlotter:
         ax.set_xlabel('r (cell diameters)')
         ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
 
+    def plot_vessel_vessel_pcf(self, fig, ax, pc):
+        categories = pc.labels['Celltype']['categories']
+        ax.set_title('Vessel - Vessel PCF')
+        if not 'Blood Vessel' in categories:
+            return
+        
+        radii, g, contributions = ms.statistics.pairCorrelationFunction(
+            pc,'Celltype',['Blood Vessel','Blood Vessel'], **self.pcf_kwargs)
+        fig, ax = ms.visualise.plotPCF(
+            pc, radii, g, contributions, 'Celltype',['Blood Vessel','Blood Vessel'],
+            quadratSize=None, ax=ax)
+        ax.set_xlim(xmin=0, xmax=25)
+        ax.set_ylim(ymin=0)
+        ax.set_xlabel('r (cell diameters)')
+        ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
+    
+    def plot_tumour_vessel_pcf(self, fig, ax, pc):
+        categories = pc.labels['Celltype']['categories']
+        ax.set_title('Tumour - Vessel PCF')
+        if not ('Blood Vessel' in categories and 'Tumour' in categories):
+            return
+        
+        radii, g, contributions = ms.statistics.pairCorrelationFunction(
+            pc,'Celltype',['Tumour','Blood Vessel'], **self.pcf_kwargs)
+        fig, ax = ms.visualise.plotPCF(
+            pc, radii, g, contributions, 'Celltype',['Tumour','Blood Vessel'],
+            quadratSize=None, ax=ax)
+        ax.set_xlim(xmin=0, xmax=25)
+        ax.set_ylim(ymin=0)
+        ax.set_xlabel('r (cell diameters)')
+        ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
+
+    def plot_hypoxic_vessel_pcf(self, fig, ax, pc):
+        categories = pc.labels['Celltype']['categories']
+        ax.set_title('Tumour - Vessel PCF')
+        if not ('Blood Vessel' in categories and 'Tumour' in categories):
+            return
+        
+        radii, g, contributions = ms.statistics.pairCorrelationFunction(
+            pc,'Celltype',['Tumour','Blood Vessel'], **self.pcf_kwargs)
+        fig, ax = ms.visualise.plotPCF(
+            pc, radii, g, contributions, 'Celltype',['Tumour','Blood Vessel'],
+            quadratSize=None, ax=ax)
+        ax.set_xlim(xmin=0, xmax=25)
+        ax.set_ylim(ymin=0)
+        ax.set_xlabel('r (cell diameters)')
+        ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
+        
+
 class MuspanMacrophagePCFPlotter(MuspanPCFPlotter):
     def __init__(self, pcf_kwargs={}):
         super().__init__(pcf_kwargs=pcf_kwargs)
