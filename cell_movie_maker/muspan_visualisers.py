@@ -74,7 +74,7 @@ class MuspanWeightedPCFVisualiser(AbstractMuspanVisualiser):
     def visualise_frame(self, info):
         _, timepoint = info
         tp = self.sim.read_timepoint(timepoint)
-        subset = tp.data[tp.data.cell_type.isin(['Tumour', 'T Cell'])]
+        subset = tp.data[tp.data.cell_type.isin(['Tumour', 'T Cell', 'Blood Vessel'])]
         pc = ms.pointcloud.generatePointCloud('Test',subset[['x', 'y']].to_numpy())
         pc.addLabels('Celltype', 'categorical', subset.cell_type.to_numpy())
         pc.addLabels('potency', 'continuous', subset.potency.to_numpy())
