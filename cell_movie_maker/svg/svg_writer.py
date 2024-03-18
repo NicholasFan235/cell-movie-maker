@@ -32,19 +32,19 @@ class SVGWriter:
                 if (self.background_max != None):
                     x = min(self.background_max, x)
                 f = f'rgb({x},{x},{x})'
-                os += f'<rect x="{j-.5}" y="{i-.5}" fill="{f}" width="1" height="1" stroke="{f}"/>'
+                os += f'<rect x="{2*j-1}" y="{2*i-1}" fill="{f}" width="2" height="2" stroke="{f}"/>'
         return os + '</g>\n'
 
     def plot_oxygen(self, simulation_timepoint, sim=None):
         norm = mpl.colors.Normalize(vmin=0, vmax=1)
-        cmap = mpl.colormaps['cividis']
-        os = '<g stroke-width="0.1">'
+        cmap = mpl.colormaps['inferno']
+        os = '<g stroke-width="0.1" opacity=".4">'
         ox = simulation_timepoint.oxygen_data
         for i in range(ox.shape[0]):
             for j in range(ox.shape[1]):
                 colour = cmap(norm(ox[i][j]))
                 f = f'rgb({int(255*colour[0])},{int(255*colour[1])},{int(255*colour[2])})'
-                os += f'<rect x="{j-.5}" y="{i-.5}" fill="{f}" width="1" height="1" stroke="{f}"/>'
+                os += f'<rect x="{2*j-1}" y="{2*i-1}" fill="{f}" width="2" height="2" stroke="{f}"/>'
         return os + '</g>\n'
     
     def plot_ccl5(self, simulation_timepoint, sim=None):
