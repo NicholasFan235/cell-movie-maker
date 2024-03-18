@@ -123,6 +123,7 @@ class SimulationTimepoint:
         output = dsa.WrapDataObject(reader.GetOutput())
         shape = output.Points.max(axis=0)
         shape = (int(shape[0]+1), int(shape[1]+1))
+        shape = (51,51)
         return output.PointData[chemokine].reshape(shape)
 
 

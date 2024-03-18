@@ -1,5 +1,5 @@
 from .svg_stitcher import SVGStitcher
-from ..graph_stats_plotter import GraphAssociationsPlotter
+#from ..graph_stats_plotter import GraphAssociationsPlotter
 
 
 class SVGStitcherGraphStats(SVGStitcher):
@@ -8,7 +8,7 @@ class SVGStitcherGraphStats(SVGStitcher):
         self.figsize=(16,8)
     
     def run(self, *args, **kwargs):
-        self.graph_stats_plotter = GraphAssociationsPlotter()
+        #self.graph_stats_plotter = GraphAssociationsPlotter()
         super().run(*args, **kwargs)
 
     def process_frame(self, n):

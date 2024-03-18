@@ -6,7 +6,7 @@ from scipy.spatial import Delaunay
 from scipy.spatial.distance import cdist
 from scipy.stats import linregress
 import networkx as nx
-import pyGraphStats
+#import pyGraphStats
 import pandas as pd
 
 

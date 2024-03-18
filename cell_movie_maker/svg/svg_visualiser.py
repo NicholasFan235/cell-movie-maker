@@ -13,7 +13,7 @@ class SVGVisualiser(AbstractSimulationVisualiser):
         simulation_timepoint = self.sim.read_timepoint(timepoint)
 
         for w in self.writers:
-            svg = w.to_svg(simulation_timepoint)
+            svg = w.to_svg(simulation_timepoint, self.sim)
             p = pathlib.Path(self.output_folder, w.name)
             if not p.exists():
                 p.mkdir(exist_ok=True)
@@ -24,19 +24,21 @@ class SVGVisualiser(AbstractSimulationVisualiser):
                   width=50, height=50,
                   tumour_hypoxic_concentration=0, tumour_necrotic_concentration=0,
                   stroma_hypoxic_concentration=0, stroma_necrotic_concentration=0,
-                  p_max=10, disabel_tqdm=False):
+                  p_max=10, disable_tqdm=False, writers_factory=None):
         if not os.path.exists(self.output_folder):
             pathlib.Path(self.output_folder).mkdir(exist_ok=True)
-
-        self.writers = [
-            SVGWriter(width, height),
-            TumourSVGWriter(width=width, height=height),
-            HypoxiaSVGWriter(width=width, height=height, tumour_hypoxic_concentration=tumour_hypoxic_concentration, tumour_necrotic_concentration=tumour_necrotic_concentration, stroma_hypoxic_concentration=stroma_hypoxic_concentration,stroma_necrotic_concentration=stroma_necrotic_concentration),
-            PressureSVGWriter(width=width, height=height, p_max=p_max),
-            OxygenSVGWriter(width=width, height=height),
-            CCL5SVGWriter(width=width, height=height),
-            DensitySVGWriter(width=width, height=height),
-        ]
+        
+        if writers_factory is None:
+            self.writers = [
+                SVGWriter(width, height),
+                TumourSVGWriter(width=width, height=height),
+                HypoxiaSVGWriter(width=width, height=height, tumour_hypoxic_concentration=tumour_hypoxic_concentration, tumour_necrotic_concentration=tumour_necrotic_concentration, stroma_hypoxic_concentration=stroma_hypoxic_concentration,stroma_necrotic_concentration=stroma_necrotic_concentration),
+                PressureSVGWriter(width=width, height=height, p_max=p_max),
+                OxygenSVGWriter(width=width, height=height),
+                CCL5SVGWriter(width=width, height=height),
+                DensitySVGWriter(width=width, height=height),
+            ]
+        else: self.writers = writers_factory()
 
         if auto_execute:
             for w in self.writers:
