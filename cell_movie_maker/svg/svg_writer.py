@@ -113,7 +113,7 @@ class TumourSVGWriter(SVGWriter):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.name = "tumour-svg"
-        self.background = 'ecm'
+        self.background = None
 
     def plot_stroma(self, simulation_timepoint, sim=None):
         os = '<g stroke-width="0" fill="lightblue" opacity=".5">'
@@ -143,7 +143,7 @@ class HypoxiaSVGWriter(SVGWriter):
         self.stroma_necrotic_concentration = stroma_necrotic_concentration
         self.stroma_hypoxic_concentration = max(stroma_hypoxic_concentration, stroma_necrotic_concentration)
         self.name = "hypoxia-svg"
-        self.background = 'ecm'
+        self.background = None
     
     def params_or(self, sim, name, default):
         if self.use_params_if_exists and sim is not None and sim.parameters is not None:
@@ -174,6 +174,7 @@ class HypoxiaSVGWriter(SVGWriter):
             f = "purple"
             if c.oxygen < self.params_or(sim, 'TumourNecroticConcentration', self.tumour_necrotic_concentration): f = "white"
             elif c.oxygen < self.params_or(sim, 'TumourHypoxicConcentration', self.tumour_hypoxic_concentratior): f = "mediumpurple"
+            if c.damage >= 1: f = "white"
             os += f'<circle cx="{c.x:.4f}" cy="{c.y:.4f}" r="{c.radius:.3f}" fill="{f}"/>'
         return os + '</g>\n'
 
@@ -229,7 +230,7 @@ class OxygenSVGWriter(SVGWriter):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.name = "oxygen-svg"
-        self.background = None
+        self.background = 'oxygen'
         
     def plot_cells(self, simulation_timepoint, sim=None):
         norm = mpl.colors.Normalize(vmin=0, vmax=1)
