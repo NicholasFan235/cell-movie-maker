@@ -8,7 +8,6 @@ class SVGStitcherRipser(SVGStitcher):
         self.figsize=(16,8)
     
     def run(self, *args, **kwargs):
-        self.rips_plotter = RipsFiltrationPlotter()
         super().run(*args, **kwargs)
 
     def process_frame(self, n):
@@ -19,8 +18,8 @@ class SVGStitcherRipser(SVGStitcher):
         axs['A'].set_yticks([])
         axs['A'].set_title(f'{self.sim.name}/{self.sim.id} #{n}', fontsize=30)
 
-        self.rips_plotter.plot_damaged_tumour_rips(fig, axs['B'], simulation_timepoint)
-        self.rips_plotter.plot_healthy_tumour_rips(fig, axs['C'], simulation_timepoint)
+        RipsFiltrationPlotter.plot_damaged_tumour_rips(fig, axs['B'], simulation_timepoint)
+        RipsFiltrationPlotter.plot_healthy_tumour_rips(fig, axs['C'], simulation_timepoint)
         
         return self.post(fig, axs, n)
 

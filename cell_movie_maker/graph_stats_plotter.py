@@ -6,7 +6,6 @@ from scipy.spatial import Delaunay
 from scipy.spatial.distance import cdist
 from scipy.stats import linregress
 import networkx as nx
-#import pyGraphStats
 import pandas as pd
 
 
@@ -25,10 +24,8 @@ def sub_cmap(cmap, vmin, vmax):
     return lambda v: cmap(vmin + (vmax - vmin) * v)
 
 class GraphAssociationsPlotter:
-    def __init__(self):
-        pass
-    
-    def plot_associations(self, fig, ax, tp):
+    def plot_associations(fig, ax, tp):
+        import pyGraphStats
         tp.data['tmp'] = -1
         tp.data.loc[(tp.data.cell_type == 'Tumour') & (tp.data.damage <= 0.6), 'tmp'] = 0
         tp.data.loc[(tp.data.cell_type == 'Tumour') & (tp.data.damage > 0.6), 'tmp'] = 1
@@ -81,7 +78,8 @@ class GraphAssociationsPlotter:
             edge_color=list(nx.get_edge_attributes(g, 'weight').values()),
             width=[min(10, i) for i in nx.get_edge_attributes(g, 'weight').values()])
 
-    def plot_morans_index_coefficients(self, fig, ax, tp):
+    def plot_morans_index_coefficients(fig, ax, tp):
+        import pyGraphStats
         data = tp.data[tp.data.cell_type.isin(['Tumour', 'T Cell'])]
         ax.set_title('Moran\'s I Coefficient for Tumour Damage')
         ax.set_ylabel('Moran\'s I Coefficient')
@@ -132,7 +130,8 @@ class GraphAssociationsPlotter:
         ax.fill_between(morans.index, morans['Morans'] + morans['err'], morans['Morans'] - morans['err'])
         
     
-    def plot_morans_index_coefficients_macrophage(self, fig, ax, tp):
+    def plot_morans_index_coefficients_macrophage(fig, ax, tp):
+        import pyGraphStats
         data = tp.data[tp.data.cell_type.isin(['Tumour', 'Macrophage'])]
         ax.set_title('Moran\'s I Coefficient for M1-M2 Phenotype')
         ax.set_ylabel('Moran\'s I Coefficient')

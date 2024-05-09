@@ -8,7 +8,7 @@ class SVGVisualiser(AbstractSimulationVisualiser):
     def __init__(self, simulation, visualisation_name='svg', **kwargs):
         super().__init__(simulation, visualisation_name=visualisation_name, **kwargs)
 
-    def visualise_frame(self, info):
+    def visualise_frame(self, info:tuple[int,int]):
         frame_num, timepoint = info
         simulation_timepoint = self.sim.read_timepoint(timepoint)
 

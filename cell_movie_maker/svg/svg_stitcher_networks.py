@@ -1,5 +1,5 @@
 from .svg_stitcher import SVGStitcher
-#from ..graph_stats_plotter import GraphAssociationsPlotter
+from ..graph_stats_plotter import GraphAssociationsPlotter
 
 
 class SVGStitcherGraphStats(SVGStitcher):
@@ -8,7 +8,6 @@ class SVGStitcherGraphStats(SVGStitcher):
         self.figsize=(16,8)
     
     def run(self, *args, **kwargs):
-        #self.graph_stats_plotter = GraphAssociationsPlotter()
         super().run(*args, **kwargs)
 
     def process_frame(self, n):
@@ -19,8 +18,8 @@ class SVGStitcherGraphStats(SVGStitcher):
         axs['A'].set_yticks([])
         axs['A'].set_title(f'{self.sim.name}/{self.sim.id} #{n}', fontsize=30)
 
-        self.graph_stats_plotter.plot_associations(fig, axs['B'], simulation_timepoint)
-        self.graph_stats_plotter.plot_morans_index_coefficients(fig, axs['C'], simulation_timepoint)
+        GraphAssociationsPlotter.plot_associations(fig, axs['B'], simulation_timepoint)
+        GraphAssociationsPlotter.plot_morans_index_coefficients(fig, axs['C'], simulation_timepoint)
         
         return self.post(fig, axs, n)
 
