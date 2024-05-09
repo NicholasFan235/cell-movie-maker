@@ -6,6 +6,8 @@ import tqdm
 import re
 import os
 import math
+import numpy as np
+import logging
 
 
 class AbstractMultisimStitcher:
@@ -25,13 +27,25 @@ class AbstractMultisimStitcher:
     def resize(self, unit_width=6):
         self.figsize=(unit_width*math.ceil(len(self.sims)/self.n_rows), unit_width*self.n_rows)
 
-    def process_frame(self, n):
+    def plot_frame(self, n:int)->tuple[plt.Figure,np.ndarray[plt.Axes]]:
         fig, axs = self.prepare()
 
         for i, sim in enumerate(self.sims):
             self.plot_simulation(fig, axs[i], sim, n)
+        
+        if self.postprocess is not None: self.postprocess(fig, axs, n)
+        
+        return fig, axs
 
-        self.post(fig, axs, n)
+    def process_frame(self, n:int):
+        try:
+            fig,axs = self.plot_frame(n)
+            if fig is not None:
+                self.post(fig, axs, n)
+                plt.close(fig)
+        except Exception as e:
+            logging.error(f'Error processing frame #{n}: {e}')
+            raise e
 
     def plot_simulation(self, fig, ax, simulation, n):
         raise NotImplementedError
@@ -73,8 +87,6 @@ class AbstractMultisimStitcher:
     
     def post(self, fig, axs, n):
         #fig.tight_layout()
-        if self.postprocess is not None: self.postprocess(fig, axs, n)
         fig.savefig(os.path.join(self.output_folder, f'frame_{n}.png'))
-        plt.close(fig)
 
 

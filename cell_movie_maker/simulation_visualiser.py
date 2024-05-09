@@ -7,12 +7,15 @@ import os
 import shutil
 import numpy as np
 import pathlib
+import logging
+
 
 class AbstractSimulationVisualiser:
     def __init__(self, simulation:Simulation, output_parent_folder = 'visualisations', visualisation_name = 'abstract'):
         self.sim = simulation
         self.visualisation_name = visualisation_name
         self.figsize = (8,8)
+        self.postprocess = None
         
         if (not os.path.exists(output_parent_folder)):
             pathlib.Path(output_parent_folder).mkdir(exist_ok=True)
@@ -22,103 +25,108 @@ class AbstractSimulationVisualiser:
         if not os.path.exists(self.output_folder):
             pathlib.Path(self.output_folder).mkdir(exist_ok=True)
         
-    def visualise_frame(self, info):
+    def post_frame(self, frame_num:int, timestep:int, fig:plt.Figure, ax:plt.Axes|np.ndarray[plt.Axes]):
+        fig.savefig(os.path.join(self.output_folder, self.visualisation_name, 'frame_{}.png'.format(frame_num)))
+
+    def visualise_frame(self, frame_num:int, timestep:int)->tuple[plt.Figure,plt.Axes|np.ndarray[plt.Axes]]:
         raise NotImplementedError()
     
-    def visualise(self, start=0, stop=None, step=1, postprocess=None, clean_dir=True):
-        self.output_folder = os.path.join(self.output_folder, self.visualisation_name)
-        if os.path.exists(self.output_folder) and clean_dir:
-            shutil.rmtree(self.output_folder)
-        if not os.path.exists(self.output_folder):
-            pathlib.Path(self.output_folder).mkdir(exist_ok=True)
+    def _visualise_frame(self, args:tuple[int,int]):
+        try:
+            fig, ax = self.visualise_frame(*args)
+            if fig is not None:
+                self.post_frame(*args, fig, ax)
+                plt.close(fig)
+        except Exception as e:
+            logging.error(f'Error processing frame #{args[1]}: {e}')
+            raise e
 
+    def visualise(self, start=0, stop=None, step=1, postprocess=None, clean_dir=True):
+        self.create_output_folder(clean_dir=clean_dir)
         self.postprocess = postprocess
 
         self.start = start
         self.stop = stop
         self.step = step
+    
+    def create_output_folder(self, *, clean_dir:bool):
+        output_folder = os.path.join(self.output_folder, self.visualisation_name)
+        if os.path.exists(output_folder) and clean_dir:
+            shutil.rmtree(output_folder)
+        if not os.path.exists(output_folder):
+            pathlib.Path(output_folder).mkdir(exist_ok=True)
 
 class SimulationVisualiser(AbstractSimulationVisualiser):
     def __init__(self, simulation:Simulation, visualisation_name='standard', **kwargs):
         super().__init__(simulation, visualisation_name=visualisation_name, **kwargs)
 
-    def visualise_frame(self, info):
-        frame_num, timepoint = info
+    def visualise_frame(self, frame_num:int, timepoint:int)->tuple[plt.Figure,plt.Axes]:
         simulation_timepoint = self.sim.read_timepoint(timepoint)
 
         fig, ax = plt.subplots(1,1, figsize=self.figsize)
         #ax.margins(0.01)
         fig.tight_layout()
-        self.tp.plot(fig, ax, simulation_timepoint, frame_num, timepoint)
+        TimepointPlotterV2.plot(fig, ax, simulation_timepoint, frame_num, timepoint)
 
         if self.postprocess is not None:
             self.postprocess(fig, ax)
 
-        fig.savefig(os.path.join(self.output_folder, 'frame_{}.png'.format(frame_num)))
-        plt.close(fig)
-        return
+        return fig, ax
 
     def visualise(self, auto_execute=True, maxproc=64, disable_tqdm=False, *args, **kwargs):
         super().visualise(*args, **kwargs)
 
         #self.tp = TimepointPlotter(marker='o', edgecolors='black', linewidths=0.2, s=20)
         #self.tp.cmap=True
-        self.tp = TimepointPlotterV2()
 
         if auto_execute:
-            self.sim.for_timepoint(self.visualise_frame, start=self.start, stop=self.stop, step=self.step, maxproc=maxproc, disable_tqdm=disable_tqdm)
+            self.sim.for_timepoint(self._visualise_frame, start=self.start, stop=self.stop, step=self.step, maxproc=maxproc, disable_tqdm=disable_tqdm)
 
 
 class TumourSimulationVisualiser(AbstractSimulationVisualiser):
     def __init__(self, simulation:Simulation, visualisation_name='standard_tumour', **kwargs):
         super().__init__(simulation, visualisation_name=visualisation_name, **kwargs)
 
-    def visualise_frame(self, info):
-        frame_num, timepoint = info
+    def visualise_frame(self, frame_num:int, timepoint:int)->tuple[plt.Figure,plt.Axes]:
         simulation_timepoint = self.sim.read_timepoint(timepoint)
 
         fig, ax = plt.subplots(1,1, figsize=self.figsize)
         #ax.margins(0.01)
         fig.tight_layout()
-        self.tp.plot(fig, ax, simulation_timepoint, frame_num, timepoint)
+        TumourTimepointPlotterV2.plot(fig, ax, simulation_timepoint, frame_num, timepoint)
 
         if self.postprocess is not None:
             self.postprocess(fig, ax)
 
-        fig.savefig(os.path.join(self.output_folder, 'frame_{}.png'.format(frame_num)))
-        plt.close(fig)
-        return
+        return fig, ax
 
     def visualise(self, auto_execute=True, disable_tqdm=False, *args, **kwargs):
         super().visualise(*args, **kwargs)
 
         #self.tp = TumourTimepointPlotter(marker='o', edgecolors='black', linewidths=0.2, s=20)
         #self.tp.cmap=True
-        self.tp = TumourTimepointPlotterV2()
 
         if auto_execute:
-            self.sim.for_timepoint(self.visualise_frame, start=self.start, stop=self.stop, step=self.step, disable_tqdm=disable_tqdm)
+            self.sim.for_timepoint(self._visualise_frame, start=self.start, stop=self.stop, step=self.step, disable_tqdm=disable_tqdm)
 
 
 class HistogramVisualiser(AbstractSimulationVisualiser):
     def __init__(self, simulation:Simulation, visualisation_name='histogram', **kwargs):
         super().__init__(simulation, visualisation_name=visualisation_name, **kwargs)
+        self.histogram_plotter_config = HistogramPlotter.Config()
 
-    def visualise_frame(self, info):
-        frame_num, timepoint = info
+    def visualise_frame(self, frame_num:int, timepoint:int)->tuple[plt.Figure,np.ndarray[plt.Axes]]:
         simulation_timepoint = self.sim.read_timepoint(timepoint)
 
         fig, axs = plt.subplot_mosaic("AB;AC", figsize=self.figsize)
-        self.tp.plot(fig, axs['A'], simulation_timepoint, frame_num, timepoint)
-        self.hp.cytotoxic_histogram(fig, axs['B'], simulation_timepoint)
-        self.hp.tumour_histogram(fig, axs['C'], simulation_timepoint)
+        TimepointPlotterV2.plot(fig, axs['A'], simulation_timepoint, frame_num, timepoint)
+        HistogramPlotter.cytotoxic_histogram(fig, axs['B'], simulation_timepoint, config=self.histogram_plotter_config)
+        HistogramPlotter.tumour_histogram(fig, axs['C'], simulation_timepoint, config=self.histogram_plotter_config)
 
         if self.postprocess is not None:
             self.postprocess(fig, axs)
 
-        fig.savefig(os.path.join(self.output_folder, 'frame_{}.png'.format(frame_num)))
-        plt.close(fig)
-        return
+        return fig, axs
 
 
     def visualise(self, auto_execute=True, disable_tqdm=False, *args, **kwargs):
@@ -126,20 +134,16 @@ class HistogramVisualiser(AbstractSimulationVisualiser):
         
         #self.tp = TimepointPlotter(marker='o', edgecolors='black', linewidths=0.2, s=20)
         #self.tp.cmap = True
-        self.tp = TimepointPlotterV2()
-
-        self.hp = HistogramPlotter()
 
         if auto_execute:
-            self.sim.for_timepoint(self.visualise_frame, start=self.start, stop=self.stop, step=self.step, disable_tqdm=disable_tqdm)
+            self.sim.for_timepoint(self._visualise_frame, start=self.start, stop=self.stop, step=self.step, disable_tqdm=disable_tqdm)
         #self.sim.for_final_timepoint(self.visualise_frame)
 
 class ChemokineVisualiser(AbstractSimulationVisualiser):
     def __init__(self, simulation:Simulation, visualisation_name, **kwargs):
         super().__init__(simulation, visualisation_name=visualisation_name, **kwargs)
 
-    def visualise_frame(self, info):
-        frame_num, timepoint = info
+    def visualise_frame(self, frame_num:int, timepoint:int)->tuple[plt.Figure,plt.Axes]:
         simulation_timepoint = self.sim.read_timepoint(timepoint)
 
         data = simulation_timepoint.read_pde(self.chemokine_name)
@@ -153,9 +157,7 @@ class ChemokineVisualiser(AbstractSimulationVisualiser):
         if self.postprocess is not None:
             self.postprocess(fig, ax, data=data)
 
-        fig.savefig(os.path.join(self.output_folder, 'frame_{}.png'.format(frame_num)))
-        plt.close(fig)
-        return
+        return fig, ax
 
     def visualise(self, chemokine_cmap='jet', chemokine_kwargs={}, auto_execute=True, disable_tqdm=False, *args, **kwargs):
         super().visualise(*args, **kwargs)
@@ -165,32 +167,27 @@ class ChemokineVisualiser(AbstractSimulationVisualiser):
         self.chemokine_kwargs = chemokine_kwargs
         
         if auto_execute:
-            self.sim.for_timepoint(self.visualise_frame, start=self.start, stop=self.stop, step=self.step, disable_tqdm=disable_tqdm)
+            self.sim.for_timepoint(self._visualise_frame, start=self.start, stop=self.stop, step=self.step, disable_tqdm=disable_tqdm)
 
 class PressureVisualiser(AbstractSimulationVisualiser):
     def __init__(self, simulation:Simulation, visualisation_name='pressure', **kwargs):
         super().__init__(simulation, visualisation_name=visualisation_name, **kwargs)
 
-    def visualise_frame(self, info):
-        frame_num, timepoint = info
+    def visualise_frame(self, frame_num:int, timepoint:int)->tuple[plt.Figure,plt.Axes]:
         simulation_timepoint = self.sim.read_timepoint(timepoint)
 
         fig, ax = plt.subplots(1,1, figsize=self.figsize)
         #ax.margins(0.01)
         fig.tight_layout()
-        self.tp.plot(fig, ax, simulation_timepoint, frame_num, timepoint)
+        PressureTimepointPlotterV2.plot(fig, ax, simulation_timepoint, frame_num, timepoint)
 
         if self.postprocess is not None:
             self.postprocess(fig, ax)
 
-        fig.savefig(os.path.join(self.output_folder, 'frame_{}.png'.format(frame_num)))
-        plt.close(fig)
-        return
+        return fig, ax
 
     def visualise(self, auto_execute=True, disable_tqdm=False, *args, **kwargs):
         super().visualise(*args, **kwargs)
 
-        self.tp = PressureTimepointPlotterV2()
-
         if auto_execute:
-            self.sim.for_timepoint(self.visualise_frame, start=self.start, stop=self.stop, step=self.step, disable_tqdm=disable_tqdm)
+            self.sim.for_timepoint(self._visualise_frame, start=self.start, stop=self.stop, step=self.step, disable_tqdm=disable_tqdm)

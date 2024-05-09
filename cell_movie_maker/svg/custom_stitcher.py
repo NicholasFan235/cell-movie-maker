@@ -10,9 +10,6 @@ class CustomStitcher(SVGStitcher):
         super().__init__(simulation, output_parent_folder=output_parent_folder, visualisation_name=visualisation_name)
 
     def run(self, *args, **kwargs):
-        self.pcf_plotter = MuspanPCFPlotter()
-        self.graph_stats_plotter = GraphAssociationsPlotter()
-        self.rips_plotter = RipsFiltrationPlotter()
         super().run(*args, **kwargs)
 
     def read_pointcloud(self, simulation_timepoint, damage=True, potency=True):
@@ -32,9 +29,6 @@ class CustomStitcherMacrophages(MacrophageSVGStitcher):
         self.probe_vis_type = 'macrophage-svg-png'
 
     def run(self, *args, **kwargs):
-        self.pcf_plotter = MuspanMacrophagePCFPlotter()
-        self.graph_stats_plotter = GraphAssociationsPlotter()
-        self.rips_plotter = RipsFiltrationPlotter()
         super().run(*args, **kwargs)
 
     def process_frame(self, n):

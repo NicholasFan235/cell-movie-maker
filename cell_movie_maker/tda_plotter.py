@@ -22,10 +22,7 @@ def sub_cmap(cmap, vmin, vmax):
     return lambda v: cmap(vmin + (vmax - vmin) * v)
 
 class RipsFiltrationPlotter:
-    def __init__(self):
-        pass
-
-    def plot_tumour_rips(self, fig, ax, tp):
+    def plot_tumour_rips(fig, ax, tp):
         data = tp.tumour_data
         if len(data) > 0:
             rips = Rips(verbose=False)
@@ -35,7 +32,7 @@ class RipsFiltrationPlotter:
         ax.set_xlabel('Birth (Cell Diameters)')
         ax.set_ylabel('Death (Cell Diameters)')
     
-    def plot_healthy_tumour_rips(self, fig, ax, tp):
+    def plot_healthy_tumour_rips(fig, ax, tp):
         data = tp.tumour_data[tp.tumour_data.damage < 0.5]
         if len(data) > 0:
             rips = Rips(verbose=False)
@@ -46,7 +43,7 @@ class RipsFiltrationPlotter:
         ax.set_ylabel('Death (Cell Diameters)')
 
 
-    def plot_damaged_tumour_rips(self, fig, ax, tp):
+    def plot_damaged_tumour_rips(fig, ax, tp):
         data = tp.tumour_data[tp.tumour_data.damage > 0.5]
         if len(data) > 0:
             rips = Rips(verbose=False)

@@ -5,10 +5,7 @@ from scipy.interpolate import UnivariateSpline
 
 
 class StripPressureDistributionPlotter:
-    def __init__(self):
-        pass
-
-    def plot(self, fig, ax, simulation_timepoint, frame_num, timepoint):
+    def plot(fig, ax, simulation_timepoint, frame_num, timepoint):
         ax.set_xlabel(f'x-position')
         ax.set_ylabel('Pressure')
         ax.margins(0.01)

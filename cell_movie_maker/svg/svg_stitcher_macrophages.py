@@ -68,7 +68,6 @@ class MacrophageSVGStitcher(SVGStitcher):
         return pc
 
     def run(self, *args, **kwargs):
-        self.pcf_plotter = MuspanMacrophagePCFPlotter()
         super().run(*args, **kwargs)
 
     def process_frame(self, n):

@@ -22,7 +22,6 @@ class SVGStitcherPCF(SVGStitcherMuspan):
         self.figsize=(16,8)
     
     def run(self, *args, **kwargs):
-        self.pcf_plotter = MuspanPCFPlotter()
         super().run(*args, **kwargs)
 
     def process_frame(self, n):
@@ -35,8 +34,9 @@ class SVGStitcherPCF(SVGStitcherMuspan):
         axs['A'].set_title(f'{self.sim.name}/{self.sim.id} #{n}', fontsize=30)
 
         self.plot_tumour_damage_count(fig, axs['B'], simulation_timepoint)
-        self.pcf_plotter.plot_tumour_tumour_pcf(fig, axs['D'], pc)
-        self.pcf_plotter.plot_tcell_tcell_pcf(fig, axs['E'], pc)
-        self.pcf_plotter.plot_tcell_tumour_pcf(fig, axs['C'], pc)
+        muspan_plotter_config = MuspanPCFPlotter.Config()
+        MuspanPCFPlotter.plot_tumour_tumour_pcf(fig, axs['D'], pc, config=muspan_plotter_config)
+        MuspanPCFPlotter.plot_tcell_tcell_pcf(fig, axs['E'], pc, config=muspan_plotter_config)
+        MuspanPCFPlotter.plot_tcell_tumour_pcf(fig, axs['C'], pc, config=muspan_plotter_config)
         return self.post(fig, axs, n)
         
