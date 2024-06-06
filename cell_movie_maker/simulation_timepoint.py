@@ -66,6 +66,9 @@ class SimulationTimepoint:
         self.data.loc[self.data.potency < 0, 'potency'] = np.nan
         self.data.loc[self.data.damage < 0, 'damage'] = np.nan
 
+        self.data['tissue_stress'] = 1 - self.data['radius']/self.data['target_radius']
+        self.data.loc[~np.isfinite(self.data.tissue_stress), 'tissue_stress'] = -1
+
     
     def load_value(self, raw, name, default=np.nan, new_key=None):
         if new_key is None: new_key = name
