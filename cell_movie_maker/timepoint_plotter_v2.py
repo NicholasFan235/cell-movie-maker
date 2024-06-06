@@ -137,9 +137,7 @@ class PressureTimepointPlotterV2:
     class Config:
         p_max=None
 
-    def plot_cells(fig:plt.Figure, ax:plt.Axes, simulation_timepoint, config:Config=None):
-        if config is None: config = PressureTimepointPlotterV2.Config()
-
+    def plot_cells(fig:plt.Figure, ax:plt.Axes, simulation_timepoint, config:Config):
         data = simulation_timepoint.data
         norm = matplotlib.colors.Normalize(vmin=0, vmax=data.pressure.max() if config.p_max is None else config.p_max)
         cmap = matplotlib.colormaps['cividis']
@@ -149,14 +147,16 @@ class PressureTimepointPlotterV2:
         ax.add_collection(collection)
         fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), ax=ax)
 
-    def plot(fig:plt.Figure, ax:plt.Axes, simulation_timepoint, frame_num, timepoint):
+    def plot(fig:plt.Figure, ax:plt.Axes, simulation_timepoint, frame_num, timepoint, config:Config=None):
+        if config is None: config = PressureTimepointPlotterV2.Config()
+
         ax.set_xticks([])
         ax.set_yticks([])
         ax.set_xlabel(f'{float(timepoint)/60/24:.1f} days')
         ax.margins(0.01)
         ax.set_title(f'{simulation_timepoint.name}/{simulation_timepoint.id} #{frame_num} Pressure')
         
-        PressureTimepointPlotterV2.plot_cells(fig, ax, simulation_timepoint)
+        PressureTimepointPlotterV2.plot_cells(fig, ax, simulation_timepoint, config)
 
         ax.relim()
         ax.set_ylim(simulation_timepoint.data.y.min(), simulation_timepoint.data.y.max())
