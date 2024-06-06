@@ -136,16 +136,18 @@ class PressureTimepointPlotterV2:
     @dataclasses.dataclass
     class Config:
         p_max=None
+        pressure_cmap='cividis'
+        draw_colorbar=True
 
     def plot_cells(fig:plt.Figure, ax:plt.Axes, simulation_timepoint, config:Config):
         data = simulation_timepoint.data
         norm = matplotlib.colors.Normalize(vmin=0, vmax=data.pressure.max() if config.p_max is None else config.p_max)
-        cmap = matplotlib.colormaps['cividis']
+        cmap = matplotlib.colormaps[config.pressure_cmap]
         collection = matplotlib.collections.PatchCollection(
             [matplotlib.patches.Circle((cell.x, cell.y), cell.radius, ec='none', fc=cmap(norm(cell.pressure)), alpha=0.8) for _, cell in data.iterrows()],
             edgecolors='none', facecolors=cmap(norm(data.pressure.to_numpy())))
         ax.add_collection(collection)
-        fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), ax=ax)
+        if config.draw_colorbar: fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), ax=ax)
 
     def plot(fig:plt.Figure, ax:plt.Axes, simulation_timepoint, frame_num, timepoint, config:Config=None):
         if config is None: config = PressureTimepointPlotterV2.Config()
