@@ -93,7 +93,7 @@ class TumourSimulationVisualiser(AbstractSimulationVisualiser):
         fig, ax = plt.subplots(1,1, figsize=self.figsize)
         #ax.margins(0.01)
         fig.tight_layout()
-        TumourTimepointPlotterV2.plot(fig, ax, simulation_timepoint, frame_num, timepoint)
+        TumourTimepointPlotterV2.plot(fig, ax, simulation_timepoint, frame_num, timepoint, sim=self.sim)
 
         if self.postprocess is not None:
             self.postprocess(fig, ax)
