@@ -3,6 +3,7 @@ import matplotlib
 import matplotlib.patches
 import matplotlib.collections
 import matplotlib.pyplot as plt
+import dataclasses
 
 
 def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
@@ -37,7 +38,7 @@ class TimepointPlotterV2:
         cmap = truncate_colormap('Purples_r', 0.2, 0.9)
         collection = matplotlib.collections.PatchCollection(
             [matplotlib.patches.Circle((cell.x, cell.y), cell.radius, ec='black', fc=cmap(norm(cell.damage))) for _, cell in data.iterrows()],
-            edgecolors='black', facecolors = cmap(norm(data.damage.to_numpy())))
+            edgecolors=None, facecolors = cmap(norm(data.damage.to_numpy())))
         ax.add_collection(collection)
 
     def plot_cytotoxic(fig:plt.Figure, ax:plt.Axes, simulation_timepoint):
@@ -71,8 +72,8 @@ class TimepointPlotterV2:
         ax.set_title(f'{simulation_timepoint.name}/{simulation_timepoint.id} #{frame_num}')
         TimepointPlotterV2.plot_stroma(fig, ax, simulation_timepoint)
         TimepointPlotterV2.plot_macrophages(fig, ax, simulation_timepoint)
-        TimepointPlotterV2.plot_blood_vessels(fig, ax, simulation_timepoint)
         TimepointPlotterV2.plot_tumour(fig, ax, simulation_timepoint)
+        TimepointPlotterV2.plot_blood_vessels(fig, ax, simulation_timepoint)
         TimepointPlotterV2.plot_cytotoxic(fig, ax, simulation_timepoint)
         ax.relim()
         ax.set_ylim(simulation_timepoint.data.y.min(), simulation_timepoint.data.y.max())
@@ -106,7 +107,7 @@ class TumourTimepointPlotterV2:
                 c = 'purple'
             patches.append(matplotlib.patches.Circle((cell.x, cell.y), cell.radius, ec='black', fc=c))
             colors.append(matplotlib.colors.to_rgba(c))
-        collection = matplotlib.collections.PatchCollection(patches, edgecolors='none', facecolors=np.array(colors))
+        collection = matplotlib.collections.PatchCollection(patches, edgecolors=np.array(colors), facecolors=np.array(colors))
         #collection.set_facecolors(np.array(colors))
         ax.add_collection(collection)
 
@@ -124,32 +125,40 @@ class TumourTimepointPlotterV2:
         ax.margins(0.01)
         ax.set_title(f'{simulation_timepoint.name}/{simulation_timepoint.id} #{frame_num}')
         TumourTimepointPlotterV2.plot_stroma(fig, ax, simulation_timepoint)
-        TumourTimepointPlotterV2.plot_blood_vessels(fig, ax, simulation_timepoint)
         TumourTimepointPlotterV2.plot_tumour(fig, ax, simulation_timepoint, sim=sim)
+        TumourTimepointPlotterV2.plot_blood_vessels(fig, ax, simulation_timepoint)
         ax.relim()
         ax.set_ylim(simulation_timepoint.data.y.min(), simulation_timepoint.data.y.max())
         ax.set_xlim(simulation_timepoint.data.x.min(), simulation_timepoint.data.x.max())
         ax.set_aspect(1.0, adjustable='box')
 
 class PressureTimepointPlotterV2:
-    def plot_cells(fig:plt.Figure, ax:plt.Axes, simulation_timepoint):
+    @dataclasses.dataclass
+    class Config:
+        p_max=None
+        pressure_cmap='cividis'
+        draw_colorbar=True
+
+    def plot_cells(fig:plt.Figure, ax:plt.Axes, simulation_timepoint, config:Config):
         data = simulation_timepoint.data
-        norm = matplotlib.colors.Normalize(vmin=0, vmax=10)#data.pressure.max())
-        cmap = matplotlib.colormaps['cividis']
+        norm = matplotlib.colors.Normalize(vmin=0, vmax=data.pressure.max() if config.p_max is None else config.p_max)
+        cmap = matplotlib.colormaps[config.pressure_cmap]
         collection = matplotlib.collections.PatchCollection(
             [matplotlib.patches.Circle((cell.x, cell.y), cell.radius, ec='none', fc=cmap(norm(cell.pressure)), alpha=0.8) for _, cell in data.iterrows()],
             edgecolors='none', facecolors=cmap(norm(data.pressure.to_numpy())))
         ax.add_collection(collection)
-        fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), ax=ax)
+        if config.draw_colorbar: fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), ax=ax)
 
-    def plot(fig:plt.Figure, ax:plt.Axes, simulation_timepoint, frame_num, timepoint):
+    def plot(fig:plt.Figure, ax:plt.Axes, simulation_timepoint, frame_num, timepoint, config:Config=None):
+        if config is None: config = PressureTimepointPlotterV2.Config()
+
         ax.set_xticks([])
         ax.set_yticks([])
         ax.set_xlabel(f'{float(timepoint)/60/24:.1f} days')
         ax.margins(0.01)
         ax.set_title(f'{simulation_timepoint.name}/{simulation_timepoint.id} #{frame_num} Pressure')
         
-        PressureTimepointPlotterV2.plot_cells(fig, ax, simulation_timepoint)
+        PressureTimepointPlotterV2.plot_cells(fig, ax, simulation_timepoint, config)
 
         ax.relim()
         ax.set_ylim(simulation_timepoint.data.y.min(), simulation_timepoint.data.y.max())
