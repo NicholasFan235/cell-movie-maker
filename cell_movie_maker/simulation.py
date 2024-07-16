@@ -1,5 +1,5 @@
 
-from .simulation_timepoint import SimulationTimepoint, MacrophageSimulationTimepoint
+from .simulation_timepoint import SimulationTimepoint, MacrophageSimulationTimepoint, LiverMetSimulationTimepoint
 import os
 import re
 import multiprocessing
@@ -64,3 +64,15 @@ class MacrophageSimulation(Simulation):
         if timestep not in self.results_timesteps: return None
         return MacrophageSimulationTimepoint(self.id, self.name, self.results_folder, timestep)
     
+    def read_parameters(self):
+        pass
+
+class LiverMetSimulation(Simulation):
+    def read_timepoint(self, timestep:int):
+        if timestep > max(self.results_timesteps):
+            return LiverMetSimulationTimepoint(self.id, self.name, self.results_folder, max(self.results_timesteps))
+        if timestep not in self.results_timesteps: return None
+        return LiverMetSimulationTimepoint(self.id, self.name, self.results_folder, timestep)
+    
+    def read_parameters(self):
+        pass

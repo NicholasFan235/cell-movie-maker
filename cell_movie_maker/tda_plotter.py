@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 from scipy.spatial import Delaunay
 from scipy.spatial.distance import cdist
-from ripser import Rips
 
 
 def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
@@ -23,6 +22,7 @@ def sub_cmap(cmap, vmin, vmax):
 
 class RipsFiltrationPlotter:
     def plot_tumour_rips(fig, ax, tp):
+        from ripser import Rips
         data = tp.tumour_data
         if len(data) > 0:
             rips = Rips(verbose=False)
@@ -33,6 +33,7 @@ class RipsFiltrationPlotter:
         ax.set_ylabel('Death (Cell Diameters)')
     
     def plot_healthy_tumour_rips(fig, ax, tp):
+        from ripser import Rips
         data = tp.tumour_data[tp.tumour_data.damage < 0.5]
         if len(data) > 0:
             rips = Rips(verbose=False)
@@ -44,6 +45,7 @@ class RipsFiltrationPlotter:
 
 
     def plot_damaged_tumour_rips(fig, ax, tp):
+        from ripser import Rips
         data = tp.tumour_data[tp.tumour_data.damage > 0.5]
         if len(data) > 0:
             rips = Rips(verbose=False)
