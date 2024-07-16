@@ -188,3 +188,48 @@ class MacrophageSimulationTimepoint(SimulationTimepoint):
         vesselLocations = [[float(x) for x in p.strip('[], \t').split(',')] for p in raw.text.strip(' ,\t').split('],[')]
         for xy in vesselLocations: self.data.loc[len(self.data), ['x', 'y', 'cell_type', 'oxygen', 'radius']] =\
             [xy[0], xy[1], 'Blood Vessel', 1, .5]
+
+
+
+class LiverMetSimulationTimepoint(SimulationTimepoint):
+    def __init__(self, id, name, results_folder:pathlib.Path, timestep:int):
+        super().__init__(id, name ,results_folder, timestep)
+
+    def load_data(self, raw):
+        self.load_value(raw, 'oxygen')
+        self.load_value(raw, 'CXCL8')
+        self.load_value(raw, 'volume')
+        self.data['radius'] = .5#np.sqrt(self.data.volume / np.pi)
+
+        self.load_value(raw, 'Legacy Cell types', new_key='cell_type')
+        def interpret_cell_type(cell_type):
+            match cell_type:
+                case 10: return 'T-Cell'
+                case 11: return 'Background'
+                case 12: return 'Met'
+                case 13: return 'Neutrophil'
+                case 14: return 'Fibroblast'
+                case _: return 'Unknown'
+        self.data['cell_type'] = list(map(interpret_cell_type, self.data.cell_type))
+
+    @property
+    def tcell_data(self):
+        return self.data.loc[self.data.cell_type == 'T-Cell']
+        
+    @property
+    def background_data(self):
+        return self.data.loc[self.data.cell_type == 'Background']
+
+    @property
+    def met_data(self):
+        return self.data.loc[self.data.cell_type == 'Met']
+
+    @property
+    def neutrophil_data(self):
+        return self.data.loc[self.data.cell_type == 'Neutrophil']
+
+    @property
+    def fibroblast_data(self):
+        return self.data.loc[self.data.cell_type == 'Fibroblast']
+
+

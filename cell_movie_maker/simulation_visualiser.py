@@ -43,7 +43,8 @@ class AbstractSimulationVisualiser:
 
     def visualise(self, start=0, stop=None, step=1, postprocess=None, clean_dir=True):
         self.create_output_folder(clean_dir=clean_dir)
-        self.postprocess = postprocess
+        if postprocess is not None:
+            self.postprocess = postprocess
 
         self.start = start
         self.stop = stop
@@ -59,6 +60,7 @@ class AbstractSimulationVisualiser:
 class SimulationVisualiser(AbstractSimulationVisualiser):
     def __init__(self, simulation:Simulation, visualisation_name='standard', **kwargs):
         super().__init__(simulation, visualisation_name=visualisation_name, **kwargs)
+        self.plotter_config = TimepointPlotterV2.Config()
 
     def visualise_frame(self, frame_num:int, timepoint:int)->tuple[plt.Figure,plt.Axes]:
         simulation_timepoint = self.sim.read_timepoint(timepoint)
@@ -66,7 +68,7 @@ class SimulationVisualiser(AbstractSimulationVisualiser):
         fig, ax = plt.subplots(1,1, figsize=self.figsize)
         #ax.margins(0.01)
         fig.tight_layout()
-        TimepointPlotterV2.plot(fig, ax, simulation_timepoint, frame_num, timepoint)
+        TimepointPlotterV2.plot(fig, ax, simulation_timepoint, frame_num, timepoint, config=self.plotter_config)
 
         if self.postprocess is not None:
             self.postprocess(fig, ax)
@@ -86,6 +88,7 @@ class SimulationVisualiser(AbstractSimulationVisualiser):
 class TumourSimulationVisualiser(AbstractSimulationVisualiser):
     def __init__(self, simulation:Simulation, visualisation_name='standard_tumour', **kwargs):
         super().__init__(simulation, visualisation_name=visualisation_name, **kwargs)
+        self.tumour_plotter_config = TumourTimepointPlotterV2.Config()
 
     def visualise_frame(self, frame_num:int, timepoint:int)->tuple[plt.Figure,plt.Axes]:
         simulation_timepoint = self.sim.read_timepoint(timepoint)
@@ -93,7 +96,7 @@ class TumourSimulationVisualiser(AbstractSimulationVisualiser):
         fig, ax = plt.subplots(1,1, figsize=self.figsize)
         #ax.margins(0.01)
         fig.tight_layout()
-        TumourTimepointPlotterV2.plot(fig, ax, simulation_timepoint, frame_num, timepoint, sim=self.sim)
+        TumourTimepointPlotterV2.plot(fig, ax, simulation_timepoint, frame_num, timepoint, sim=self.sim, config=self.tumour_plotter_config)
 
         if self.postprocess is not None:
             self.postprocess(fig, ax)
@@ -114,12 +117,13 @@ class HistogramVisualiser(AbstractSimulationVisualiser):
     def __init__(self, simulation:Simulation, visualisation_name='histogram', **kwargs):
         super().__init__(simulation, visualisation_name=visualisation_name, **kwargs)
         self.histogram_plotter_config = HistogramPlotter.Config()
+        self.plotter_config = TimepointPlotterV2.Config()
 
     def visualise_frame(self, frame_num:int, timepoint:int)->tuple[plt.Figure,np.ndarray[plt.Axes]]:
         simulation_timepoint = self.sim.read_timepoint(timepoint)
 
         fig, axs = plt.subplot_mosaic("AB;AC", figsize=self.figsize)
-        TimepointPlotterV2.plot(fig, axs['A'], simulation_timepoint, frame_num, timepoint)
+        TimepointPlotterV2.plot(fig, axs['A'], simulation_timepoint, frame_num, timepoint, config=self.plotter_config)
         HistogramPlotter.cytotoxic_histogram(fig, axs['B'], simulation_timepoint, config=self.histogram_plotter_config)
         HistogramPlotter.tumour_histogram(fig, axs['C'], simulation_timepoint, config=self.histogram_plotter_config)
 
@@ -172,6 +176,7 @@ class ChemokineVisualiser(AbstractSimulationVisualiser):
 class PressureVisualiser(AbstractSimulationVisualiser):
     def __init__(self, simulation:Simulation, visualisation_name='pressure', **kwargs):
         super().__init__(simulation, visualisation_name=visualisation_name, **kwargs)
+        self.pressure_plotter_config = PressureTimepointPlotterV2.Config()
 
     def visualise_frame(self, frame_num:int, timepoint:int)->tuple[plt.Figure,plt.Axes]:
         simulation_timepoint = self.sim.read_timepoint(timepoint)
@@ -179,7 +184,7 @@ class PressureVisualiser(AbstractSimulationVisualiser):
         fig, ax = plt.subplots(1,1, figsize=self.figsize)
         #ax.margins(0.01)
         fig.tight_layout()
-        PressureTimepointPlotterV2.plot(fig, ax, simulation_timepoint, frame_num, timepoint)
+        PressureTimepointPlotterV2.plot(fig, ax, simulation_timepoint, frame_num, timepoint, config=self.pressure_plotter_config)
 
         if self.postprocess is not None:
             self.postprocess(fig, ax)

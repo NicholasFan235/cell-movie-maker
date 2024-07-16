@@ -1,12 +1,13 @@
-from .simulation import Simulation, MacrophageSimulation
-from .simulation_timepoint import SimulationTimepoint, MacrophageSimulationTimepoint
+from .simulation import Simulation, MacrophageSimulation, LiverMetSimulation
+from .simulation1D import Simulation1D
+from .simulation_timepoint import SimulationTimepoint, MacrophageSimulationTimepoint, LiverMetSimulationTimepoint
 from .timepoint_plotter import TimepointPlotter, HistogramPlotter, TumourTimepointPlotter
 from .muspan_plotter import MuspanPCFPlotter, MuspanMacrophagePCFPlotter, MuspanWeightedPCFPlotter
 from .simulation_visualiser import SimulationVisualiser, TumourSimulationVisualiser, HistogramVisualiser, ChemokineVisualiser, PressureVisualiser
 from .muspan_visualisers import MuspanPCFVisualiser, MuspanWeightedPCFVisualiser
 from .grid_visualiser import GridVisualiser
 from .row_visualiser import RowVisualiser
-from .timepoint_plotter_v2 import TimepointPlotterV2, TumourTimepointPlotterV2, PressureTimepointPlotterV2, OxygenTimepointPlotterV2
+from .timepoint_plotter_v2 import TimepointPlotterV2, TumourTimepointPlotterV2, PressureTimepointPlotterV2, OxygenTimepointPlotterV2, LiverMetTimepointPlotterV2
 from .simulation_visualiser_tcellabm_chemokines import TCellABMChemokineVisualiser
 from .simulation_visualiser_tcelalbm_oxygen import TCellABMOxygenVisualiser
 from .simulation_visualiser_tcelalbm_pressure import TCellABMPressureVisualiser, TCellABMPressureVisualiser2
