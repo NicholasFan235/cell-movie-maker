@@ -25,7 +25,7 @@ class Simulation:
     def get_filenames(self):
         self.all_files = os.listdir(self.results_folder)
 
-        p = re.compile('^results_(\d+)\.vtu$')
+        p = re.compile(r'^results_(\d+)\.vtu$')
         self.results_timesteps = sorted(list(
             map(lambda x: int(p.match(x)[1]), filter(p.match, self.all_files))))
     

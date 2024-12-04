@@ -53,7 +53,7 @@ class AbstractMultisimStitcher:
     def n_frames(self, sim, vis_type):
         folder = pathlib.Path(self.output_parent_folder, sim.name, sim.id, vis_type)
         if not folder.exists(): return 0
-        r = re.compile('^frame_\d+\.png')
+        r = re.compile(r'^frame_\d+\.png')
         files = list(map(lambda s: int(s.lstrip('frame_').rstrip('.png')), filter(r.match, os.listdir(folder))))
         return len(files)
 
