@@ -94,6 +94,10 @@ class SimulationTimepoint:
         return self.data.loc[self.data.cell_type == 'Macrophage']
     
     @property
+    def macrophage_data(self):
+        return self.data.loc[self.data.cell_type == 'Macrophage']
+    
+    @property
     def blood_vessel_data(self):
         return self.data.loc[self.data.cell_type == 'Blood Vessel']
 
@@ -125,8 +129,8 @@ class SimulationTimepoint:
         reader.Update()
         output = dsa.WrapDataObject(reader.GetOutput())
         shape = output.Points.max(axis=0)
-        shape = (int(shape[0]+1), int(shape[1]+1))
-        shape = (51,51)
+        shape = (int(np.sqrt(output.Points.shape[0])), int(np.sqrt(output.Points.shape[0])))
+        #shape = (51,51)
         return output.PointData[chemokine].reshape(shape)
 
 
@@ -135,7 +139,6 @@ class MacrophageSimulationTimepoint(SimulationTimepoint):
         super().__init__(id, name ,results_folder, timestep)
 
     def load_data(self, raw):
-        self.load_value(raw, 'Cell cycle progression')
         self.load_value(raw, 'csf1')
         self.load_value(raw, 'csf1_grad_x')
         self.load_value(raw, 'csf1_grad_y')
@@ -151,18 +154,20 @@ class MacrophageSimulationTimepoint(SimulationTimepoint):
         self.load_value(raw, 'tgf_grad_x')
         self.load_value(raw, 'tgf_grad_y')
         self.load_value(raw, 'volume')
+        self.load_value(raw, 'target_radius')
+        self.load_value(raw, 'pressure')
         self.data['radius'] = np.sqrt(self.data.volume / np.pi)
 
-        self.load_value(raw, "Legacy Cell types", new_key='cell_type')
+        self.load_value(raw, "cell_type", new_key="cell_type_raw")
+        self.load_value(raw, "cell_type")
         def interpret_cell_type(cell_type):
-            if cell_type == 1: return 'Stroma'
-            elif cell_type == 3: return 'Tumour'
-            elif cell_type == 6: return 'Apoptotic Cell'
+            if cell_type == 0: return 'Stroma'
+            elif cell_type == 1: return 'Tumour'
+            elif cell_type == 4: return 'Blood Vessel'
             elif cell_type == 7: return 'Macrophage'
+            elif cell_type == 3: return 'Macrophage'
             else: return 'Unknown'
         self.data['cell_type'] = list(map(interpret_cell_type, self.data.cell_type))
-
-        self.read_vessels()
 
     @property
     def cxcl12_data(self):
