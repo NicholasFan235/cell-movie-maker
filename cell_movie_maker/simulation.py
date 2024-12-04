@@ -63,9 +63,6 @@ class MacrophageSimulation(Simulation):
             return MacrophageSimulationTimepoint(self.id, self.name, self.results_folder, max(self.results_timesteps))
         if timestep not in self.results_timesteps: return None
         return MacrophageSimulationTimepoint(self.id, self.name, self.results_folder, timestep)
-    
-    def read_parameters(self):
-        pass
 
 class LiverMetSimulation(Simulation):
     def read_timepoint(self, timestep:int):

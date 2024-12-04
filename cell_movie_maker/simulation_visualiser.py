@@ -1,7 +1,7 @@
 
 from .simulation import Simulation
 from .timepoint_plotter import TimepointPlotter, HistogramPlotter, TumourTimepointPlotter
-from .timepoint_plotter_v2 import TimepointPlotterV2, TumourTimepointPlotterV2, PressureTimepointPlotterV2
+from .timepoint_plotter_v2 import TimepointPlotterV2, TumourTimepointPlotterV2, PressureTimepointPlotterV2, MacrophageTimepointPlotterV2
 import matplotlib.pylab as plt
 import os
 import shutil
@@ -193,6 +193,33 @@ class PressureVisualiser(AbstractSimulationVisualiser):
 
     def visualise(self, auto_execute=True, disable_tqdm=False, *args, **kwargs):
         super().visualise(*args, **kwargs)
+
+        if auto_execute:
+            self.sim.for_timepoint(self._visualise_frame, start=self.start, stop=self.stop, step=self.step, disable_tqdm=disable_tqdm)
+
+class MacrophageVisualiser(AbstractSimulationVisualiser):
+    def __init__(self, simulation:Simulation, visualisation_name='standard_macrophages', **kwargs):
+        super().__init__(simulation, visualisation_name=visualisation_name, **kwargs)
+        self.macrophage_plotter_config = MacrophageTimepointPlotterV2.Config()
+
+    def visualise_frame(self, frame_num:int, timepoint:int)->tuple[plt.Figure,plt.Axes]:
+        simulation_timepoint = self.sim.read_timepoint(timepoint)
+
+        fig, ax = plt.subplots(1,1, figsize=self.figsize)
+        #ax.margins(0.01)
+        fig.tight_layout()
+        MacrophageTimepointPlotterV2.plot(fig, ax, simulation_timepoint, frame_num, timepoint, sim=self.sim, config=self.macrophage_plotter_config)
+
+        if self.postprocess is not None:
+            self.postprocess(fig, ax)
+
+        return fig, ax
+
+    def visualise(self, auto_execute=True, disable_tqdm=False, *args, **kwargs):
+        super().visualise(*args, **kwargs)
+
+        #self.tp = TumourTimepointPlotter(marker='o', edgecolors='black', linewidths=0.2, s=20)
+        #self.tp.cmap=True
 
         if auto_execute:
             self.sim.for_timepoint(self._visualise_frame, start=self.start, stop=self.stop, step=self.step, disable_tqdm=disable_tqdm)
