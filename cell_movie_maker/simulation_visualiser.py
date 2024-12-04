@@ -8,6 +8,9 @@ import shutil
 import numpy as np
 import pathlib
 import logging
+import re
+import subprocess
+import errno
 
 
 class AbstractSimulationVisualiser:
@@ -16,6 +19,8 @@ class AbstractSimulationVisualiser:
         self.visualisation_name = visualisation_name
         self.figsize = (8,8)
         self.postprocess = None
+
+        self.label_frames_with_timestep=True
         
         if (not os.path.exists(output_parent_folder)):
             pathlib.Path(output_parent_folder).mkdir(exist_ok=True)
@@ -26,7 +31,7 @@ class AbstractSimulationVisualiser:
             pathlib.Path(self.output_folder).mkdir(exist_ok=True)
         
     def post_frame(self, frame_num:int, timestep:int, fig:plt.Figure, ax:plt.Axes|np.ndarray[plt.Axes]):
-        fig.savefig(os.path.join(self.output_folder, self.visualisation_name, 'frame_{}.png'.format(frame_num)))
+        fig.savefig(os.path.join(self.output_folder, self.visualisation_name, 'frame_{}.png'.format(timestep if self.label_frames_with_timestep else frame_num)))
 
     def visualise_frame(self, frame_num:int, timestep:int)->tuple[plt.Figure,plt.Axes|np.ndarray[plt.Axes]]:
         raise NotImplementedError()
@@ -56,6 +61,62 @@ class AbstractSimulationVisualiser:
             shutil.rmtree(output_folder)
         if not os.path.exists(output_folder):
             pathlib.Path(output_folder).mkdir(exist_ok=True)
+
+    def cleanup_output_folder(self):
+        output_folder = os.path.join(self.output_folder, self.visualisation_name)
+        if output_folder.exists(): shutil.rmtree(output_folder)
+        p = pathlib.Path(self.output_folder, f'{self.visualisation_name}.ffcat')
+        if p.exists(): os.remove(p)
+
+    def create_ffcat(self, *, framerate=30):
+        output_folder:pathlib.Path = pathlib.Path(self.output_folder, self.visualisation_name)
+        if not output_folder.exists(): return
+
+        files = []
+        r = re.compile(r"frame_\d+\..*")
+        for f in output_folder.glob("frame_*"):
+            if r.match(f.name):
+                files.append((int(f.name.lstrip('frame_').split('.')[0]), f))
+        files.sort()
+        
+        with open(pathlib.Path(self.output_folder, f'{self.visualisation_name}.ffcat'), 'w') as f:
+            f.writelines([f"file {p[1]}\r\nduration {1.0/framerate}\r\n" for p in files])
+
+    def generate_mp4_from_ffcat(self, *, framerate:int=30):
+        cat_file:pathlib.Path = pathlib.Path(self.output_folder, f'{self.visualisation_name}.ffcat')
+        if not cat_file.exists(): raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), cat_file)
+        out_file:pathlib.Path = pathlib.Path(self.output_folder, f'{self.visualisation_name}.mp4')
+        
+        subprocess.call([
+            'ffmpeg',
+            '-y',
+            '-safe', '0',
+            '-f', 'concat',
+            '-i', str(cat_file),
+            #'-framerate', str(framerate),
+            '-c:v', 'libx264',
+            '-r', str(framerate),
+            '-pix_fmt', 'yuv420p',
+            #'-vf', 'pad=ceil(iw/2)*2:ceil(ih/2)*2',
+            '-vf', 'scale=-1:-1,pad=ceil(iw/2)*2:ceil(ih/2)*2',
+            str(out_file)
+        ])
+        
+    def generate_mp4(self, *, framerate:int=30):
+        in_files = pathlib.Path(self.output_folder, self.visualisation_name, 'frame_*.png')
+        out_file = pathlib.Path(self.output_folder, f'{self.visualisation_name}.mp4')
+        subprocess.call([
+            'ffmpeg',
+            "-y",
+            "-framerate", str(framerate),
+            #"-pattern_type", "glob"
+            "-i", str(in_files),
+            "-start_number", str(0),
+            "-c:v", "libx264",
+            "-r", str(framerate),
+            "-pix_fmt", "yuv420p",
+            str(out_file)
+        ])
 
 class SimulationVisualiser(AbstractSimulationVisualiser):
     def __init__(self, simulation:Simulation, visualisation_name='standard', **kwargs):
