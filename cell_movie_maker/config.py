@@ -3,7 +3,10 @@ import sys
 import pathlib
 
 
+def env_var(key, default=""):
+    return os.environ[key] if key in os.environ else default
+
 class Config:
-    simulations_folder:pathlib.Path=pathlib.Path(os.environ["CHASTE_TEST_OUTPUT"] if "CHASTE_TEST_OUTPUT" in os.environ else "")
-    output_folder:pathlib.Path=pathlib.Path('visualisations')
+    simulations_folder:pathlib.Path=pathlib.Path(env_var("CHASTE_TEST_OUTPUT"))
+    output_folder:pathlib.Path=pathlib.Path(env_var('CHASTE_VISUALISATIONS_OUTPUT'))
     
