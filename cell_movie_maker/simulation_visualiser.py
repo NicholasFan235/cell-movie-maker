@@ -159,10 +159,11 @@ class HistogramVisualiser(AbstractSimulationVisualiser):
 
 
 class ChemokineVisualiser(AbstractSimulationVisualiser):
-    def __init__(self, visualisation_name, **kwargs):
+    def __init__(self, visualisation_name, chemokine_name=None, **kwargs):
         super().__init__(visualisation_name=visualisation_name, **kwargs)
+        self.chemokine_name = self.visualisation_name if chemokine_name is None else chemokine_name
         self.chemokine_pde_plotter_config = ChemokinePDETimepointPlotter.Config(
-            chemokine=self.visualisation_name, cmap='jet', imshow_kwargs=dict())
+            chemokine=self.chemokine_name, cmap='jet', imshow_kwargs=dict())
 
     def visualise_frame(self, sim:Simulation, tp:SimulationTimepoint, frame_num:int)->tuple[plt.Figure,plt.Axes]:
         data = tp.read_pde(self.chemokine_name)

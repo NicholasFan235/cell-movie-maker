@@ -33,7 +33,7 @@ class AbstractPreprocessor:
     def process(self, sim, start=0, stop=None, step=1, disable_tqdm=False):
         p = self.output_folder.joinpath(sim.name, self.name)
         if not p.exists(): p.mkdir(parents=True, exist_ok=True)
-        self._process_internal(sim, start, stop, step, disable_tqdm)
+        self._process_internal(sim, start=start, stop=stop, step=step, disable_tqdm=disable_tqdm)
 
 class Preprocessor(AbstractPreprocessor):
     def __init__(self, *args, **kwargs):
@@ -44,8 +44,8 @@ class Preprocessor(AbstractPreprocessor):
             BloodVesselCount(),
         ]
 
-    def process(self, start=0, stop=None, step=1, disable_tqdm=False):
-        super().process(start, stop, step, disable_tqdm=disable_tqdm)
+    def process(self, sim, start=0, stop=None, step=1, disable_tqdm=False):
+        super().process(sim, start=start, stop=stop, step=step, disable_tqdm=disable_tqdm)
 
     def add_analyser(self, analyser:AbstractAnalyser):
         self.analysers.append(analyser)
