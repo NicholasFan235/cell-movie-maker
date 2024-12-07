@@ -1,6 +1,6 @@
 from .svg_stitcher import SVGStitcher
 import muspan as ms
-from ..muspan_plotter import MuspanPCFPlotter, MuspanWeightedPCFPlotter
+from ..plotters.legacy_plotters.muspan_plotter import MuspanPCFPlotter, MuspanWeightedPCFPlotter
 
 class SVGStitcherMuspan(SVGStitcher):
     def __init__(self, simulation, visualisation_name='muspan-stitched', *args, **kwargs):

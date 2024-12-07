@@ -1,6 +1,6 @@
 from .svg_stitcher import SVGStitcher
 import muspan as ms
-from ..muspan_plotter import MuspanPCFPlotter, MuspanWeightedPCFPlotter, MuspanMacrophagePCFPlotter
+from ..plotters.legacy_plotters.muspan_plotter import MuspanPCFPlotter, MuspanWeightedPCFPlotter, MuspanMacrophagePCFPlotter
 import matplotlib.pylab as plt
 import matplotlib as mpl
 import os

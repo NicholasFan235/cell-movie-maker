@@ -1,9 +1,9 @@
 from .svg_stitcher import SVGStitcher
 from .svg_stitcher_macrophages import MacrophageSVGStitcher
 import muspan as ms
-from ..muspan_plotter import MuspanPCFPlotter, MuspanMacrophagePCFPlotter
-from ..graph_stats_plotter import GraphAssociationsPlotter
-from ..tda_plotter import RipsFiltrationPlotter
+from ..plotters.legacy_plotters.muspan_plotter import MuspanPCFPlotter, MuspanMacrophagePCFPlotter
+from ..plotters.legacy_plotters.graph_stats_plotter import GraphAssociationsPlotter
+from ..plotters.legacy_plotters.tda_plotter import RipsFiltrationPlotter
 
 class CustomStitcher(SVGStitcher):
     def __init__(self, simulation, visualisation_name, output_parent_folder='visualisations'):
