@@ -1,7 +1,6 @@
 
-from .simulation import Simulation
-from .timepoint_plotter import TimepointPlotter
-from .timepoint_plotter_v2 import TimepointPlotterV2
+from ..simulation import Simulation
+from ..plotters import TimepointPlotter
 import matplotlib.pylab as plt
 import os
 import shutil
@@ -32,6 +31,9 @@ class RowVisualiser:
 
         self.postprocess_grid = None
 
+        self.plotter = TimepointPlotter
+        self.plotter_config = TimepointPlotter.Config()
+
     def post_frame(self, frame_num:int, timestep:int, fig:plt.Figure, ax:plt.Axes|np.ndarray[plt.Axes]):
         fig.savefig(os.path.join(self.output_folder_grid, f'frame_{frame_num}.png'))
 
@@ -43,7 +45,7 @@ class RowVisualiser:
         for i,(simulation, sim_id) in enumerate(zip(self.simulations, self.sim_ids)):
             simulation_timepoint = simulation.read_timepoint(timepoint)
             if simulation_timepoint is not None:
-                TimepointPlotterV2.plot(fig, axs[i], simulation_timepoint, frame_num, timepoint)
+                self.plotter.plot(fig, axs[i], simulation_timepoint, frame_num, simulation_timepoint.timestep, sim=simulation, config=self.plotter_config)
         for ax in axs:
             ax.margins(0.01)
 

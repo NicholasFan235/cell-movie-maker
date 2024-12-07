@@ -1,7 +1,8 @@
 
-from .simulation import Simulation
-from .timepoint_plotter import TimepointPlotter
-from .timepoint_plotter_v2 import TimepointPlotterV2
+from ..simulation import Simulation
+from ..plotters import TimepointPlotter
+# from .timepoint_plotter import TimepointPlotter
+# from .timepoint_plotter_v2 import TimepointPlotterV2
 import matplotlib.pylab as plt
 import os
 import shutil
@@ -33,6 +34,10 @@ class GridVisualiser:
         self.figsize = (8,8)
         self.dpi = 100
         self.postprocess_grid = None
+
+        self.plotter_config = TimepointPlotter.Config()
+        self.plotter = TimepointPlotter
+
         
     def post_frame(self, frame_num:int, timepoint:int, fig, ax):
         fig.savefig(os.path.join(self.output_folder_grid, 'frame_{}.png'.format(frame_num)), dpi=self.dpi, facecolor='white', transparent=False)
@@ -43,13 +48,13 @@ class GridVisualiser:
         #fig.subplots_adjust(left=0.02, right=0.98, bottom=0.02, top=0.98)
         fig.tight_layout()
 
-        for i,(_simulations,_plotters, _ids) in enumerate(zip(self.simulation_grid, self.tp_grid, self.sim_ids)):
-            for j,(simulation,plotter, sim_id) in enumerate(zip(_simulations, _plotters, _ids)):
+        for i,(_simulations, _ids) in enumerate(zip(self.simulation_grid, self.sim_ids)):
+            for j,(simulation, sim_id) in enumerate(zip(_simulations, _ids)):
                 simulation_timepoint = simulation.read_timepoint(timepoint)
                 if len(axs.shape)==1:
-                    plotter.plot(fig, axs[i+j], simulation_timepoint, frame_num, timepoint)
+                    self.plotter.plot(fig, axs[i+j], simulation_timepoint, frame_num, simulation_timepoint.timestep, sim=simulation, config=self.plotter_config)
                 else:
-                    plotter.plot(fig, axs[i][j], simulation_timepoint, frame_num, timepoint)
+                    self.plotter.plot(fig, axs[i][j], simulation_timepoint, frame_num, simulation_timepoint.timestep, sim=simulation, config=self.plotter_config)
 
         if self.postprocess_grid is not None:
             self.postprocess_grid(fig, axs)
@@ -76,13 +81,6 @@ class GridVisualiser:
     def visualise(self, name='grid', start=0, stop=None, step=1,
                   postprocess=None, clean_dir=True, cmap=False, auto_execute=True, disable_tqdm=False):
         self.postprocess_grid = postprocess
-
-        self.tp_grid = [[
-            TimepointPlotterV2()#(marker='o', edgecolors='black', linewidths=0.2, s=60)
-            for i in j] for j in self.simulation_grid]
-        #for tps in self.tp_grid:
-        #    for tp in tps:
-        #        tp.cmap=cmap
 
         if auto_execute:
             self.simulation_grid[0][0].for_timepoint(self._visualise_frame, start=start, stop=stop, step=step, disable_tqdm=disable_tqdm)

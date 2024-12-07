@@ -132,6 +132,10 @@ class SimulationTimepoint:
         shape = (int(np.sqrt(output.Points.shape[0])), int(np.sqrt(output.Points.shape[0])))
         #shape = (51,51)
         return output.PointData[chemokine].reshape(shape)
+    
+    def to_muspan(self):
+        import muspan as ms
+        
 
 
 class MacrophageSimulationTimepoint(SimulationTimepoint):

@@ -1,5 +1,5 @@
 from .svg_stitcher import SVGStitcher
-from ..tda_plotter import RipsFiltrationPlotter
+from ..plotters.legacy_plotters.tda_plotter import RipsFiltrationPlotter
 
 
 class SVGStitcherRipser(SVGStitcher):

@@ -1,5 +1,5 @@
 from .svg_stitcher import SVGStitcher
-from ..graph_stats_plotter import GraphAssociationsPlotter
+from ..plotters.legacy_plotters.graph_stats_plotter import GraphAssociationsPlotter
 
 
 class SVGStitcherGraphStats(SVGStitcher):
