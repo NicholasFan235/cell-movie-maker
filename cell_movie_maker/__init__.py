@@ -1,5 +1,8 @@
 from .config import Config
 
+from .experiment import Experiment, load_experiment
+from .experiment_visualiser import AbstractExperimentVisualiser
+
 from .simulation import Simulation, MacrophageSimulation, LiverMetSimulation, load_simulation
 from .simulation1D import Simulation1D
 from .simulation_timepoint import SimulationTimepoint, MacrophageSimulationTimepoint, LiverMetSimulationTimepoint
