@@ -19,7 +19,7 @@ class ParametersIngest:
         for sim_folder in tqdm.tqdm(experiment.sim_folders, disable=disable_tqdm):
             sim:Simulation = Simulation(sim_folder)
             parameters.extend([dict(
-                experiment=experiment, iteration=int(sim.iteration),
+                experiment=experiment.name, iteration=int(sim.iteration),
                 parameter_name=k, parameter_value=v, was_varied=False)
                 for k,v in sim.parameters.items()])
         self.db.add_bulk_parameters(parameters, commit=True, close_connection=True)
