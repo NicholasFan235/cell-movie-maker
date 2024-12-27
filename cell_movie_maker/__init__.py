@@ -20,3 +20,8 @@ from . import preprocessor
 from .preprocessor import Preprocessor
 
 from . import analysers
+
+try:
+    from . import csdc
+except Exception as e:
+    pass
