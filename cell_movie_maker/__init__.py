@@ -18,3 +18,5 @@ from . import multisim_stitchers
 # from . import svg
 from . import preprocessor
 from .preprocessor import Preprocessor
+
+from . import analysers
