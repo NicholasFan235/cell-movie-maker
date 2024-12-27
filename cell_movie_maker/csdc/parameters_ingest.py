@@ -23,7 +23,7 @@ class ParametersIngest:
                 parameter_name=k, parameter_value=v, was_varied=False)
                 for k,v in sim.parameters.items()])
         self.db.add_bulk_parameters(parameters, commit=True, close_connection=True)
-        self.db.interpret_varied_params(experiment)
+        self.db.interpret_varied_parameters(experiment)
         self.db.commit()
         self.db.close_connection()
     
