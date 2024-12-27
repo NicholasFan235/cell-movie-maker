@@ -28,7 +28,7 @@ class InfoIngester(AnalysisIngest):
             results = []
             for sim_id in tqdm.tqdm(sims_batch, disable=disable_tqdm):
                 info_file = Config.output_folder.joinpath(experiment.name, "info", f'sim_{sim_id}.csv')
-                if not info_file.exists(): continue
+                if not info_file.exists(): logging.error(f"No such file {info_file}")
                 info = pd.read_csv(info_file, index_col='timestep')
                 results.append(dict(experiment=experiment.name, iteration=sim_id, timestep=None, analysis_name="cellcounts", analysis_value=info.to_json()))
             self.db.add_bulk_analysis(results, commit=True, close_connection=True)
