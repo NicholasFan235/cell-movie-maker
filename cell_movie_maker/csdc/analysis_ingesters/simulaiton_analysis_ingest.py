@@ -30,7 +30,6 @@ class SimulationAnalysisIngest(AnalysisIngest):
 
     def ingest_experiment(self, experiment:Experiment, analyser:typing.Type[SimulationAnalyser]):
         skip_sim_ids = self.get_skip_sims(experiment, str(analyser))
-
         for i, sims_batch in enumerate(chunk(experiment.sim_ids, self.batch_size)):
             to_process = [experiment.read_simulation(sim_id) for sim_id in sims_batch if sim_id not in skip_sim_ids]
             logging.info(f"Batch {i}, Performing {len(to_process)} new analysis...")
