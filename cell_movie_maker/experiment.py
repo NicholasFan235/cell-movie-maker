@@ -22,18 +22,21 @@ sim_iteration_regex_search = re.compile(r'/sim_(?P<iteration>\d+)/')
 class Experiment:
     
                 
-    # class Simulations:
-    #     def __init__(self, experiment):
-    #         self.experiment = experiment
+    class Simulations:
+        def __init__(self, experiment):
+            self.experiment = experiment
         
-    #     def __getitem__(self, index:int):
-    #         match index:
-    #             case int():
-    #                 return self.experiment.read_simulation(index)
-    #             case slice():
-    #                 return [self.experiment.read_simulation(p) for p in self.sim_folders[index]]
-    #             case _:
-    #                 raise IndexError
+        def __getitem__(self, index:int):
+            match index:
+                case int():
+                    return Simulation(self.experiment.sim_folders[index])
+                case slice():
+                    return [Simulation(p) for p in self.experiment.sim_folders[index]]
+                case _:
+                    raise IndexError
+        
+        def __len__(self):
+            return len(self.experiment.sim_ids)
 
     def __init__(self, experiment_folder:str|pathlib.Path):
         self.experiment_folder:pathlib.Path = pathlib.Path(experiment_folder)
@@ -42,6 +45,7 @@ class Experiment:
         self.name:str = self.experiment_folder.name
         self.sim_folders:list[str] = list(self.experiment_folder.glob("sim_*/results_from_time_0"))
         self.sim_ids:list[int] = [int(sim_iteration_regex_search.search(str(f))["iteration"]) for f in self.sim_folders]
+        self.simulations = Experiment.Simulations(self)
 
     def read_simulation(self, id:int|str)->Simulation:
         match id:
