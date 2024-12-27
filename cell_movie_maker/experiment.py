@@ -12,8 +12,11 @@ from .config import Config
 import errno
 import typing
 
+from __future__ import annotations
+
 
 sim_iteration_regex = re.compile(r'^sim_(?P<iteration>\d+)$')
+sim_iteration_regex_search = re.compile(r'/sim_(?P<iteration>\d+)/')
 
 class Experiment:
     
@@ -36,7 +39,8 @@ class Experiment:
         assert self.experiment_folder.is_dir(), f'{self.experiment_folder} does not exist, or is a file.'
 
         self.name:str = self.experiment_folder.name
-        self.sim_folders = list(self.experiment_folder.glob("sim_*/results_from_time_0"))
+        self.sim_folders:list[str] = list(self.experiment_folder.glob("sim_*/results_from_time_0"))
+        self.sim_ids:list[int] = [int(sim_iteration_regex_search.search(str(f))["iteration"]) for f in self.sim_folders]
 
     def read_simulation(self, id:int|str)->Simulation:
         match id:
@@ -50,13 +54,13 @@ class Experiment:
             case _:
                 raise IndexError
     
-    def for_timepoint(self, func, start=0, stop=60000, step=600, maxproc=64, disable_tqdm=False):
+    def for_timepoint(self, func:typing.Callable[[Experiment,int,int],None], start=0, stop=60000, step=600, maxproc=64, disable_tqdm=False):
         N = len(list(range(start,stop,step)))
         with multiprocessing.Pool(processes=min(multiprocessing.cpu_count()-1, maxproc)) as pool:
             _=list(tqdm.tqdm(pool.imap(func, zip(itertools.repeat(self), range(start,stop,step), range(N))),
                 total=N, disable=disable_tqdm))
     
-    def for_timepoint_single_thread(self, func, start=0, stop=60000, step=600, disable_tqdm=False):
+    def for_timepoint_single_thread(self, func:typing.Callable[[Experiment,int,int],None], start=0, stop=60000, step=600, disable_tqdm=False):
         N = len(list(range(start,stop,step)))
         _ = [func((self,tp, i)) for i, tp in tqdm.tqdm(enumerate(range(start,stop,step)), total=N, disable=disable_tqdm)]
 
