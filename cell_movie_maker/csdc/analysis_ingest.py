@@ -4,7 +4,7 @@ from ..simulation import Simulation
 from ..simulation_timepoint import SimulationTimepoint
 import typing
 
-class AnalysisIngester:
+class AnalysisIngest:
     def __init__(self, db:csdc.ChasteDatabase):
         self.db:csdc.ChasteDatabase = db
 

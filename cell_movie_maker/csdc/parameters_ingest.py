@@ -10,7 +10,7 @@ def chunk(l, n):
     for i in range(0, len(l), n):
         yield l[i:i+n]
 
-class ParameterIngester:
+class ParametersIngest:
     def __init__(self, db:csdc.ChasteDatabase):
         self.db:csdc.ChasteDatabase = db
 
