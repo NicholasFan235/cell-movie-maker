@@ -32,8 +32,8 @@ class Simulation:
         if not results_folder.name == 'results_from_time_0': results_folder = results_folder.joinpath('results_from_time_0')
         assert self.results_folder.is_dir(), f'{self.results_folder} does not exist, or is a file.'
 
-        self.id:str = self.results_folder.parent.name
-        self.name:str = self.results_folder.parent.parent.name
+        self.id:str = self.results_folder.parent.name # e.g. sim_0
+        self.name:str = self.results_folder.parent.parent.name # experiment name
         m = sim_iteration_regex.match(self.id)
         if m: self.iteration = int(m['iteration'])
 
