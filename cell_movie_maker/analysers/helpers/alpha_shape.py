@@ -1,4 +1,3 @@
-
 from shapely.ops import unary_union, polygonize
 from scipy.spatial import Delaunay
 import shapely.geometry as geometry
@@ -45,8 +44,10 @@ def alpha_shape(points, alpha):
         # Semiperimeter of triangle
         s = (a + b + c)/2.0
 
+        if s*(s-a)*(s-b)*(s-c) < 0: continue
         # Area of triangle by Heron's formula
         area = math.sqrt(s*(s-a)*(s-b)*(s-c))
+        if area<=0: continue
         circum_r = a*b*c/(4.0*area)
 
         # Here's the radius filter.
