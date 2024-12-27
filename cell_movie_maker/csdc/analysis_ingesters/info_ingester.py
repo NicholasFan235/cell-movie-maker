@@ -24,7 +24,7 @@ class InfoIngester(AnalysisIngest):
         if batch_size is None: batch_size = len(experiment.sim_ids)
         for i, sims_batch in enumerate(chunk(experiment.sim_ids, batch_size)):
             if is_batched: logging.info(f"Batch {i}...")
-            self.db.add_bulk_simulations([dict(experiment=experiment, iteration=int(sim_id)) for sim_id in sims_batch], commit=True, close_connection=True)
+            self.db.add_bulk_simulations([dict(experiment=experiment.name, iteration=int(sim_id)) for sim_id in sims_batch], commit=True, close_connection=True)
             results = []
             for sim_id in tqdm.tqdm(sims_batch, disable=disable_tqdm):
                 info_file = Config.output_folder.joinpath(experiment.name, "info", f'sim_{sim_id}.csv')
