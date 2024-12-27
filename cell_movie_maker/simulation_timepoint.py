@@ -78,7 +78,7 @@ class SimulationTimepoint:
             self.data[new_key] = raw[name]
         else:
             self.data[new_key] = default
-        self.columns.insert(new_key)
+        self.columns.add(new_key)
 
     @property
     def cytotoxic_data(self):
