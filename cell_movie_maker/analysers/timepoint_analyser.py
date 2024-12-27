@@ -13,3 +13,6 @@ class TimepointAnalyser:
 
     def analyse(self, timepoint:SimulationTimepoint)->pd.DataFrame|pd.Series|float|int:
         pass
+
+    def __str__(self):
+        raise NotImplementedError
