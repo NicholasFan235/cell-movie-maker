@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from .simulation import Simulation
 import pathlib
 import numpy as np
@@ -12,7 +14,6 @@ from .config import Config
 import errno
 import typing
 
-from __future__ import annotations
 
 
 sim_iteration_regex = re.compile(r'^sim_(?P<iteration>\d+)$')
