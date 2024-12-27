@@ -18,9 +18,9 @@ class SimulationTimepoint:
         self.n_points = raw.GetNumberOfPoints()
         self.data = pd.DataFrame(
             index=np.arange(self.n_points))
+        self.columns = set()
         self.load_locations(raw)
         self.load_data(raw.PointData)
-        self.columns = set()
 
     def read_data(self):
         reader = vtk.vtkXMLUnstructuredGridReader()
@@ -30,6 +30,7 @@ class SimulationTimepoint:
     
     def load_locations(self, raw):
         self.data.loc[:,["x", "y", "z"]] = raw.Points
+        self.columns = set()
 
     def load_data(self, raw):
         self.load_value(raw, 'volume')
