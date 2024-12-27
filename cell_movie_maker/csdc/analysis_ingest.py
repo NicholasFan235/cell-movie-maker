@@ -5,8 +5,8 @@ from ..simulation_timepoint import SimulationTimepoint
 import typing
 
 class AnalysisIngest:
-    def __init__(self, db:csdc.ChasteDatabase):
-        self.db:csdc.ChasteDatabase = db
+    def __init__(self, db:csdc.Connection):
+        self.db:csdc.Connection = db
 
     def ingest_experiment(self, experiment:Experiment, *args, **kwargs):
         raise NotImplementedError

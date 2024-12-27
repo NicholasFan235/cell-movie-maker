@@ -11,8 +11,8 @@ def chunk(l, n):
         yield l[i:i+n]
 
 class ParametersIngest:
-    def __init__(self, db:csdc.ChasteDatabase):
-        self.db:csdc.ChasteDatabase = db
+    def __init__(self, db:csdc.Connection):
+        self.db:csdc.Connection = db
 
     def ingest_experiment(self, experiment:typing.Type[Experiment], disable_tqdm:bool=False):
         parameters = []
