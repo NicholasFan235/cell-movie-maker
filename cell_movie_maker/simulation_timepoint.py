@@ -9,8 +9,8 @@ import xml.etree.ElementTree
 
 class SimulationTimepoint:
     def __init__(self, id, name, results_folder:pathlib.Path, timestep:int):
-        self.id = id
-        self.name = name
+        self.id = id # e.g. sim_0
+        self.name = name # experiment name
         self.results_folder = results_folder
         self.results_file = pathlib.Path(self.results_folder, 'results_{}.vtu'.format(timestep))
         self.timestep = timestep
@@ -20,6 +20,7 @@ class SimulationTimepoint:
             index=np.arange(self.n_points))
         self.load_locations(raw)
         self.load_data(raw.PointData)
+        self.columns = set()
 
     def read_data(self):
         reader = vtk.vtkXMLUnstructuredGridReader()
@@ -76,6 +77,7 @@ class SimulationTimepoint:
             self.data[new_key] = raw[name]
         else:
             self.data[new_key] = default
+        self.columns.insert(new_key)
 
     @property
     def cytotoxic_data(self):
@@ -135,7 +137,11 @@ class SimulationTimepoint:
     
     def to_muspan(self):
         import muspan as ms
-        
+        domain = ms.domain(f'{self.name} {self.id} {self.timestep}')
+        domain.add_points(self.data[['x', 'y']].to_numpy())
+        for c in self.columns:
+            domain.add_labels(c, self.data[c])
+        return domain
 
 
 class MacrophageSimulationTimepoint(SimulationTimepoint):
