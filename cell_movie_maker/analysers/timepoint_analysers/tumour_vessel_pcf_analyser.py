@@ -25,8 +25,8 @@ class TumourVesselPCFAnalyser(TimepointAnalyser):
         domain = timepoint.to_muspan()
         r,g = ms.spatial_statistics.cross_pair_correlation_function(
             domain,
-            ms.query.query(domain, "celltype", "is", "Tumour"),
-            ms.query.query(domain, "celltype", "is", "Vessel"),
+            ms.query.query(domain, "cell_type", "is", "Tumour"),
+            ms.query.query(domain, "cell_type", "is", "Blood Vessel"),
             max_R = self.r_max, annulus_width=self.dr, annulus_step=self.step)
         return pd.DataFrame.from_dict({'r':r, 'g':g}, orient='columns')
 
