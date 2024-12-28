@@ -46,7 +46,7 @@ class TimepointAnalysisIngest(AnalysisIngest):
         skip_sim_timepoints = self.get_skip_sims(experiment, str(analyser))
         for i, sims_batch in enumerate(chunk(experiment.sim_ids, self.batch_size)):
             to_process = []
-            logging.info(f"Batch {i} / {len(experiment.sim_ids)/self.batch_size}")
+            logging.info(f"Batch {i} / {len(experiment.sim_ids)//self.batch_size+1}")
             logging.info(f"Batch {i}, Checking {len(sims_batch)} sims...")
             for sim_id in tqdm.tqdm(sims_batch):
                 timesteps = set()
