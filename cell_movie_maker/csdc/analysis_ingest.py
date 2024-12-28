@@ -26,3 +26,12 @@ class AnalysisIngest:
                     self.db.get_connection(), params=dict(analysis_name = analysis_name, experiment=experiment))
         self.db.close_connection()
         return set(skip_ids.iteration)
+    
+    def get_skip_sim_timepoints(self, experiment:Experiment, analysis_name:str):
+        if not self.skip_existing: return set()
+        experiment = str(experiment)
+        skip_ids = pd.read_sql("SELECT iteration, timestep FROM analysis INNER JOIN simulations ON analysis.simulation_id = simulations.id WHERE analysis_name = :analysis_name AND experiment = :experiment",
+                    self.db.get_connection(), params=dict(analysis_name = analysis_name, experiment=experiment))
+        self.db.close_connection()
+        return {(int(r[0]), int(r[1])) for _,r in skip_ids.iterrows()}
+    
