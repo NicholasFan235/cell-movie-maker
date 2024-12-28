@@ -1,3 +1,8 @@
 
 from .roundness_analyser import RoundnessAnalyser
+
+from .tcell_tcell_pcf_analyser import TCellTCellPCFAnalyser
+from .tumour_tumour_pcf_analyser import TumourTumourPCFAnalyser
 from .tumour_vessel_pcf_analyser import TumourVesselPCFAnalyser
+from .vessel_tcell_pcf_analyser import VesselTCellPCFAnalyser
+from .tumour_tcell_pcf_analyser import TumourTCellPCFAnalyser
