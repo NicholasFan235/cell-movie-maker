@@ -25,7 +25,7 @@ def process_timepoint(info:tuple):
     experiment_name = info[2]
     try:
         return dict(experiment=experiment_name,
-                    iteration=tp.id,
+                    iteration=int(tp.id.lstrip('sim_')),
                     timestep=tp.timestep,
                     analysis_name=str(analyser),
                     analysis_value=analyser.analyse(tp).to_json())
