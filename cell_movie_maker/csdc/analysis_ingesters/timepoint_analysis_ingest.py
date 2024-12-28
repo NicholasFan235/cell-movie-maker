@@ -66,6 +66,7 @@ class TimepointAnalysisIngest(AnalysisIngest):
                     total=len(to_process)))
             analysis = [r for r in analysis if r is not None]
 
+            logging.info(f"Batch {i}, Inserting {len(analysis)} new analysis...")
             self.db.add_bulk_analysis(analysis, commit=True, close_connection=True)
         self.db.commit()
         self.db.close_connection()
