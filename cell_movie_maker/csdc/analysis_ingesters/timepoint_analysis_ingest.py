@@ -23,11 +23,15 @@ def process_timepoint(info:tuple):
     tp:SimulationTimepoint = info[0]
     analyser:typing.Type[TimepointAnalyser] = info[1]
     experiment_name = info[2]
-    return dict(experiment=experiment_name,
-                iteration=tp.id,
-                timestep=tp.timestep,
-                analysis_name=str(analyser),
-                analysis_value=analyser.analyse(tp).to_json())
+    try:
+        return dict(experiment=experiment_name,
+                    iteration=tp.id,
+                    timestep=tp.timestep,
+                    analysis_name=str(analyser),
+                    analysis_value=analyser.analyse(tp).to_json())
+    except RuntimeError as e:
+        logging.warning(e)
+        return None
 
 
 class TimepointAnalysisIngest(AnalysisIngest):
