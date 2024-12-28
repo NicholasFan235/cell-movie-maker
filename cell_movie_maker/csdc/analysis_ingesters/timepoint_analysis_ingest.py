@@ -31,7 +31,8 @@ def process_timepoint(info:tuple):
 
 
 class TimepointAnalysisIngest(AnalysisIngest):
-    def __init__(self, batch_size=500, timestep_slice:slice=slice(None, None, -4)):
+    def __init__(self, *args, batch_size=500, timestep_slice:slice=slice(None, None, -4), **kwargs):
+        super().__init__(*args, **kwargs)
         self.batch_size = batch_size
         self.timestep_slice = timestep_slice
 
