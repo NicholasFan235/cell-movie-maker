@@ -43,7 +43,7 @@ class TimepointAnalysisIngest(AnalysisIngest):
 
 
     def ingest_experiment(self, experiment:Experiment, analyser:typing.Type[TimepointAnalyser]):
-        skip_sim_timepoints = self.get_skip_sims(experiment, str(analyser))
+        skip_sim_timepoints = self.get_skip_sim_timepoints(experiment, str(analyser))
         for i, sims_batch in enumerate(chunk(experiment.sim_ids, self.batch_size)):
             to_process = []
             logging.info(f"Batch {i} / {len(experiment.sim_ids)//self.batch_size+1}")
