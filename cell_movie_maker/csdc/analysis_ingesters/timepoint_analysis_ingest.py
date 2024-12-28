@@ -39,10 +39,19 @@ class TimepointAnalysisIngest(AnalysisIngest):
 
     def ingest_experiment(self, experiment:Experiment, analyser:typing.Type[TimepointAnalyser]):
         skip_sim_timepoints = self.get_skip_sims(experiment, str(analyser))
-        for i, sims_batch in enumerate(chunk(experiment.simulations, self.batch_size)):
-            to_process = [sim.read_timepoint(timestep) for sim in sims_batch
-                          for timestep in sim.results_timesteps[self.timestep_slice]
-                          if (sim.iteration, timestep) not in skip_sim_timepoints]
+        for i, sims_batch in enumerate(chunk(experiment.sim_ids, self.batch_size)):
+            to_process = []
+            for sim_id in sims_batch:
+                timesteps = set()
+                sim = experiment.read_simulation(sim_id)
+                for timestep in sim.results_timesteps[self.timestep_slice]:
+                    if timestep > sim.results_timesteps[-1]: timestep = sim.results_timesteps[-1]
+                    if (sim_id, timestep) not in skip_sim_timepoints:
+                        timesteps.add(timestep)
+                
+                for timestep in timesteps:
+                    to_process.add(sim.read_timepoint(timestep))
+
             logging.info(f"Batch {i}, Performing {len(to_process)} new analysis...")
             with multiprocessing.Pool(self.nproc, maxtasksperchild=1) as p:
                 analysis = list(tqdm.tqdm(
