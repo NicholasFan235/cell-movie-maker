@@ -30,7 +30,7 @@ def process_timepoint(info:tuple):
                     analysis_name=str(analyser),
                     analysis_value=analyser.analyse(tp).to_json())
     except RuntimeError as e:
-        logging.warning(e)
+        logging.debug(e)
         return None
 
 
