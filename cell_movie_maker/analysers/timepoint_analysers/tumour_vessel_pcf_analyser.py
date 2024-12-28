@@ -23,10 +23,12 @@ class TumourVesselPCFAnalyser(TimepointAnalyser):
     def analyse(self, timepoint:SimulationTimepoint)->pd.DataFrame|pd.Series|float|int:
         import muspan as ms
         domain = timepoint.to_muspan()
+        p1 = ms.query.interpret_query(ms.query.query(domain, "cell_type", "is", "Tumour"))
+        p2 = ms.query.interpret_query(ms.query.query(domain, "cell_type", "is", "Blood Vessel"))
+        if len(p1) == 0 or len(p2) == 0: raise RuntimeError("Cannot calculate PCF with 0 cells")
         r,g = ms.spatial_statistics.cross_pair_correlation_function(
             domain,
-            ms.query.query(domain, "cell_type", "is", "Tumour"),
-            ms.query.query(domain, "cell_type", "is", "Blood Vessel"),
+            p1, p2,
             max_R = self.r_max, annulus_width=self.dr, annulus_step=self.step)
         return pd.DataFrame.from_dict({'r':r, 'g':g}, orient='columns')
 
