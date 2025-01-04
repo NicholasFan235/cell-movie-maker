@@ -16,12 +16,15 @@ class ParametersIngest:
 
     def ingest_experiment(self, experiment:typing.Type[Experiment], disable_tqdm:bool=False):
         parameters = []
+        sims_data = []
         for sim_folder in tqdm.tqdm(experiment.sim_folders, disable=disable_tqdm):
             sim:Simulation = Simulation(sim_folder)
             parameters.extend([dict(
                 experiment=experiment.name, iteration=int(sim.iteration),
                 parameter_name=k, parameter_value=v, was_varied=False)
                 for k,v in sim.parameters.items()])
+            sims_data.append(dict(experiment=experiment.name, iteration=int(sim.iteration)))
+        self.db.add_bulk_simulations(sims_data, commit=False, close_connection=False)
         self.db.add_bulk_parameters(parameters, commit=True, close_connection=True)
         self.db.interpret_varied_parameters(experiment.name)
         self.db.commit()
