@@ -60,7 +60,7 @@ class TimepointPlotter:
         ax.add_collection(collection)
 
     def plot(fig:plt.Figure, ax:plt.Axes, simulation_timepoint, frame_num:int, timepoint:int, *, sim=None, config:Config=None):
-        if config is None: config = TimepointPlotterV2.Config()
+        if config is None: config = TimepointPlotter.Config()
         ax.set_xticks([])
         ax.set_yticks([])
         ax.set_xlabel(f'{float(timepoint)/60/24:.1f} days')
