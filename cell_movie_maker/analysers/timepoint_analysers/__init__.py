@@ -6,3 +6,6 @@ from .tumour_tumour_pcf_analyser import TumourTumourPCFAnalyser
 from .tumour_vessel_pcf_analyser import TumourVesselPCFAnalyser
 from .vessel_tcell_pcf_analyser import VesselTCellPCFAnalyser
 from .tumour_tcell_pcf_analyser import TumourTCellPCFAnalyser
+
+from .tumour_region_sizes_analyser import TumourRegionSizesAnalyser
+from .tumour_region_tcell_count_analyser import TumourRegionTCellCountAnalyser
