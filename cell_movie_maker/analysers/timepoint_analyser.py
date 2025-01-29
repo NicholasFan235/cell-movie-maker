@@ -11,7 +11,7 @@ class TimepointAnalyser:
     def __init__(self):
         pass
 
-    def analyse(self, timepoint:SimulationTimepoint)->pd.DataFrame|pd.Series|float|int:
+    def analyse(self, timepoint:SimulationTimepoint, sim:Simulation=None)->pd.DataFrame|pd.Series|float|int:
         pass
 
     def __str__(self):
