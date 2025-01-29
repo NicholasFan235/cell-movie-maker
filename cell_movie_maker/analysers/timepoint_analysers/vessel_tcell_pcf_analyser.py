@@ -20,7 +20,7 @@ class VesselTCellPCFAnalyser(TimepointAnalyser):
         self.dr = dr
         self.step = step
         
-    def analyse(self, timepoint:SimulationTimepoint)->pd.DataFrame|pd.Series|float|int:
+    def analyse(self, timepoint:SimulationTimepoint, sim:Simulation=None)->pd.DataFrame|pd.Series|float|int:
         import muspan as ms
         domain = timepoint.to_muspan()
         p1 = ms.query.interpret_query(ms.query.query(domain, "cell_type", "is", "Blood Vessel"))

@@ -20,7 +20,7 @@ class TumourRegionSizesAnalyser(TimepointAnalyser):
         self.hypoxic_threshold = 0.1
         
     def analyse(self, timepoint:SimulationTimepoint, sim:Simulation=None)->pd.DataFrame|pd.Series|float|int:
-        hypoxic_threshold = self.hypoxic_threshold if sim is None else sim.parameters['TumourHypoxicThreshold']
+        hypoxic_threshold = self.hypoxic_threshold if sim is None else sim.parameters['TumourHypoxicConcentration']
         hypoxic_cells = timepoint.tumour_data[timepoint.tumour_data.oxygen <= hypoxic_threshold]
 
         hypoxic_region = alpha_shape(hypoxic_cells[['x','y']].to_numpy(), alpha=self.alpha)[0]

@@ -22,7 +22,7 @@ class MultiTimepointAnalyser(SimulationAnalyser):
         df = []
         for timestep in simulation.results_timesteps[self.timepoint_slice]:
             tp = simulation.read_timepoint(timestep)
-            df.append(dict(timestep=timestep, **self.timepoint_analyser.analyse(tp)))
+            df.append(dict(timestep=timestep, **self.timepoint_analyser.analyse(tp, simulation)))
         return pd.DataFrame(df).set_index('timestep')
 
     def __str__(self):
