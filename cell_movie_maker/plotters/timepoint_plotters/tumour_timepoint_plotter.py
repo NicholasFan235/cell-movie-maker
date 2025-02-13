@@ -28,7 +28,7 @@ class TumourTimepointPlotter:
             b = 0.01 if sim is None else sim.parameters['TumourHypoxicConcentration']
             if cell.oxygen <= a:
                 # necrotic
-                c = 'white'
+                c = 'lightgray'
             elif cell.oxygen <= b:
                 # hypoxic
                 c = 'darkorchid'

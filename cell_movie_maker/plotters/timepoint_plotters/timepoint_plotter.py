@@ -10,9 +10,6 @@ from ..helpers import truncate_colormap
 class TimepointPlotter:
     @dataclasses.dataclass
     class Config:
-        p_max:float|None=None
-        pressure_cmap:str|matplotlib.colors.LinearSegmentedColormap='cividis'
-        draw_colorbar:bool=True
         ylim:tuple[int]=None
         xlim:tuple[int]=None
 

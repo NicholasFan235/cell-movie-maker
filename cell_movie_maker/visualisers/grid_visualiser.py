@@ -43,7 +43,8 @@ class GridVisualiser:
         fig.savefig(os.path.join(self.output_folder_grid, 'frame_{}.png'.format(frame_num)), dpi=self.dpi, facecolor='white', transparent=False)
 
     def visualise_frame(self, frame_num:int, timepoint:int)->tuple[plt.Figure,plt.Axes|np.ndarray[plt.Axes]]:
-        fig, axs = plt.subplots(self.shape[0],self.shape[1],figsize=(self.shape[1]*self.figsize[0],self.shape[0]*self.figsize[1]))
+        fig, axs = plt.subplots(self.shape[0],self.shape[1],figsize=(self.shape[1]*self.figsize[0],self.shape[0]*self.figsize[1]),
+                                gridspec_kw=dict(hspace=0, wspace=0))
         #fig.subplots_adjust(left=0.1, right=0.9, bottom=0.1, top=0.9, wspace=0.1, hspace=0.1)
         #fig.subplots_adjust(left=0.02, right=0.98, bottom=0.02, top=0.98)
         fig.tight_layout()
