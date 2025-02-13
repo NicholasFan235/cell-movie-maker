@@ -20,7 +20,7 @@ def chunk(l, n):
 def process_sim(info:tuple):
     sim:Simulation = info[0]
     analyser:typing.Type[SimulationAnalyser] = info[1]
-    return dict(experiment=sim.name, iteration=sim.iteration, analysis_name=str(analyser), analysis_value=analyser.analyse(sim).to_json(), timestep=None)
+    return dict(experiment=sim.name, iteration=sim.iteration, analysis_name=str(analyser), analysis_value=analyser.analyse(sim).to_json(), timestep=-1)
 
 class SimulationAnalysisIngest(AnalysisIngest):
     def __init__(self, *args, **kwargs):

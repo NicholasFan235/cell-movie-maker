@@ -29,7 +29,7 @@ class Simulation:
 
     def __init__(self, results_folder:str|pathlib.Path, sampling_timestep_multiple:int=60, timesteps_per_hour:int=120):
         self.results_folder:pathlib.Path = pathlib.Path(results_folder)
-        if not results_folder.name == 'results_from_time_0': results_folder = results_folder.joinpath('results_from_time_0')
+        if not self.results_folder.name == 'results_from_time_0': self.results_folder = self.results_folder.joinpath('results_from_time_0')
         assert self.results_folder.is_dir(), f'{self.results_folder} does not exist, or is a file.'
 
         self.id:str = self.results_folder.parent.name # e.g. sim_0

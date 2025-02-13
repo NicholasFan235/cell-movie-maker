@@ -2,7 +2,8 @@
 from .timepoint_plotter import TimepointPlotter
 from .tumour_timepoint_plotter import TumourTimepointPlotter
 from .tumour_count_plotter import TumourCountPlotter, TumourDamageCountPlotter, TumourDamageHistogramPlotter
-from .tcell_count_plotter import TCellCountPlotter, TCellExhaustionCountPlotter, TCellExhaustionHistogramPlotter
+from .tumour_region_size_plotter import TumourRegionSizePlotter
+from .tcell_count_plotter import TCellCountPlotter, TCellExhaustionCountPlotter, TCellExhaustionHistogramPlotter, TCellTumourStackedRegionCountPlotter, TCellTumourRegionCountPlotter, TCellTumourRegionDensityPlotter
 from .oxygen_timepoint_plotter import OxygenTimepointPlotter
 from .pressure_timepoint_plotter import PressureTimepointPlotter
 from .chemokine_timepoint_plotter import ChemokineTimepointPlotter, ChemokinePDETimepointPlotter
