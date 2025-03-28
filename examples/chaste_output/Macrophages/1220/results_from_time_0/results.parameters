@@ -1,0 +1,127 @@
+<Chaste>
+
+	<OffLatticeSimulation-2-2>
+		<Dt>0.00833333</Dt>
+		<EndTime>500</EndTime>
+		<SamplingTimestepMultiple>1200</SamplingTimestepMultiple>
+		<OutputDivisionLocations>0</OutputDivisionLocations>
+		<OutputCellVelocities>0</OutputCellVelocities>
+	</OffLatticeSimulation-2-2>
+
+	<NodeBasedCellPopulation-2>
+		<MechanicsCutOffLength>1.5</MechanicsCutOffLength>
+		<UseVariableRadii>0</UseVariableRadii>
+		<MeinekeDivisionSeparation>0.3</MeinekeDivisionSeparation>
+		<CentreBasedDivisionRule>
+			<RandomDirectionCentreBasedDivisionRule-2-2>
+			</RandomDirectionCentreBasedDivisionRule-2-2>
+		</CentreBasedDivisionRule>
+		<DampingConstantNormal>1</DampingConstantNormal>
+		<DampingConstantMutant>1</DampingConstantMutant>
+		<OutputResultsForChasteVisualizer>1</OutputResultsForChasteVisualizer>
+	</NodeBasedCellPopulation-2>
+
+	<CellCycleModels>
+		<GreenspanAndVolumeCellCycle>
+			<MinCellCycleDuration>24</MinCellCycleDuration>
+			<MaxCellCycleDuration>40</MaxCellCycleDuration>
+			<HypoxicConcentration>0.1</HypoxicConcentration>
+			<NecroticConcentration>0.01</NecroticConcentration>
+			<QuiescenceVolumeProportion>0.75</QuiescenceVolumeProportion>
+		</GreenspanAndVolumeCellCycle>
+	</CellCycleModels>
+
+	<SrnModels>
+		<NullSrnModel>
+		</NullSrnModel>
+	</SrnModels>
+
+	<CellKillers>
+		<ApoptoticCellKiller-2>
+		</ApoptoticCellKiller-2>
+	</CellKillers>
+
+	<SimulationModifiers>
+		<EllipticBoxDomainPdeModifier_VariableTimestep_PointVesselBCs-2>
+			<TimestepInterval>1</TimestepInterval>
+			<mVesselLocations>[41,3,],[3,40,],[27,8,],[47,22,],[11,44,],[1,20,],[8,15,],[39,41,],[16,49,],[49,14,],[15,44,],[1,8,],[1,35,],[34,2,],[4,33,],[19,9,],[1,44,],[41,19,],[3,42,],[33,9,],[1,2,],[33,41,],[37,11,],[44,48,],[5,2,],[7,14,],[35,3,],[10,33,],[9,4,],[34,44,],[24,4,],[25,8,],[18,49,],[13,9,],[11,42,],			</mVesselLocations>
+		</EllipticBoxDomainPdeModifier_VariableTimestep_PointVesselBCs-2>
+		<ParabolicBoxDomainPdeModifier-2>
+		</ParabolicBoxDomainPdeModifier-2>
+		<ParabolicBoxDomainPdeModifier-2>
+		</ParabolicBoxDomainPdeModifier-2>
+		<ParabolicBoxDomainPdeModifier-2>
+		</ParabolicBoxDomainPdeModifier-2>
+		<EllipticBoxDomainPdeModifier_VariableTimestep_PointVesselBCs-2>
+			<TimestepInterval>1</TimestepInterval>
+			<mVesselLocations>[41,3,],[3,40,],[27,8,],[47,22,],[11,44,],[1,20,],[8,15,],[39,41,],[16,49,],[49,14,],[15,44,],[1,8,],[1,35,],[34,2,],[4,33,],[19,9,],[1,44,],[41,19,],[3,42,],[33,9,],[1,2,],[33,41,],[37,11,],[44,48,],[5,2,],[7,14,],[35,3,],[10,33,],[9,4,],[34,44,],[24,4,],[25,8,],[18,49,],[13,9,],[11,42,],			</mVesselLocations>
+		</EllipticBoxDomainPdeModifier_VariableTimestep_PointVesselBCs-2>
+		<Arwert2018_AddMacrophagesFromPointVesselInResponseToCSFModifier-2>
+			<timeToAddMacrophages>0</timeToAddMacrophages>
+			<numberOfMacrophagesToAdd>100</numberOfMacrophagesToAdd>
+			<numberOfHoursToRunSimulationAfterAddingMacrophages>500</numberOfHoursToRunSimulationAfterAddingMacrophages>
+			<maximalProbOfExtravasationPerHour>0.075</maximalProbOfExtravasationPerHour>
+			<halfMaximalExtravasationCsf1Conc>0.7</halfMaximalExtravasationCsf1Conc>
+			<macrophagePhenotypeIncrementPerHour>0.01</macrophagePhenotypeIncrementPerHour>
+			<tgfbThresholdForMacrophagePhenotypeSwitch>0.5</tgfbThresholdForMacrophagePhenotypeSwitch>
+		</Arwert2018_AddMacrophagesFromPointVesselInResponseToCSFModifier-2>
+		<PhenotypeBasedMacrophagePhagocytosisModifier-2>
+		</PhenotypeBasedMacrophagePhagocytosisModifier-2>
+		<VolumeTrackingModifier-2>
+		</VolumeTrackingModifier-2>
+	</SimulationModifiers>
+
+	<Forces>
+		<DiffusionForceChooseD-2>
+			<DiffusionCoefficient>0.01</DiffusionCoefficient> 
+		</DiffusionForceChooseD-2>
+		<ChemotacticForce_PhenotypeDependent_SpecifyNutrientAndCellType-2>
+		</ChemotacticForce_PhenotypeDependent_SpecifyNutrientAndCellType-2>
+		<ChemotacticForce_SpecifyNutrientAndCellType-2>
+		</ChemotacticForce_SpecifyNutrientAndCellType-2>
+		<ChemotacticForce_PhenotypeDependent_SpecifyNutrientAndCellType-2>
+		</ChemotacticForce_PhenotypeDependent_SpecifyNutrientAndCellType-2>
+		<GeneralisedLinearSpringForceDifferentialAdhesionForApoptosisAndMacrophages-2-2>
+			<HomotypicLabelledSpringConstantMultiplier>1</HomotypicLabelledSpringConstantMultiplier>
+			<mHeterotypicLabelledSpringConstantMultiplier>1</mHeterotypicLabelledSpringConstantMultiplier>
+			<mCloserThanRestLengthSpringConstantMultiplier>1</mCloserThanRestLengthSpringConstantMultiplier>
+			<MeinekeSpringStiffness>5</MeinekeSpringStiffness>
+			<MeinekeDivisionRestingSpringLength>0.5</MeinekeDivisionRestingSpringLength>
+			<MeinekeSpringGrowthDuration>1</MeinekeSpringGrowthDuration>
+			<UseCutOffLength>1</UseCutOffLength>
+			<CutOffLength>1.5</CutOffLength>
+		</GeneralisedLinearSpringForceDifferentialAdhesionForApoptosisAndMacrophages-2-2>
+	</Forces>
+
+	<CellPopulationBoundaryConditions>
+		<PlaneBoundaryCondition-2-2>
+			<PointOnPlane>0,0</PointOnPlane>
+			<NormalToPlane>-1,0</NormalToPlane>
+			<UseJiggledNodesOnPlane>0</UseJiggledNodesOnPlane>
+		</PlaneBoundaryCondition-2-2>
+		<PlaneBoundaryCondition-2-2>
+			<PointOnPlane>0,0</PointOnPlane>
+			<NormalToPlane>0,-1</NormalToPlane>
+			<UseJiggledNodesOnPlane>0</UseJiggledNodesOnPlane>
+		</PlaneBoundaryCondition-2-2>
+		<PlaneBoundaryCondition-2-2>
+			<PointOnPlane>0,50</PointOnPlane>
+			<NormalToPlane>0,1</NormalToPlane>
+			<UseJiggledNodesOnPlane>0</UseJiggledNodesOnPlane>
+		</PlaneBoundaryCondition-2-2>
+		<PlaneBoundaryCondition-2-2>
+			<PointOnPlane>50,0</PointOnPlane>
+			<NormalToPlane>1,0</NormalToPlane>
+			<UseJiggledNodesOnPlane>0</UseJiggledNodesOnPlane>
+		</PlaneBoundaryCondition-2-2>
+	</CellPopulationBoundaryConditions>
+
+	<NumericalMethod>
+		<ForwardEulerNumericalMethod-2-2>
+			<UseAdaptiveTimestep>0</UseAdaptiveTimestep> 
+			<UseUpdateNodeLocation>0</UseUpdateNodeLocation> 
+			<GhostNodeForcesEnabled>0</GhostNodeForcesEnabled> 
+		</ForwardEulerNumericalMethod-2-2>
+	</NumericalMethod>
+
+</Chaste>

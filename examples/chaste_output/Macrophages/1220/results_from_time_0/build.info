@@ -1,0 +1,37 @@
+<ChasteBuildInfo>
+	<ProvenanceInfo>
+		<VersionString>2021.1.f7b6baf</VersionString> <!-- build specific -->
+		<IsWorkingCopyModified>1</IsWorkingCopyModified>
+		<BuildInformation>Release</BuildInformation>
+		<BuildTime>Thu, 15 Jul 2021 08:31:46 +0000</BuildTime>
+		<CurrentTime>Wed, 28 Jul 2021 01:15:42 +0000</CurrentTime>
+		<BuilderUnameInfo>Linux</BuilderUnameInfo>
+		<Projects>
+			<Project>
+				<Name>JB_Chaste</Name>
+				<Version>f43db5352956e9c8280de422826f2c320f4e9890</Version>
+				<Modified>True</Modified>
+			</Project>
+		</Projects>
+	</ProvenanceInfo>
+	<Compiler>
+		<NameAndVersion>/usr/bin/c++, version 7.3.1</NameAndVersion>
+		<Flags>-std=c++14 -Wall -Wnon-virtual-dtor -Woverloaded-virtual -Wextra -Wno-unused-parameter -Wvla -Wimplicit-fallthrough=2 -pthread -O3 -DNDEBUG</Flags>
+	</Compiler>
+	<Libraries>
+		<CompiledIn>
+			<PETSc>3.14.1</PETSc>
+			<Boost>1.74.0</Boost>
+			<HDF5>1.10.7</HDF5>
+			<Parmetis>4.0.3</Parmetis>
+		</CompiledIn>
+		<Binaries>
+			<XSD>4.0.0</XSD>
+		</Binaries>
+		<Optional>
+			<SUNDIALS>5.5.0</SUNDIALS>
+			<VTK>6.2</VTK>
+			<Xerces>3.2.3</Xerces>
+		</Optional>
+	</Libraries>
+</ChasteBuildInfo>

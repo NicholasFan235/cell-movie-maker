@@ -1,0 +1,49 @@
+<ChasteBuildInfo>
+	<ProvenanceInfo>
+		<VersionString>2021.1.52e4f09</VersionString> <!-- build specific -->
+		<IsWorkingCopyModified>1</IsWorkingCopyModified>
+		<BuildInformation>Release</BuildInformation>
+		<BuildTime>Thu, 12 Oct 2023 13:22:59 +0000</BuildTime>
+		<CurrentTime>Fri, 31 Jan 2025 07:34:37 +0000</CurrentTime>
+		<BuilderUnameInfo>Linux</BuilderUnameInfo>
+		<ChasteTestOutputDirectory>/data/math-hoffmann-adcc/linc4121/</ChasteTestOutputDirectory>
+		<Projects>
+			<Project>
+				<Name>MacrophageSensitivityABM</Name>
+				<Version>2523a46ba34a7c111c4da43d667e173d7d6fdbda</Version>
+				<Modified>False</Modified>
+			</Project>
+			<Project>
+				<Name>TCellABM</Name>
+				<Version>c173756ce181b05103ed9b56ed46a2284f276889</Version>
+				<Modified>False</Modified>
+			</Project>
+			<Project>
+				<Name>gastric_gland</Name>
+				<Version>ad2f5a14785d8fb2912c70c314a1a63e8d9a7f1d</Version>
+				<Modified>True</Modified>
+			</Project>
+		</Projects>
+	</ProvenanceInfo>
+	<Compiler>
+		<NameAndVersion>/apps/system/easybuild/software/GCCcore/10.3.0/bin/c++, version 10.3.0</NameAndVersion>
+		<Flags>-Wall -Wnon-virtual-dtor -Woverloaded-virtual -Wextra -Wno-attributes -Wno-unused-parameter -Wvla -Wimplicit-fallthrough=2 -O3 -DNDEBUG</Flags>
+	</Compiler>
+	<Libraries>
+		<CompiledIn>
+			<PETSc>3.15.1</PETSc>
+			<Boost>1.76.0</Boost>
+			<HDF5>1.10.7</HDF5>
+			<Parmetis>4.0.3</Parmetis>
+		</CompiledIn>
+		<Binaries>
+			<XSD>4.0.0</XSD>
+		</Binaries>
+		<Optional>
+			<SUNDIALS>6.3.0</SUNDIALS>
+			<VTK>9.0</VTK>
+			<Xerces>3.2.3</Xerces>
+		</Optional>
+	</Libraries>
+	<ChasteCodegenVersion>chaste_codegen 0.10.5</ChasteCodegenVersion>
+</ChasteBuildInfo>

@@ -1,0 +1,21 @@
+Process 0 of 1.
+uname sysname  = Linux
+uname nodename = ondemand-dy-c52xlarge-5
+uname release  = 4.14.219-164.354.amzn2.x86_64
+uname version  = #1 SMP Mon Feb 22 21:18:39 UTC 2021
+uname machine  = x86_64
+
+Information on number and type of processors:
+model name	: Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz
+model name	: Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz
+model name	: Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz
+model name	: Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz
+
+Information on processor caches, in the same order as above:
+cache size	: 36608 KB
+cache size	: 36608 KB
+cache size	: 36608 KB
+cache size	: 36608 KB
+
+Information on system memory:
+MemTotal:       15950052 kB

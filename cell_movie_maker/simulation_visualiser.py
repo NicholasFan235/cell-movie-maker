@@ -82,7 +82,7 @@ class AbstractSimulationVisualiser:
         cat_file:pathlib.Path = self.output_folder.joinpath(sim.name, sim.id, f'{self.visualisation_name}.ffcat')
         if not cat_file.exists(): raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), cat_file)
         out_file:pathlib.Path = self.output_folder.joinpath(sim.name, sim.id, f'{self.visualisation_name}.mp4')
-        
+        print(str(cat_file))
         subprocess.call([
             'ffmpeg',
             '-y',
