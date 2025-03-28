@@ -28,7 +28,8 @@ class AbstractSimulationVisualiser:
 
         
     def post_frame(self, sim:Simulation, timepoint:SimulationTimepoint, frame_num:int, fig:plt.Figure, ax:plt.Axes|np.ndarray[plt.Axes]):
-        fig.savefig(self.output_folder.joinpath(sim.name, sim.id, self.visualisation_name, 'frame_{}.png'.format(timepoint.timestep if self.label_frames_with_timestep else frame_num)))
+        fig.savefig(self.output_folder.joinpath(sim.name, sim.id, self.visualisation_name, 'frame_{}.png'.format(timepoint.timestep if self.label_frames_with_timestep else frame_num)),
+                    bbox_inches='tight', pad_inches=0, dpi=300)
 
     def visualise_frame(self, sim:Simulation, timepoint:SimulationTimepoint, frame_num:int)->tuple[plt.Figure,plt.Axes|np.ndarray[plt.Axes]]:
         raise NotImplementedError()

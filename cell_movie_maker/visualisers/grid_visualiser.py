@@ -1,5 +1,6 @@
 
 from ..simulation import Simulation
+from ..simulation_timepoint import SimulationTimepoint
 from ..plotters import TimepointPlotter
 # from .timepoint_plotter import TimepointPlotter
 # from .timepoint_plotter_v2 import TimepointPlotterV2
@@ -9,6 +10,9 @@ import shutil
 import numpy as np
 import pathlib
 import logging
+import subprocess
+import re
+import errno
 
 
 class GridVisualiser:
@@ -27,7 +31,7 @@ class GridVisualiser:
 
         if (not os.path.exists(output_parent_folder)):
             pathlib.Path(output_parent_folder).mkdir(exist_ok=True)
-        self.output_folder = os.path.join(output_parent_folder, self.sim_name)
+        self.output_folder = pathlib.Path(output_parent_folder).joinpath(self.sim_name)
         if not os.path.exists(self.output_folder):
             pathlib.Path(self.output_folder).mkdir(exist_ok=True)
 
@@ -62,14 +66,15 @@ class GridVisualiser:
 
         return fig, axs
     
-    def _visualise_frame(self, info:tuple[int,int]):
+    def _visualise_frame(self, args:tuple[Simulation,SimulationTimepoint,int]):
+        sim, tp, frame_num = args
         try:
-            fig, ax = self.visualise_frame(*info)
+            fig, ax = self.visualise_frame(frame_num, tp.timestep)
             if fig is not None:
-                self.post_frame(*info, fig, ax)
+                self.post_frame(frame_num, tp.timestep, fig, ax)
                 plt.close(fig)
         except Exception as e:
-            logging.error(f'Error processing frame #{info[1]}: {e}')
+            logging.error(f'Error processing frame #{frame_num}: {e}')
             raise e
 
     def create_output_folder(self, name='grid', *, clean_dir=False):
@@ -79,10 +84,65 @@ class GridVisualiser:
         if not os.path.exists(self.output_folder_grid):
             pathlib.Path(self.output_folder_grid).mkdir(exist_ok=True)
 
-    def visualise(self, name='grid', start=0, stop=None, step=1,
+    def visualise(self, name='grid', sample_sim=None, start=0, stop=None, step=1,
                   postprocess=None, clean_dir=True, cmap=False, auto_execute=True, disable_tqdm=False):
         self.postprocess_grid = postprocess
 
         if auto_execute:
-            self.simulation_grid[0][0].for_timepoint(self._visualise_frame, start=start, stop=stop, step=step, disable_tqdm=disable_tqdm)
+            assert sample_sim is not None
+            self.create_output_folder(name)
+            sample_sim.for_timepoint(self._visualise_frame, start=start, stop=stop, step=step, disable_tqdm=disable_tqdm)
         
+    def create_ffcat(self, name='grid', *, framerate=30):
+        output_folder:pathlib.Path = self.output_folder.joinpath(name)
+        if not output_folder.exists(): return
+
+        files = []
+        r = re.compile(r"frame_\d+\..*")
+        for f in output_folder.glob("frame_*"):
+            if r.match(f.name):
+                files.append((int(f.name.lstrip('frame_').split('.')[0]), f))
+        files.sort()
+        
+        with open(self.output_folder.joinpath(f'{name}.ffcat'), 'w') as f:
+            f.writelines([f"file {p[1]}\r\nduration {1.0/framerate}\r\n" for p in files])
+
+    def generate_mp4_from_ffcat(self, name='grid', *, framerate:int=30):
+        cat_file:pathlib.Path = self.output_folder.joinpath(f'{name}.ffcat')
+        if not cat_file.exists(): raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), cat_file)
+        out_file:pathlib.Path = self.output_folder.joinpath(f'{name}.mp4')
+        
+        subprocess.call([
+            'ffmpeg',
+            '-y',
+            '-safe', '0',
+            '-f', 'concat',
+            '-i', str(cat_file),
+            #'-framerate', str(framerate),
+            '-c:v', 'libx264',
+            '-r', str(framerate),
+            '-pix_fmt', 'yuv420p',
+            #'-vf', 'pad=ceil(iw/2)*2:ceil(ih/2)*2',
+            '-vf', 'scale=-1:-1,pad=ceil(iw/2)*2:ceil(ih/2)*2',
+            '-loglevel', 'error',
+            '-hide_banner',
+            str(out_file)
+        ])
+        
+    def generate_mp4(self, name='grid', *, framerate:int=30):
+        in_files = self.output_folder.joinpath(name, 'frame_*.png')
+        out_file = self.output_folder.joinpath(f'{name}.mp4')
+        subprocess.call([
+            'ffmpeg',
+            "-y",
+            "-framerate", str(framerate),
+            #"-pattern_type", "glob"
+            "-i", str(in_files),
+            "-start_number", str(0),
+            "-c:v", "libx264",
+            "-r", str(framerate),
+            "-pix_fmt", "yuv420p",
+            '-loglevel', 'error',
+            '-hide_banner',
+            str(out_file)
+        ])
