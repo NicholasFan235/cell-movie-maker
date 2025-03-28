@@ -11,7 +11,7 @@ from . import plotters
 from .plotters import TimepointPlotter, TumourTimepointPlotter
 
 from . import visualisers
-from .simulation_visualiser import SimulationVisualiser, TumourSimulationVisualiser, HistogramVisualiser, ChemokineVisualiser, PressureVisualiser, MacrophageVisualiser
+from .simulation_visualiser import AbstractSimulationVisualiser, SimulationVisualiser, TumourSimulationVisualiser, HistogramVisualiser, ChemokineVisualiser, PressureVisualiser, MacrophageVisualiser
 
 from . import multisim_stitchers
 

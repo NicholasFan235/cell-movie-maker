@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<VTKFile type="UnstructuredGrid" version="0.1" byte_order="LittleEndian" header_type="UInt32" compressor="vtkZLibDataCompressor">
+  <UnstructuredGrid>
+    <Piece NumberOfPoints="208"                  NumberOfCells="0"                   >
+      <PointData>
+        <DataArray type="Float64" Name="Prolif Cell types" format="appended" RangeMin="0"                    RangeMax="2"                    offset="0"                   />
+        <DataArray type="Float64" Name="Ages" format="appended" RangeMin="0"                    RangeMax="17.468838004"         offset="60"                  />
+        <DataArray type="Float64" Name="CellData damage" format="appended" RangeMin="0"                    RangeMax="0"                    offset="152"                 />
+        <DataArray type="Float64" Name="CellData potency" format="appended" RangeMin="-2"                   RangeMax="-2"                   offset="204"                 />
+        <DataArray type="Float64" Name="Legacy Cell types" format="appended" RangeMin="0"                    RangeMax="2"                    offset="264"                 />
+        <DataArray type="Float64" Name="Process rank" format="appended" RangeMin="0"                    RangeMax="0"                    offset="324"                 />
+        <DataArray type="Float64" Name="ccl5" format="appended" RangeMin="-3.0532915525e-12"    RangeMax="0.00094267481844"     offset="376"                 />
+        <DataArray type="Float64" Name="ccl5_grad_x" format="appended" RangeMin="-0.00034539961749"    RangeMax="1.2428982373e-14"     offset="532"                 />
+        <DataArray type="Float64" Name="ccl5_grad_y" format="appended" RangeMin="-4.4250947317e-13"    RangeMax="0.00034539961749"     offset="696"                 />
+        <DataArray type="Float64" Name="cell_type" format="appended" RangeMin="1"                    RangeMax="4"                    offset="832"                 />
+        <DataArray type="Float64" Name="cxcl9" format="appended" RangeMin="0"                    RangeMax="0"                    offset="900"                 />
+        <DataArray type="Float64" Name="damage" format="appended" RangeMin="0"                    RangeMax="0"                    offset="952"                 />
+        <DataArray type="Float64" Name="damping_coefficient" format="appended" RangeMin="1"                    RangeMax="1"                    offset="1004"                />
+        <DataArray type="Float64" Name="density" format="appended" RangeMin="0"                    RangeMax="0"                    offset="1064"                />
+        <DataArray type="Float64" Name="density_grad_x" format="appended" RangeMin="0"                    RangeMax="0"                    offset="1116"                />
+        <DataArray type="Float64" Name="density_grad_y" format="appended" RangeMin="0"                    RangeMax="0"                    offset="1168"                />
+        <DataArray type="Float64" Name="friction" format="appended" RangeMin="0"                    RangeMax="0"                    offset="1220"                />
+        <DataArray type="Float64" Name="ifn-gamma" format="appended" RangeMin="0"                    RangeMax="0"                    offset="1272"                />
+        <DataArray type="Float64" Name="n_interactions" format="appended" RangeMin="0"                    RangeMax="0"                    offset="1324"                />
+        <DataArray type="Float64" Name="oxygen" format="appended" RangeMin="0.99966912233"        RangeMax="0.99998356346"        offset="1376"                />
+        <DataArray type="Float64" Name="potency" format="appended" RangeMin="-2"                   RangeMax="-2"                   offset="1576"                />
+        <DataArray type="Float64" Name="pressure" format="appended" RangeMin="0"                    RangeMax="0"                    offset="1636"                />
+        <DataArray type="Float64" Name="target_radius" format="appended" RangeMin="0"                    RangeMax="0.75"                 offset="1688"                />
+        <DataArray type="Float64" Name="volume" format="appended" RangeMin="0.48338757317"        RangeMax="0.7853981634"         offset="1756"                />
+      </PointData>
+      <CellData>
+      </CellData>
+      <Points>
+        <DataArray type="Float64" Name="Vertex positions" NumberOfComponents="3" format="appended" RangeMin="0"                    RangeMax="141.42135624"         offset="1832"                />
+      </Points>
+      <Cells>
+        <DataArray type="Int64" Name="connectivity" format="appended" RangeMin=""                     RangeMax=""                     offset="3028"                />
+        <DataArray type="Int64" Name="offsets" format="appended" RangeMin=""                     RangeMax=""                     offset="3044"                />
+        <DataArray type="UInt8" Name="types" format="appended" RangeMin=""                     RangeMax=""                     offset="3060"                />
+      </Cells>
+    </Piece>
+  </UnstructuredGrid>
+  <AppendedData encoding="base64">
+   _AQAAAACAAACABgAAGQAAAA==eJxjYCAKOIzSo/QoPUqP0qM0NWkABv4zAQ==AQAAAACAAACABgAAMgAAAA==eJxjYDhRMSNcyoGBwebsv+UKQLrsCGuFIZA22PvoIA+QHgWjYBSMglEwCqgPAE/1Cpw=AQAAAACAAACABgAAFQAAAA==eJxjYBgFo2AUjIJRMAroDwAGgAABAQAAAACAAACABgAAGgAAAA==eJxjYACDAwyj9Cg9So/So/QoTUcaAFAXnAE=AQAAAACAAACABgAAGQAAAA==eJxjYCAKOIzSo/QoPUqP0qM0NWkABv4zAQ==AQAAAACAAACABgAAFQAAAA==eJxjYBgFo2AUjIJRMAroDwAGgAABAQAAAACAAACABgAAYgAAAA==eJwzkz9kd3e7t31VKtehXY/97L+/uW6lzu9mbwIVZxhhwH0+33LmJ0x7ccnHbj4ukfjEAKf8UAd/c3X5Lv3hHrb+GwWjYCiBvDcX9qXd7qJ7fvxdelTjQ14Qze0FAKbxJEA=AQAAAACAAACABgAAZwAAAA==eJxTMXKSehOnuV8FSn87sYL/xiIzOJ9hhIHQ2TlfTesZ9+KS1zm0uU00WRSn/FAHf3N1+S794bYdaHeMglEwChgYXmmfTfv6rY3s8sZ9Pt9y5idMJOfn36VHNT7kBdG8nAMAw6YlgQ==AQAAAACAAACABgAAUgAAAA==eJzTMXKSehOnaa8DpX+dWMF/Y5EZnM8wwoDfXNtzcwyF9uKSXzXzW3a+bootPd00CoY/WNJqmmcuLj6arkYBCpBjkTvQpRyPszwa6gAAspEYVw==AQAAAACAAACABgAAHwAAAA==eJxjYACBD/YMeGkBh1F6lB6lR+lRepSmJg0ABXNEfQ==AQAAAACAAACABgAAFQAAAA==eJxjYBgFo2AUjIJRMAroDwAGgAABAQAAAACAAACABgAAFQAAAA==eJxjYBgFo2AUjIJRMAroDwAGgAABAQAAAACAAACABgAAGwAAAA==eJxjYACBD/YMo/QoPUqP0qP0KE1HGgAxsvYxAQAAAACAAACABgAAFQAAAA==eJxjYBgFo2AUjIJRMAroDwAGgAABAQAAAACAAACABgAAFQAAAA==eJxjYBgFo2AUjIJRMAroDwAGgAABAQAAAACAAACABgAAFQAAAA==eJxjYBgFo2AUjIJRMAroDwAGgAABAQAAAACAAACABgAAFQAAAA==eJxjYBgFo2AUjIJRMAroDwAGgAABAQAAAACAAACABgAAFQAAAA==eJxjYBgFo2AUjIJRMAroDwAGgAABAQAAAACAAACABgAAFQAAAA==eJxjYBgFo2AUjIJRMAroDwAGgAABAQAAAACAAACABgAAggAAAA==eJx7d/UI27G/7+3/bUmT9ALSmTU1s6r/vbd/BxV//+Xr2Tv/cdNv0GiN6M3td0ngo4sTK0+uOcSqJ1ackDsI2Uuqu2itn9jwIzW8iI0HYsOZXuFOrfAgNZ1Rmq+obR618im5+YzceKfUH9Qqf0gtlyhNn4TUUcsf5IYjjA8AQFytbQ==AQAAAACAAACABgAAGgAAAA==eJxjYACDAwyj9Cg9So/So/QoTUcaAFAXnAE=AQAAAACAAACABgAAFQAAAA==eJxjYBgFo2AUjIJRMAroDwAGgAABAQAAAACAAACABgAAHwAAAA==eJxjYACBB/YMeOkXo/QoPUqP0qP0KE0BjQkALdPsHA==AQAAAACAAACABgAAJwAAAA==eJzbW9iSd+n9Pfu9OGgJXZeQ34ovR+lRepQepUfpUZqqNADwZpJjAQAAAACAAACAEwAAbgMAAA==eJyFl8luFEEQROfoIwcOHDigEUIIWRZgVhvj9rCYHYMxy9/Up/Un8QkITbxE9cot+mJluKY6OzIyKmu1+vu8nVbd3zzzm8tx4vq/1htffH79Z53/T2z8RuJz4ReJP/V4O0l8W+uvJl4v4F+E3018rcen74lvav3uAk4e74VPie9o/x+J72v9WeIL4fDyTfj+Nm5fhZPHjnC+66Hw8NC8P7x8WMDXPT79TOzvSp6r68JTl/aux9vHbVw85ZnDy6w8G3zd0/5XEpuHw8RPha+Sz0b7Uxfvs7OAHyVWXch/4PP38fY91j88ms+95Om+Rt+uL79/Jpy+c1+E//o/D9/5pMdn6r7f46VXvZe6thdaT/1OenxmvfVJfbVP7et84P9IOP1s/vGdB9r/dBsPOszviw/w8Fu+kod1s/hHJ/RBPcTyk+JZvFWsfCZ0aT1QX+fDd531+ESsfKhX+S44eUo/5auftT/72Fc3ifeEH2zjQSf481o4PvC4xxt10rlTOpEeJnRlf0OH9iV+777LeTHb/8nPvFGv58LhS74BL+1Vj8PzpPqu4N/nHfm5v/BT1b3OheMeRw+z+458xAN97T6q+vocpB6HPV79qXO/6qLvmnmf5qI6d+y34OKt5hbrgTnEvsr3eM5Bl+Yh59dkHlhn34Nn6xC/tf/QVy8X3qvzGt49n1SsPpoX/BNfHvr6dWL7AP2ic7l82L7N96tepTP3O7r1Pqlvc13SF4POyd/fm3PX80Dl43Mz/TbUHR6sw8wfA8+ZQ4b7At8pnbT0g/uRPJx/9ZH0U3w5f9ZZV8yH1kN4bvZP+k3+VnPdbo+vHiW+JTx6GvoidbRvN84z58P7vA/6X7oHrXu85qJTrYcX65/7iPql5g2fd8nfOq85yb7BvOj5lvnA5xS+aV9Cl/a99OFwTsU3B974vddHb0OfJj/7WOnJ+g/vzfNe1VV4+F2c861z6mr/Ob8cL57VRzVv+76/MF+RX9M8SV/P7lPOe/swvmefybnsPio9Ox906/ta3jvbf9DrRuvXiTUX1Xr7AP3vuStzzKC33GMHH4A390vmj6F/c6+xr1Y93I/41cJ91jqsuWgtnN+rT9H3cN+kftJtzXteH97cd+ht6GvWaW6secD9Qj9ovi1+5DOVh/RQej3QPvD+7178B7sMHHo=AAAAAACAAAAAAAAAAAAAAACAAAAAAAAAAAAAAACAAAAAAAAA
+  </AppendedData>
+</VTKFile>
+
+<!-- Created by Chaste version 2021.1.52e4f09 (with uncommitted modifications) on Fri, 31 Jan 2025 07:34:37 +0000.  Chaste was built on Thu, 12 Oct 2023 13:22:59 +0000 by machine (uname) 'Linux' using settings: Release.  Checked-out project versions: MacrophageSensitivityABM=2523a46ba34a7c111c4da43d667e173d7d6fdbda; TCellABM=c173756ce181b05103ed9b56ed46a2284f276889; gastric_gland=ad2f5a14785d8fb2912c70c314a1a63e8d9a7f1d.
+-->

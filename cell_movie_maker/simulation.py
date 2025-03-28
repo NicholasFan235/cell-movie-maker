@@ -66,13 +66,16 @@ class Simulation:
 
     def for_timepoint(self, func, start=0, stop=None, step=1, maxproc=64, disable_tqdm=False):
         N = len(self.results_timesteps[slice(start, stop, step)])
+        r = None
         with multiprocessing.Pool(processes=min(multiprocessing.cpu_count()-1, maxproc)) as pool:
-            _=list(tqdm.tqdm(pool.imap(func, zip(itertools.repeat(self), self.timepoints[start:stop:step], range(N))),
+            r=list(tqdm.tqdm(pool.imap(func, zip(itertools.repeat(self), self.timepoints[start:stop:step], range(N))),
                 total=N, disable=disable_tqdm))
+        return r
     
     def for_timepoint_single_thread(self, func, start=0, stop=None, step=1, disable_tqdm=False):
         N = len(self.results_timesteps[start:step:step])
-        _ = [func((self,tp, i)) for i, tp in tqdm.tqdm(enumerate(self.timepoints[start:stop:step]), total=N, disable=disable_tqdm)]
+        r = [func((self,tp, i)) for i, tp in tqdm.tqdm(enumerate(self.timepoints[start:stop:step]), total=N, disable=disable_tqdm)]
+        return r
 
     def for_final_timepoint(self, func):
         func(self, self.timepoints[-1], 0)
