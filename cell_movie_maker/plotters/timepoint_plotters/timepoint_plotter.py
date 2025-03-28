@@ -37,9 +37,9 @@ class TimepointPlotter:
         data = simulation_timepoint.cytotoxic_data
         if len(data) <= 0: return
         collection = matplotlib.collections.PatchCollection(
-            [matplotlib.patches.Circle((cell.x, cell.y), cell.radius, ec='darkorange', fc='darkorange', alpha=max(0.1, cell.potency)) for _, cell in data.iterrows()],
+            [matplotlib.patches.Circle((cell.x, cell.y), cell.radius, ec='darkorange', fc='darkorange', alpha=min(1,max(0.1, cell.potency))) for _, cell in data.iterrows()],
             edgecolors='darkorange', facecolors='darkorange')
-        collection.set_alpha(np.maximum(0.1, data.potency.to_numpy()))
+        collection.set_alpha(np.minimum(1, np.maximum(0.1, data.potency.to_numpy())))
         ax.add_collection(collection)
         
     def plot_macrophages(fig:plt.Figure, ax:plt.Axes, simulation_timepoint):

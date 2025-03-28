@@ -45,9 +45,13 @@ class TCellPotencyCount(AbstractAnalyser):
     def __init__(self, name='n_tcells_potency_le', dtype=int, potency_percent=90):
         super().__init__(name + str(potency_percent), dtype)
         self.threshold = potency_percent
+        self.use_params_if_exists = True
     
     def analyse(self, tp:SimulationTimepoint, sim=None):
-        return int(len(tp.cytotoxic_data[tp.cytotoxic_data.potency*100 <= self.threshold]))
+        t = self.threshold/100
+        if self.use_params_if_exists:
+            t = sim.parameters['CD8InitialPotency']*t
+        return int(len(tp.cytotoxic_data[tp.cytotoxic_data.potency <= t]))
 
 class TumourDamageCount(AbstractAnalyser):
     def __init__(self, name='n_tumour_damage_gt', dtype=int, damage_percent=90):
