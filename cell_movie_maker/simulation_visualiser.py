@@ -65,7 +65,7 @@ class AbstractSimulationVisualiser:
         if p.exists(): os.remove(p)
 
     def create_ffcat(self, sim, *, framerate=30):
-        output_folder:pathlib.Path = self.output_folder.joinpath(sim.name, sim.id, self.visualisation_name)
+        output_folder:pathlib.Path = self.output_folder.joinpath(sim.name, sim.id, self.visualisation_name).resolve()
         if not output_folder.exists(): return
 
         files = []
@@ -79,9 +79,9 @@ class AbstractSimulationVisualiser:
             f.writelines([f"file {p[1]}\r\nduration {1.0/framerate}\r\n" for p in files])
 
     def generate_mp4_from_ffcat(self, sim, *, framerate:int=30):
-        cat_file:pathlib.Path = self.output_folder.joinpath(sim.name, sim.id, f'{self.visualisation_name}.ffcat')
+        cat_file:pathlib.Path = self.output_folder.joinpath(sim.name, sim.id, f'{self.visualisation_name}.ffcat').resolve()
         if not cat_file.exists(): raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), cat_file)
-        out_file:pathlib.Path = self.output_folder.joinpath(sim.name, sim.id, f'{self.visualisation_name}.mp4')
+        out_file:pathlib.Path = self.output_folder.joinpath(sim.name, sim.id, f'{self.visualisation_name}.mp4').resolve()
         print(str(cat_file))
         subprocess.call([
             'ffmpeg',
