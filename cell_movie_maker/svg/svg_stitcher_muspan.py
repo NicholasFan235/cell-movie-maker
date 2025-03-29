@@ -1,5 +1,4 @@
 from .svg_stitcher import SVGStitcher
-import muspan as ms
 from ..plotters.legacy_plotters.muspan_plotter import MuspanPCFPlotter, MuspanWeightedPCFPlotter
 
 class SVGStitcherMuspan(SVGStitcher):
@@ -7,6 +6,8 @@ class SVGStitcherMuspan(SVGStitcher):
         super().__init__(simulation ,visualisation_name=visualisation_name, *args, **kwargs)
 
     def read_pointcloud(self, simulation_timepoint, damage=True, potency=True):
+        import muspan as ms
+        
         pc = ms.pointcloud.generatePointCloud('Test',simulation_timepoint.data[['x', 'y']].to_numpy())
         pc.addLabels('Celltype', 'categorical', simulation_timepoint.data.cell_type.to_numpy())
         if potency: pc.addLabels('potency', 'continuous', simulation_timepoint.data.potency.to_numpy())
