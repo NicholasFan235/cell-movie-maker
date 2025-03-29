@@ -11,7 +11,7 @@ import tqdm
 
 
 class AbstractPreprocessor:
-    def __init__(self, output_parent_folder='visualisations', name='info', make_folder_if_not_exists:bool=False):
+    def __init__(self, output_parent_folder=None, name='info', make_folder_if_not_exists:bool=False):
         self.analysers = []
         self.name = name
         

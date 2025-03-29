@@ -4,9 +4,6 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 import dataclasses
 
-import sys
-sys.path.append('/home/linc4121/Code/projects/MuSpAn')
-import muspan as ms
 
 
 def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
@@ -34,6 +31,8 @@ class MuspanPCFPlotter:
         }
     
     def plot_tcell_tcell_pcf(fig, ax, pc, *, config=None):
+        import muspan as ms
+
         if config is None: config = MuspanPCFPlotter.Config()
         categories = pc.labels['Celltype']['categories']
         ax.set_title('T Cell - T Cell PCF')
@@ -51,6 +50,8 @@ class MuspanPCFPlotter:
         ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
 
     def plot_tcell_tumour_pcf(fig, ax, pc, *, config=None):
+        import muspan as ms
+
         if config is None: config = MuspanPCFPlotter.Config()
         categories = pc.labels['Celltype']['categories']
         ax.set_title('T Cell - Tumour PCF')
@@ -68,6 +69,8 @@ class MuspanPCFPlotter:
         ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
 
     def plot_tumour_tumour_pcf(fig, ax, pc, *, config=None):
+        import muspan as ms
+
         if config is None: config = MuspanPCFPlotter.Config()
         categories = pc.labels['Celltype']['categories']
         ax.set_title('Tumour - Tumour PCF')
@@ -85,6 +88,8 @@ class MuspanPCFPlotter:
         ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
 
     def plot_vessel_vessel_pcf(fig, ax, pc, *, config=None):
+        import muspan as ms
+
         if config is None: config = MuspanPCFPlotter.Config()
         categories = pc.labels['Celltype']['categories']
         ax.set_title('Vessel - Vessel PCF')
@@ -102,6 +107,8 @@ class MuspanPCFPlotter:
         ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
     
     def plot_tumour_vessel_pcf(fig, ax, pc, *, config=None):
+        import muspan as ms
+
         if config is None: config = MuspanPCFPlotter.Config()
         categories = pc.labels['Celltype']['categories']
         ax.set_title('Tumour - Vessel PCF')
@@ -119,6 +126,8 @@ class MuspanPCFPlotter:
         ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
 
     def plot_hypoxic_vessel_pcf(fig, ax, pc, *, config=None):
+        import muspan as ms
+
         if config is None: config = MuspanPCFPlotter.Config()
         categories = pc.labels['Celltype']['categories']
         ax.set_title('Tumour - Vessel PCF')
@@ -141,6 +150,8 @@ class MuspanMacrophagePCFPlotter(MuspanPCFPlotter):
         super().__init__(pcf_kwargs=pcf_kwargs)
 
     def plot_macrophage_tumour_pcf(self, fig, ax, pc):
+        import muspan as ms
+
         categories = pc.labels['Celltype']['categories']
         ax.set_title('Macrophage - Tumour PCF')
         if not ('Tumour' in categories and 'Macrophage' in categories):
@@ -166,6 +177,8 @@ class MuspanWeightedPCFPlotter:
         }
     
     def plot_potency_tumour_pcf(fig, ax, pc, config=None):
+        import muspan as ms
+
         if config is None: config = MuspanWeightedPCFPlotter.Config()
         ax.set_title('Tumour - T Cell Potency wPCF')
         categories = pc.labels['Celltype']['categories']
@@ -180,6 +193,8 @@ class MuspanWeightedPCFPlotter:
         ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
     
     def plot_damage_tcell_pcf(fig, ax, pc, config=None):
+        import muspan as ms
+        
         if config is None: config = MuspanWeightedPCFPlotter.Config()
         ax.set_title('T Cell - Tumour Damage wPCF')
         categories = pc.labels['Celltype']['categories']
