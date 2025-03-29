@@ -94,7 +94,7 @@ class GridVisualiser:
             sample_sim.for_timepoint(self._visualise_frame, start=start, stop=stop, step=step, disable_tqdm=disable_tqdm)
         
     def create_ffcat(self, name='grid', *, framerate=30):
-        output_folder:pathlib.Path = self.output_folder.joinpath(name)
+        output_folder:pathlib.Path = self.output_folder.joinpath(name).resolve()
         if not output_folder.exists(): return
 
         files = []
@@ -108,9 +108,9 @@ class GridVisualiser:
             f.writelines([f"file {p[1]}\r\nduration {1.0/framerate}\r\n" for p in files])
 
     def generate_mp4_from_ffcat(self, name='grid', *, framerate:int=30):
-        cat_file:pathlib.Path = self.output_folder.joinpath(f'{name}.ffcat')
+        cat_file:pathlib.Path = self.output_folder.joinpath(f'{name}.ffcat').resolve()
         if not cat_file.exists(): raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), cat_file)
-        out_file:pathlib.Path = self.output_folder.joinpath(f'{name}.mp4')
+        out_file:pathlib.Path = self.output_folder.joinpath(f'{name}.mp4').resolve()
         
         subprocess.call([
             'ffmpeg',
