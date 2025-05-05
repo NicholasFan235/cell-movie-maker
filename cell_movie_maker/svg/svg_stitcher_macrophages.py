@@ -1,5 +1,4 @@
 from .svg_stitcher import SVGStitcher
-import muspan as ms
 from ..plotters.legacy_plotters.muspan_plotter import MuspanPCFPlotter, MuspanWeightedPCFPlotter, MuspanMacrophagePCFPlotter
 import matplotlib.pylab as plt
 import matplotlib as mpl
@@ -62,6 +61,8 @@ class MacrophageSVGStitcher(SVGStitcher):
         ax.set_xlabel('Time /days')
 
     def read_pointcloud(self, simulation_timepoint):
+        import muspan as ms
+        
         pc = ms.pointcloud.generatePointCloud('Test',simulation_timepoint.data[['x', 'y']].to_numpy())
         pc.addLabels('Celltype', 'categorical', simulation_timepoint.data.cell_type.to_numpy())
         pc.addLabels('phenotype', 'continuous', simulation_timepoint.data.phenotype.to_numpy())
