@@ -54,12 +54,18 @@ class TumourRegionTCellCountAnalyser(TimepointAnalyser):
         buffer_region_density = 0 if buffer_region.area <= 0 else buffer_region_count / buffer_region.area
         exterior_region_density = 0 if exterior_region.area <= 0 else exterior_region_count / exterior_region.area
 
+        in_tumour_tcells = timepoint.cytotoxic_data.iloc[shapely.contains_xy(tumour_region, *tcells.T)]
+        in_tumour_mean_potency = in_tumour_tcells['potency'].mean()
+        in_tumour_mean_exhaustion = ((1-in_tumour_tcells['potency'])/sim.parameters['CD8InitialPotency']).mean()
+
         return dict(
             necrotic_region_count=necrotic_region_count, necrotic_region_density=necrotic_region_density,
             hypoxic_region_count=hypoxic_region_count, hypoxic_region_density=hypoxic_region_density,
             normoxic_region_count=normoxic_region_count, normoxic_region_density=normoxic_region_density,
             buffer_region_count=buffer_region_count, buffer_region_density=buffer_region_density,
-            exterior_region_count=exterior_region_count, exterior_region_density=exterior_region_density
+            exterior_region_count=exterior_region_count, exterior_region_density=exterior_region_density,
+            in_tumour_mean_potency=in_tumour_mean_potency,
+            in_tumour_mean_exhaustion=in_tumour_mean_exhaustion
         )
 
     def __str__(self):

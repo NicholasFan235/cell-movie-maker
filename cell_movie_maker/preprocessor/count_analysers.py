@@ -52,6 +52,23 @@ class TCellPotencyCount(AbstractAnalyser):
         if self.use_params_if_exists:
             t = sim.parameters['CD8InitialPotency']*t
         return int(len(tp.cytotoxic_data[tp.cytotoxic_data.potency <= t]))
+    
+class MeanTCellPotency(AbstractAnalyser):
+    def __init__(self, name='avg_tcell_potency', dtype=float):
+        super().__init__(name, dtype)
+        self.use_params_if_exists = True
+    
+    def analyse(self, tp:SimulationTimepoint, sim=None):
+        return tp.cytotoxic_data['potency'].mean()
+    
+class MeanTCellExhaustion(AbstractAnalyser):
+    def __init__(self, name='avg_tcell_exhaustion', dtype=float):
+        super().__init__(name, dtype)
+        self.use_params_if_exists = True
+    
+    def analyse(self, tp:SimulationTimepoint, sim=None):
+        initial_potency = sim.parameters['CD8InitialPotency'] if sim is not None else 1
+        return ((1-tp.cytotoxic_data['potency'])/initial_potency).mean()
 
 class TumourDamageCount(AbstractAnalyser):
     def __init__(self, name='n_tumour_damage_gt', dtype=int, damage_percent=90):
