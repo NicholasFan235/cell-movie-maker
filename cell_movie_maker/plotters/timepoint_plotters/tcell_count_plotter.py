@@ -37,22 +37,24 @@ class TCellExhaustionCountPlotter:
     class Config:
         output_parent_folder:pathlib.Path|str|None=None
         cache:bool=False
+        exhaustion_cmap = matplotlib.colors.LinearSegmentedColormap.from_list('Oranges', [matplotlib.colors.to_rgb('darkorange'), matplotlib.colors.to_rgb('black')])
     
     def plot(fig:plt.Figure, ax:plt.Axes, simulation_timepoint, frame_num, timepoint, *, sim=None, config:Config=None):
         if config is None: config = TCellExhaustionCountPlotter.Config()
         info:pd.DataFrame = load_info(sim, output_folder=config.output_parent_folder, cache=config.cache)
 
         ax.set_title('T-Cell Exhaustion')
-        cmap = plt.get_cmap('Oranges')
-        ax.fill_between(info.index/60/24, info['n_tcells'], color=cmap(0.99), label='0% Exhausted')
-        ax.fill_between(info.index/60/24, info['n_tcells_potency_le90'], color=cmap(0.8), label='10% Exhausted')
-        ax.fill_between(info.index/60/24, info['n_tcells_potency_le80'], color=cmap(0.6), label='20% Exhausted')
-        ax.fill_between(info.index/60/24, info['n_tcells_potency_le60'], color=cmap(0.4), label='40% Exhausted')
-        ax.fill_between(info.index/60/24, info['n_tcells_potency_le20'], color=cmap(0.2), label='80% Exhausted')
+        cmap = config.exhaustion_cmap
+        ax.fill_between(info.index/60/24, info['n_tcells'], color=cmap(0.01), label='0% Exhausted')
+        ax.fill_between(info.index/60/24, info['n_tcells_potency_le90'], color=cmap(0.2), label='10% Exhausted')
+        ax.fill_between(info.index/60/24, info['n_tcells_potency_le80'], color=cmap(0.4), label='20% Exhausted')
+        ax.fill_between(info.index/60/24, info['n_tcells_potency_le60'], color=cmap(0.6), label='40% Exhausted')
+        ax.fill_between(info.index/60/24, info['n_tcells_potency_le20'], color=cmap(0.8), label='80% Exhausted')
         ax.legend(loc='upper left')
         ax.plot(info.index/60/24, info['n_tcells'], '-k')
-        ax.plot(simulation_timepoint.timestep/60/24, info.loc[simulation_timepoint.timestep, 'n_tcells'], 'ro')
-        ax.set_yticks([0, info.loc[simulation_timepoint.timestep, 'n_tcells'], info['n_tcells'].max()])
+        if simulation_timepoint is not None:
+            ax.plot(simulation_timepoint.timestep/60/24, info.loc[simulation_timepoint.timestep, 'n_tcells'], 'ro')
+            ax.set_yticks([0, info.loc[simulation_timepoint.timestep, 'n_tcells'], info['n_tcells'].max()])
         ax.set_xlabel('Time /days')
 
 class TCellExhaustionHistogramPlotter:

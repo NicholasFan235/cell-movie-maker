@@ -2,6 +2,7 @@
 from ..simulation import Simulation
 from ..simulation_timepoint import SimulationTimepoint
 from ..plotters import TimepointPlotter
+from ..config import Config
 # from .timepoint_plotter import TimepointPlotter
 # from .timepoint_plotter_v2 import TimepointPlotterV2
 import matplotlib.pylab as plt
@@ -20,7 +21,8 @@ class GridVisualiser:
         self.results_folder_grid = [[
             os.path.join(sim_folder, 'results_from_time_0')
             for sim_folder in sim_folders] for sim_folders in simulation_folder_grid]
-        self.simulation_grid = [[Simulation(f) for f in fs] for fs in self.results_folder_grid]
+        s = Simulation if Config.simulation_class is None else Config.simulation_class
+        self.simulation_grid = [[s(f) for f in fs] for fs in self.results_folder_grid]
 
         self.sim_ids = [[
             os.path.basename(os.path.dirname(f))

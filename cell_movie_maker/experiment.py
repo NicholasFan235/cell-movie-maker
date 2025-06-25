@@ -27,11 +27,13 @@ class Experiment:
             self.experiment = experiment
         
         def __getitem__(self, index:int):
+            s = Simulation if Config.simulation_class is None else Config.simulation_class
+            # print("Simulation Class: ", s)
             match index:
                 case int():
-                    return Simulation(self.experiment.sim_folders[index])
+                    return s(self.experiment.sim_folders[index])
                 case slice():
-                    return [Simulation(p) for p in self.experiment.sim_folders[index]]
+                    return [s(p) for p in self.experiment.sim_folders[index]]
                 case _:
                     raise IndexError
         
@@ -48,14 +50,16 @@ class Experiment:
         self.simulations = Experiment.Simulations(self)
 
     def read_simulation(self, id:int|str)->Simulation:
+        s = Simulation if Config.simulation_class is None else Config.simulation_class
+        # print("Simulation Class:", s)
         match id:
             case int():
-                return Simulation(self.experiment_folder.joinpath(f"sim_{id}/results_from_time_0"))
+                return s(self.experiment_folder.joinpath(f"sim_{id}/results_from_time_0"))
             case str():
                 if sim_iteration_regex.match(id):
-                    return Simulation(self.experiment_folder.joinpath(id, "results_from_time_0"))
+                    return s(self.experiment_folder.joinpath(id, "results_from_time_0"))
                 else:
-                    return Simulation(id)
+                    return s(id)
             case _:
                 raise IndexError
     
@@ -78,6 +82,8 @@ class Experiment:
 def load_experiment(name:str, cls:typing.Type[Experiment]=Experiment):
     assert isinstance(name, str)
     
+    # if Config.experiment_class is not None: Experiment = Config.experiment_class
+
     assert issubclass(cls, Experiment)
     match name:
         case str():

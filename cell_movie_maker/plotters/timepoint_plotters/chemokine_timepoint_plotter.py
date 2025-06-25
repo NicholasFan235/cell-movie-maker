@@ -49,6 +49,7 @@ class ChemokinePDETimepointPlotter:
         cmap:str|matplotlib.colors.LinearSegmentedColormap='jet'
         chemokine:str='oxygen'
         imshow_kwargs:dict=dataclasses.field(default_factory=dict)
+        colorbar_kwargs:dict=dataclasses.field(default_factory=dict)
         vmin:float=0
         vmax:float|None=None
 
@@ -64,6 +65,6 @@ class ChemokinePDETimepointPlotter:
             origin='lower',
         ) | config.imshow_kwargs
         pos = ax.imshow(data, **kwargs)
-        fig.colorbar(pos, ax=ax)
+        fig.colorbar(pos, ax=ax, **config.colorbar_kwargs)
         ax.set_title(f'{simulation_timepoint.name}/{simulation_timepoint.id} #{frame_num} {config.chemokine}')
 

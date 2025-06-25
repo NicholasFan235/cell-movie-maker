@@ -8,4 +8,5 @@ from .oxygen_timepoint_plotter import OxygenTimepointPlotter
 from .pressure_timepoint_plotter import PressureTimepointPlotter
 from .chemokine_timepoint_plotter import ChemokineTimepointPlotter, ChemokinePDETimepointPlotter
 from .other_timepoint_plotters import MacrophageTimepointPlotter, LiverMetTimepointPlotter
+from .macrophage_count_plotter import MacrophagePhenotypeCountPlotter, MacrophagePhenotypeHistogramPlotter
 

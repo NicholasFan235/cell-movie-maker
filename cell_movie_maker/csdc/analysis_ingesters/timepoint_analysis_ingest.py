@@ -1,6 +1,7 @@
 from __future__ import annotations
 import chaste_simulation_database_connector as csdc
 from ...experiment import Experiment
+from ...simulation import Simulation
 from ...simulation_timepoint import SimulationTimepoint
 from ..analysis_ingest import AnalysisIngest
 from ...analysers.timepoint_analyser import TimepointAnalyser
@@ -12,6 +13,7 @@ import pandas as pd
 import enum
 import multiprocessing
 import itertools
+import logging
 
 
 def chunk(l, n):
@@ -29,7 +31,7 @@ def process_timepoint(info:tuple):
                     timestep=tp.timestep,
                     analysis_name=str(analyser),
                     analysis_value=analyser.analyse(tp).to_json())
-    except RuntimeError as e:
+    except Exception as e:
         logging.debug(e)
         return None
 
@@ -53,11 +55,14 @@ class TimepointAnalysisIngest(AnalysisIngest):
                 sim = experiment.read_simulation(sim_id)
                 for timestep in sim.results_timesteps[self.timestep_slice]:
                     if timestep > sim.results_timesteps[-1]: timestep = sim.results_timesteps[-1]
-                    if (sim_id, timestep) not in skip_sim_timepoints:
-                        timesteps.add(timestep)
+                    if self.skip_existing and (sim_id, timestep) in skip_sim_timepoints: continue
+                    timesteps.add(timestep)
                 
                 for timestep in timesteps:
-                    to_process.append(sim.read_timepoint(timestep))
+                    try:
+                        to_process.append(sim.read_timepoint(timestep))
+                    except Exception as e:
+                        logging.error(f"Unable to process sim_{sim_id} {timestep}")
 
             logging.info(f"Batch {i}, Performing {len(to_process)} new analysis...")
             with multiprocessing.Pool(self.nproc, maxtasksperchild=1) as p:
@@ -70,5 +75,26 @@ class TimepointAnalysisIngest(AnalysisIngest):
             self.db.add_bulk_analysis(analysis, commit=True, close_connection=True)
         self.db.commit()
         self.db.close_connection()
+
+    def ingest_simulation(self, sim:Simulation, analyser:typing.Type[TimepointAnalyser]):
+        skip_sim_timepoints = self.get_skip_sim_timepoints(sim.name, str(analyser))
+
+        timepoints = []
+        for timestep in sim.results_timesteps[self.timestep_slice]:
+            if timestep > sim.results_timesteps[-1]: timestep = sim.results_timesteps[-1]
+            if self.skip_existing and (sim.iteration, timestep) in skip_sim_timepoints: continue
+            timepoints.append(sim.read_timepoint(timestep))
+
+        with multiprocessing.Pool(self.nproc, maxtasksperchild=1) as p:
+            analysis = list(tqdm.tqdm(
+                p.imap(process_timepoint, zip(timepoints, itertools.repeat(analyser), itertools.repeat(str(sim.name)))),
+                total=len(timepoints), desc="Performing analysis"))
+        analysis = [r for r in analysis if r is not None]
+
+        logging.info(f"Inserting {len(analysis)} new analysis...")
+        self.db.add_bulk_analysis(analysis, commit=True, close_connection=True)
+        self.db.commit()
+        self.db.close_connection()
+
 
             

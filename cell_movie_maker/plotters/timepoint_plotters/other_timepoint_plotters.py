@@ -82,6 +82,7 @@ class MacrophageTimepointPlotter:
         collection = matplotlib.collections.PatchCollection(
             [matplotlib.patches.Circle((cell.x, cell.y), cell.radius, ec='none', fc=cmap(norm(cell.phenotype))) for _, cell in data.iterrows()],
             edgecolors='none', facecolors=cmap(norm(data.phenotype.to_numpy())))
+        collection.set_rasterized(True)
         ax.add_collection(collection)
         if config is not None and config.phenotype_colorbar:
             cbar = fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), ax=ax, label='Macrophage Phenotype', ticks=[0,1])
@@ -93,6 +94,7 @@ class MacrophageTimepointPlotter:
         collection = matplotlib.collections.PatchCollection(
             [matplotlib.patches.Circle((cell.x, cell.y), cell.radius, ec='none', fc='lightblue', alpha=0.5) for _, cell in data.iterrows()],
             edgecolors='none', facecolors='lightblue')
+        collection.set_rasterized(True)
         ax.add_collection(collection)
 
     def plot_tumour(fig:plt.Figure, ax:plt.Axes, simulation_timepoint, *, sim=None):
@@ -114,6 +116,7 @@ class MacrophageTimepointPlotter:
             patches.append(matplotlib.patches.Circle((cell.x, cell.y), cell.radius, ec='black', fc=c))
             colors.append(matplotlib.colors.to_rgba(c))
         collection = matplotlib.collections.PatchCollection(patches, edgecolors=np.array(colors), facecolors=np.array(colors))
+        collection.set_rasterized(True)
         #collection.set_facecolors(np.array(colors))
         ax.add_collection(collection)
 
@@ -122,6 +125,7 @@ class MacrophageTimepointPlotter:
         collection = matplotlib.collections.PatchCollection(
             [matplotlib.patches.Circle((cell.x, cell.y), cell.radius, ec='none', fc='red') for _, cell in data.iterrows()],
             edgecolors='none', facecolors='red')
+        collection.set_rasterized(True)
         ax.add_collection(collection)
 
     def plot(fig:plt.Figure, ax:plt.Axes, simulation_timepoint, frame_num, timepoint, *, sim=None, config:Config=None):
@@ -134,8 +138,8 @@ class MacrophageTimepointPlotter:
         ax.set_title(f'{simulation_timepoint.name}/{simulation_timepoint.id} #{frame_num}')
         
         MacrophageTimepointPlotter.plot_stroma(fig, ax, simulation_timepoint)
-        MacrophageTimepointPlotter.plot_macrophages(fig, ax, simulation_timepoint, config=config)
         MacrophageTimepointPlotter.plot_tumour(fig, ax, simulation_timepoint, sim=sim)
+        MacrophageTimepointPlotter.plot_macrophages(fig, ax, simulation_timepoint, config=config)
         MacrophageTimepointPlotter.plot_blood_vessels(fig, ax, simulation_timepoint)
 
         ax.relim()

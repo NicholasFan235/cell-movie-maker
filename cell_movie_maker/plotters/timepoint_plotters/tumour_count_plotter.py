@@ -50,8 +50,9 @@ class TumourDamageCountPlotter:
         ax.fill_between(info.index/60/24, info['n_tumour_damage_gt80'], color=cmap(0.2), label='80% Damaged')
         ax.legend(loc='upper left')
         ax.plot(info.index/60/24, info['n_tumour'], '-k')
-        ax.plot(simulation_timepoint.timestep/60/24, info.loc[simulation_timepoint.timestep, 'n_tumour'], 'ro')
-        ax.set_yticks([0, info.loc[simulation_timepoint.timestep, 'n_tumour'], info.n_tumour.max()])
+        if simulation_timepoint is not None:
+            ax.plot(simulation_timepoint.timestep/60/24, info.loc[simulation_timepoint.timestep, 'n_tumour'], 'ro')
+            ax.set_yticks([0, info.loc[simulation_timepoint.timestep, 'n_tumour'], info.n_tumour.max()])
         #ax.set_ylabel('N Cells')
         ax.set_xlabel('Time /days')
 

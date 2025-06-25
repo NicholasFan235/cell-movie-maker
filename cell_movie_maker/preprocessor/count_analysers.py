@@ -68,7 +68,7 @@ class MeanTCellExhaustion(AbstractAnalyser):
     
     def analyse(self, tp:SimulationTimepoint, sim=None):
         initial_potency = sim.parameters['CD8InitialPotency'] if sim is not None else 1
-        return ((1-tp.cytotoxic_data['potency'])/initial_potency).mean()
+        return ((1-tp.cytotoxic_data['potency']/initial_potency)).mean()
 
 class TumourDamageCount(AbstractAnalyser):
     def __init__(self, name='n_tumour_damage_gt', dtype=int, damage_percent=90):

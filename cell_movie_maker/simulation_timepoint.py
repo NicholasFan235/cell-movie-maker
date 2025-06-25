@@ -6,14 +6,17 @@ import pandas as pd
 import pathlib
 import xml.etree.ElementTree
 
+class Simulation:
+    pass
 
 class SimulationTimepoint:
-    def __init__(self, id, name, results_folder:pathlib.Path, timestep:int):
+    def __init__(self, id, name, results_folder:pathlib.Path, timestep:int, sim:Simulation):
         self.id = id # e.g. sim_0
         self.name = name # experiment name
         self.results_folder = results_folder
         self.results_file = pathlib.Path(self.results_folder, 'results_{}.vtu'.format(timestep))
         self.timestep = timestep
+        self.sim = sim
         raw = self.read_data()
         self.n_points = raw.GetNumberOfPoints()
         self.data = pd.DataFrame(
@@ -70,6 +73,8 @@ class SimulationTimepoint:
 
         self.data['tissue_stress'] = 1 - self.data['radius']/self.data['target_radius']
         self.data.loc[~np.isfinite(self.data.tissue_stress), 'tissue_stress'] = -1
+
+        self.data['exhaustion %'] = 1-self.data['potency']/self.sim.parameters['CD8InitialPotency']
 
     
     def load_value(self, raw, name, default=np.nan, new_key=None):
@@ -146,8 +151,8 @@ class SimulationTimepoint:
 
 
 class MacrophageSimulationTimepoint(SimulationTimepoint):
-    def __init__(self, id, name, results_folder:pathlib.Path, timestep:int):
-        super().__init__(id, name ,results_folder, timestep)
+    def __init__(self, id, name, results_folder:pathlib.Path, timestep:int, sim:Simulation):
+        super().__init__(id, name ,results_folder, timestep, sim)
 
     def load_data(self, raw):
         self.load_value(raw, 'csf1')
@@ -208,8 +213,8 @@ class MacrophageSimulationTimepoint(SimulationTimepoint):
 
 
 class LiverMetSimulationTimepoint(SimulationTimepoint):
-    def __init__(self, id, name, results_folder:pathlib.Path, timestep:int):
-        super().__init__(id, name ,results_folder, timestep)
+    def __init__(self, id, name, results_folder:pathlib.Path, timestep:int, sim:Simulation):
+        super().__init__(id, name ,results_folder, timestep, sim)
 
     def load_data(self, raw):
         self.load_value(raw, 'oxygen')

@@ -60,9 +60,9 @@ class Simulation:
     
     def read_timepoint(self, timestep:int):
         if timestep > max(self.results_timesteps):
-            return SimulationTimepoint(self.id, self.name, self.results_folder, max(self.results_timesteps))
+            return SimulationTimepoint(self.id, self.name, self.results_folder, max(self.results_timesteps), self)
         if timestep not in self.results_timesteps: return None
-        return SimulationTimepoint(self.id, self.name, self.results_folder, timestep)
+        return SimulationTimepoint(self.id, self.name, self.results_folder, timestep, self)
 
     def for_timepoint(self, func, start=0, stop=None, step=1, maxproc=64, disable_tqdm=False):
         N = len(self.results_timesteps[slice(start, stop, step)])
@@ -84,16 +84,16 @@ class Simulation:
 class MacrophageSimulation(Simulation):
     def read_timepoint(self, timestep:int):
         if timestep > max(self.results_timesteps):
-            return MacrophageSimulationTimepoint(self.id, self.name, self.results_folder, max(self.results_timesteps))
+            return MacrophageSimulationTimepoint(self.id, self.name, self.results_folder, max(self.results_timesteps), self)
         if timestep not in self.results_timesteps: return None
-        return MacrophageSimulationTimepoint(self.id, self.name, self.results_folder, timestep)
+        return MacrophageSimulationTimepoint(self.id, self.name, self.results_folder, timestep, self)
 
 class LiverMetSimulation(Simulation):
     def read_timepoint(self, timestep:int):
         if timestep > max(self.results_timesteps):
-            return LiverMetSimulationTimepoint(self.id, self.name, self.results_folder, max(self.results_timesteps))
+            return LiverMetSimulationTimepoint(self.id, self.name, self.results_folder, max(self.results_timesteps), self)
         if timestep not in self.results_timesteps: return None
-        return LiverMetSimulationTimepoint(self.id, self.name, self.results_folder, timestep)
+        return LiverMetSimulationTimepoint(self.id, self.name, self.results_folder, timestep, self)
     
     def read_parameters(self):
         pass
