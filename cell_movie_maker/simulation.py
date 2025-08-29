@@ -10,6 +10,7 @@ from .config import Config
 import errno
 import typing
 import itertools
+import bisect
 
 sim_iteration_regex = re.compile(r'sim_(?P<iteration>\d+)')
 
@@ -61,15 +62,16 @@ class Simulation:
     def read_timepoint(self, timestep:int):
         if timestep > max(self.results_timesteps):
             return SimulationTimepoint(self.id, self.name, self.results_folder, max(self.results_timesteps), self)
-        if timestep not in self.results_timesteps: return None
+        if timestep not in self.results_timesteps:
+            return self.read_timepoint(self.results_timesteps[max(0, bisect.bisect(self.results_timesteps, timestep)-1)])
         return SimulationTimepoint(self.id, self.name, self.results_folder, timestep, self)
 
-    def for_timepoint(self, func, start=0, stop=None, step=1, maxproc=64, disable_tqdm=False):
+    def for_timepoint(self, func, start=0, stop=None, step=1, maxproc=64, disable_tqdm=False, tqdm_kwargs=dict()):
         N = len(self.results_timesteps[slice(start, stop, step)])
         r = None
         with multiprocessing.Pool(processes=min(multiprocessing.cpu_count()-1, maxproc)) as pool:
             r=list(tqdm.tqdm(pool.imap(func, zip(itertools.repeat(self), self.timepoints[start:stop:step], range(N))),
-                total=N, disable=disable_tqdm))
+                total=N, **tqdm_kwargs))
         return r
     
     def for_timepoint_single_thread(self, func, start=0, stop=None, step=1, disable_tqdm=False):

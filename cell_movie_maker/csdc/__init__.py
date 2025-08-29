@@ -5,3 +5,5 @@ from .analysis_ingest import AnalysisIngest
 from .analysis_ingesters.info_ingester import InfoIngester
 from .analysis_ingesters.simulaiton_analysis_ingest import SimulationAnalysisIngest
 from .analysis_ingesters.timepoint_analysis_ingest import TimepointAnalysisIngest
+from .analysis_ingesters.simulaiton_analysis_ingest_parquet import SimulationAnalysisIngestParquet
+from .analysis_ingesters.timepoint_analysis_ingest_parquet import TimepointAnalysisIngestParquet

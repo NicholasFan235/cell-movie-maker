@@ -30,13 +30,13 @@ def process_timepoint(info:tuple):
                     iteration=int(tp.id.lstrip('sim_')),
                     timestep=tp.timestep,
                     analysis_name=str(analyser),
-                    analysis_value=analyser.analyse(tp).to_json())
+                    analysis_value=analyser.analyse(tp).to_parquet(index=True))
     except Exception as e:
         logging.debug(e)
         return None
 
 
-class TimepointAnalysisIngest(AnalysisIngest):
+class TimepointAnalysisIngestParquet(AnalysisIngest):
     def __init__(self, *args, timestep_slice:slice=slice(None, None, -4), **kwargs):
         super().__init__(*args, **kwargs)
         self.batch_size = 500

@@ -11,7 +11,7 @@ import logging
 import re
 import subprocess
 import errno
-from.config import Config
+from .config import Config
 
 
 class AbstractSimulationVisualiser:
@@ -49,7 +49,7 @@ class AbstractSimulationVisualiser:
     def visualise(self, sim, start=0, stop=None, step=1, clean_dir=True, maxproc=64, auto_execute=True, disable_tqdm=False):
         self.create_output_folder(sim, clean_dir=clean_dir)
 
-        sim.for_timepoint(self._visualise_frame, start=start, stop=stop, step=step, maxproc=maxproc, disable_tqdm=disable_tqdm)
+        sim.for_timepoint(self._visualise_frame, start=start, stop=stop, step=step, maxproc=maxproc, disable_tqdm=disable_tqdm, tqdm_kwargs=dict(desc=f'{self.visualisation_name}'))
     
     def create_output_folder(self, sim, *, clean_dir:bool):
         output_folder:pathlib.Path = self.output_folder.joinpath(sim.name, sim.id, self.visualisation_name)

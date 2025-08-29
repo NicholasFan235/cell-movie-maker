@@ -17,6 +17,7 @@ class TumourTimepointPlotter:
         collection = matplotlib.collections.PatchCollection(
             [matplotlib.patches.Circle((cell.x, cell.y), cell.radius, ec='none', fc='lightblue', alpha=0.5) for _, cell in data.iterrows()],
             edgecolors='none', facecolors='lightblue')
+        collection.set_rasterized(True)
         ax.add_collection(collection)
 
     def plot_tumour(fig:plt.Figure, ax:plt.Axes, simulation_timepoint, *, sim=None):
@@ -38,6 +39,7 @@ class TumourTimepointPlotter:
             patches.append(matplotlib.patches.Circle((cell.x, cell.y), cell.radius, ec='black', fc=c))
             colors.append(matplotlib.colors.to_rgba(c))
         collection = matplotlib.collections.PatchCollection(patches, edgecolors=np.array(colors), facecolors=np.array(colors))
+        collection.set_rasterized(True)
         #collection.set_facecolors(np.array(colors))
         ax.add_collection(collection)
 
@@ -46,6 +48,7 @@ class TumourTimepointPlotter:
         collection = matplotlib.collections.PatchCollection(
             [matplotlib.patches.Circle((cell.x, cell.y), cell.radius, ec='none', fc='red') for _, cell in data.iterrows()],
             edgecolors='none', facecolors='red')
+        collection.set_rasterized(True)
         ax.add_collection(collection)
 
     def plot(fig:plt.Figure, ax:plt.Axes, simulation_timepoint, frame_num:int, timepoint:int, *, sim=None, config=None):

@@ -27,6 +27,7 @@ class AbstractPreprocessor:
         data = pd.DataFrame(columns=['timestep'] + [a.name for a in self.analysers], dtype=int).set_index('timestep')
         for t in tqdm.tqdm(sim.results_timesteps[start:stop:step], disable=disable_tqdm):
             tp = sim.read_timepoint(t)
+            if not tp.ok: continue
             data.loc[t] = [analyser.analyse(tp, sim) for analyser in self.analysers]
         data.to_csv(self.output_folder.joinpath(sim.name, self.name, f'{sim.id}.csv'))
 

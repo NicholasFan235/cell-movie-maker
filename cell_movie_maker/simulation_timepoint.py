@@ -17,6 +17,7 @@ class SimulationTimepoint:
         self.results_file = pathlib.Path(self.results_folder, 'results_{}.vtu'.format(timestep))
         self.timestep = timestep
         self.sim = sim
+        self.ok = False
         raw = self.read_data()
         self.n_points = raw.GetNumberOfPoints()
         self.data = pd.DataFrame(
@@ -28,7 +29,8 @@ class SimulationTimepoint:
     def read_data(self):
         reader = vtk.vtkXMLUnstructuredGridReader()
         reader.SetFileName(str(self.results_file))
-        reader.Update()
+        self.ok = reader.CanReadFile(str(self.results_file))
+        if self.ok: reader.Update()
         return dsa.WrapDataObject(reader.GetOutput())
     
     def load_locations(self, raw):
@@ -74,7 +76,8 @@ class SimulationTimepoint:
         self.data['tissue_stress'] = 1 - self.data['radius']/self.data['target_radius']
         self.data.loc[~np.isfinite(self.data.tissue_stress), 'tissue_stress'] = -1
 
-        self.data['exhaustion %'] = 1-self.data['potency']/self.sim.parameters['CD8InitialPotency']
+        if 'potency' in self.data and 'CD8InitialPotency' in self.sim.parameters:
+            self.data['exhaustion %'] = 1-self.data['potency']/self.sim.parameters['CD8InitialPotency']
 
     
     def load_value(self, raw, name, default=np.nan, new_key=None):
