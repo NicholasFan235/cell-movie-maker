@@ -45,8 +45,10 @@ class Experiment:
         assert self.experiment_folder.is_dir(), f'{self.experiment_folder} does not exist, or is a file.'
 
         self.name:str = self.experiment_folder.name
-        self.sim_folders:list[str] = list(self.experiment_folder.glob("sim_*/results_from_time_0"))
-        self.sim_ids:list[int] = [int(sim_iteration_regex_search.search(str(f))["iteration"]) for f in self.sim_folders]
+
+        sim_folders = sorted([(int(sim_iteration_regex_search.search(str(f))["iteration"]), f) for f in self.experiment_folder.glob("sim_*/results_from_time_0")])
+        self.sim_folders:list[str] = [f[1] for f in sim_folders]
+        self.sim_ids:list[int] = [f[0] for f in sim_folders]
         self.simulations = Experiment.Simulations(self)
 
     def read_simulation(self, id:int|str)->Simulation:

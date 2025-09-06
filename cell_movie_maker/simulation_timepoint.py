@@ -13,8 +13,8 @@ class SimulationTimepoint:
     def __init__(self, id, name, results_folder:pathlib.Path, timestep:int, sim:Simulation):
         self.id = id # e.g. sim_0
         self.name = name # experiment name
-        self.results_folder = results_folder
-        self.results_file = pathlib.Path(self.results_folder, 'results_{}.vtu'.format(timestep))
+        self.results_folder = pathlib.Path(results_folder)
+        self.results_file = self.results_folder.joinpath('results_{}.vtu'.format(timestep))
         self.timestep = timestep
         self.sim = sim
         self.ok = False
@@ -148,7 +148,7 @@ class SimulationTimepoint:
         import muspan as ms
         domain = ms.domain(f'{self.name} {self.id} {self.timestep}')
         domain.add_points(self.data[['x', 'y']].to_numpy())
-        for c in self.columns:
+        for c in self.data.columns:
             domain.add_labels(c, self.data[c])
         return domain
 

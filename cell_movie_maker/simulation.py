@@ -11,6 +11,8 @@ import errno
 import typing
 import itertools
 import bisect
+import pandas as pd
+
 
 sim_iteration_regex = re.compile(r'sim_(?P<iteration>\d+)')
 
@@ -44,6 +46,18 @@ class Simulation:
         self.get_filenames()
         self.read_parameters()
         self.timepoints = Simulation.Timepoints(self)
+        self.read_cellages()
+
+    def read_cellages(self):
+        self.cell_ids = dict()
+        file = self.results_folder.joinpath("cellages.dat")
+        if not file.exists(): return
+        with file.open('r') as f:
+            for line in f:
+                if len(line.strip()) < 0: continue
+                line = line.strip().split('\t')
+                if not len(line)==2: continue
+                self.cell_ids[int(float(line[0])*120)] = [int(i) for i in line[1].split(' ')[::4]]
         
     def get_filenames(self):
         self.all_files = os.listdir(self.results_folder)
@@ -59,12 +73,18 @@ class Simulation:
             with open(params_path, 'r') as f:
                 self.parameters = json.load(f)
     
-    def read_timepoint(self, timestep:int):
+    def _read_timepoint(self, timestep:int):
         if timestep > max(self.results_timesteps):
             return SimulationTimepoint(self.id, self.name, self.results_folder, max(self.results_timesteps), self)
         if timestep not in self.results_timesteps:
             return self.read_timepoint(self.results_timesteps[max(0, bisect.bisect(self.results_timesteps, timestep)-1)])
         return SimulationTimepoint(self.id, self.name, self.results_folder, timestep, self)
+    
+    def read_timepoint(self, timestep:int):
+        tp = self._read_timepoint(timestep)
+        if tp.timestep in self.cell_ids:
+            tp.data['cell_id'] = self.cell_ids[tp.timestep]
+        return tp
 
     def for_timepoint(self, func, start=0, stop=None, step=1, maxproc=64, disable_tqdm=False, tqdm_kwargs=dict()):
         N = len(self.results_timesteps[slice(start, stop, step)])

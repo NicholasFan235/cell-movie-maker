@@ -23,7 +23,7 @@ class TumourCountPlotter:
         ax.set_title('N-Tumour cells')
         ax.fill_between(info.index/60/24, info['n_tumour'], color='purple', label='Healthy')
         ax.fill_between(info.index/60/24, info['n_tumour_hypoxic'], color='mediumpurple', label='Hypoxic')
-        ax.fill_between(info.index/60/24, info['n_tumour_necrotic'], color='white', label='Necrotic')
+        ax.fill_between(info.index/60/24, info['n_tumour_necrotic'], color='lightgray', label='Necrotic')
         ax.legend(loc='upper left')
         ax.plot(info.index/60/24, info['n_tumour'], '-k')
         if simulation_timepoint is not None:

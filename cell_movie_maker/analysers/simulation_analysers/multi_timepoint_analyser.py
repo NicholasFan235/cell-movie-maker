@@ -27,3 +27,19 @@ class MultiTimepointAnalyser(SimulationAnalyser):
 
     def __str__(self):
         return str(self.timepoint_analyser)
+    
+
+class SpecifiedTimepointsAnalyser(SimulationAnalyser):
+    def __init__(self, timepoint_analyser:typing.Type[TimepointAnalyser], timepoints:list[int]):
+        self.timepoint_analyser:typing.Type[TimepointAnalyser] = timepoint_analyser
+        self.timepoints = timepoints
+        
+    def analyse(self, simulation:Simulation)->pd.DataFrame|pd.Series|float|int:
+        df = []
+        for timestep in self.timepoints:
+            tp = simulation.read_timepoint(timestep)
+            df.append(dict(timestep=timestep, **self.timepoint_analyser.analyse(tp, simulation)))
+        return pd.DataFrame(df).set_index('timestep')
+
+    def __str__(self):
+        return str(self.timepoint_analyser)

@@ -15,6 +15,7 @@ class ChemokineTimepointPlotter:
         vmax:float =None
         ylim:tuple[int]=None
         xlim:tuple[int]=None
+        add_colorbar:bool=True
 
     def plot_cells(fig:plt.Figure, ax:plt.Axes, simulation_timepoint, *, config:Config):
         data = simulation_timepoint.data
@@ -24,7 +25,7 @@ class ChemokineTimepointPlotter:
             [matplotlib.patches.Circle((cell.x, cell.y), cell.radius, ec='none', fc=cmap(norm(cell[config.chemokine])), alpha=0.8) for _, cell in data.iterrows()],
             edgecolors='none', facecolors=cmap(norm(data[config.chemokine].to_numpy())))
         ax.add_collection(collection)
-        fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), ax=ax)
+        if config.add_colorbar: fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), ax=ax)
 
     def plot(fig:plt.Figure, ax:plt.Axes, simulation_timepoint, frame_num, timepoint, *, sim=None, config:Config=None):
         if config is None: config = ChemokineTimepointPlotter.Config()
@@ -52,6 +53,7 @@ class ChemokinePDETimepointPlotter:
         colorbar_kwargs:dict=dataclasses.field(default_factory=dict)
         vmin:float=0
         vmax:float|None=None
+        add_colorbar:bool=True
 
     def plot(fig:plt.Figure, ax:plt.Axes, simulation_timepoint, frame_num, timepoint, *, sim=None, config=None):
         if config is None: config = ChemokinePDETimepointPlotter.Config()
@@ -65,6 +67,6 @@ class ChemokinePDETimepointPlotter:
             origin='lower',
         ) | config.imshow_kwargs
         pos = ax.imshow(data, **kwargs)
-        fig.colorbar(pos, ax=ax, **config.colorbar_kwargs)
+        if config.add_colorbar: fig.colorbar(pos, ax=ax, **config.colorbar_kwargs)
         ax.set_title(f'{simulation_timepoint.name}/{simulation_timepoint.id} #{frame_num} {config.chemokine}')
 

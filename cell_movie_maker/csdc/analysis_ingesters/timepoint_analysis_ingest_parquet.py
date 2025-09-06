@@ -30,7 +30,7 @@ def process_timepoint(info:tuple):
                     iteration=int(tp.id.lstrip('sim_')),
                     timestep=tp.timestep,
                     analysis_name=str(analyser),
-                    analysis_value=analyser.analyse(tp).to_parquet(index=True))
+                    analysis_value=analyser.analyse(tp, tp.sim).to_parquet(index=True))
     except Exception as e:
         logging.debug(e)
         return None

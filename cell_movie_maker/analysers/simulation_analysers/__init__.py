@@ -1,2 +1,2 @@
 
-from .multi_timepoint_analyser import MultiTimepointAnalyser
+from .multi_timepoint_analyser import MultiTimepointAnalyser, SpecifiedTimepointsAnalyser

@@ -9,3 +9,6 @@ from .tumour_tcell_pcf_analyser import TumourTCellPCFAnalyser
 
 from .tumour_region_sizes_analyser import TumourRegionSizesAnalyser
 from .tumour_region_tcell_count_analyser import TumourRegionTCellCountAnalyser
+
+from .delta_analyser import DeltaAnalyser
+from .damage_morans_i import DamageGlobalMoransIAnalyser, BinaryDamageGlobalMoransIAnalyser, TumourDamageGlobalMoransIAnalyser

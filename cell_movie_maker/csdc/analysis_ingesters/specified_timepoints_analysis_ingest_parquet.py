@@ -30,17 +30,17 @@ def process_timepoint(info:tuple):
                     iteration=int(tp.id.lstrip('sim_')),
                     timestep=tp.timestep,
                     analysis_name=str(analyser),
-                    analysis_value=analyser.analyse(tp, tp.sim).to_json())
+                    analysis_value=analyser.analyse(tp, tp.sim).to_parquet(index=True))
     except Exception as e:
         logging.debug(e)
         return None
 
 
-class TimepointAnalysisIngest(AnalysisIngest):
-    def __init__(self, *args, timestep_slice:slice=slice(None, None, -4), **kwargs):
+class SpecifiedTimepointAnalysisIngestParquet(AnalysisIngest):
+    def __init__(self, *args, timesteps:list[int], **kwargs):
         super().__init__(*args, **kwargs)
         self.batch_size = 500
-        self.timestep_slice = timestep_slice
+        self.timesteps = timesteps
         self.nproc = 50
 
 
@@ -53,7 +53,7 @@ class TimepointAnalysisIngest(AnalysisIngest):
             for sim_id in tqdm.tqdm(sims_batch, desc="Checking sim batch"):
                 timesteps = set()
                 sim = experiment.read_simulation(sim_id)
-                for timestep in sim.results_timesteps[self.timestep_slice]:
+                for timestep in self.timesteps:
                     if timestep > sim.results_timesteps[-1]: timestep = sim.results_timesteps[-1]
                     if self.skip_existing and (sim_id, timestep) in skip_sim_timepoints: continue
                     timesteps.add(timestep)
@@ -61,6 +61,7 @@ class TimepointAnalysisIngest(AnalysisIngest):
                 for timestep in timesteps:
                     try:
                         tp = sim.read_timepoint(timestep)
+                        if self.skip_existing and (sim.iteration, tp.timestep) in skip_sim_timepoints: continue
                         if tp.ok: to_process.append(tp)
                     except Exception as e:
                         logging.error(f"Unable to process sim_{sim_id} {timestep}")
@@ -81,10 +82,13 @@ class TimepointAnalysisIngest(AnalysisIngest):
         skip_sim_timepoints = self.get_skip_sim_timepoints(sim.name, str(analyser))
 
         timepoints = []
-        for timestep in sim.results_timesteps[self.timestep_slice]:
+        for timestep in self.timesteps:
             if timestep > sim.results_timesteps[-1]: timestep = sim.results_timesteps[-1]
             if self.skip_existing and (sim.iteration, timestep) in skip_sim_timepoints: continue
-            timepoints.append(sim.read_timepoint(timestep))
+            tp = sim.read_timepoint(timestep)
+            if self.skip_existing and (sim.iteration, tp.timestep) in skip_sim_timepoints: continue
+            if not tp.ok: continue
+            timepoints.append(tp)
 
         with multiprocessing.Pool(self.nproc, maxtasksperchild=1) as p:
             analysis = list(tqdm.tqdm(

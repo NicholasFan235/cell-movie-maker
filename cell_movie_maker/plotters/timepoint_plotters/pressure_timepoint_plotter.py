@@ -41,3 +41,27 @@ class PressureTimepointPlotter:
         ax.set_xlim(*(config.xlim if config.xlim is not None else (0, sim.parameters['WIDTH']) if sim is not None else (simulation_timepoint.data.x.min(), simulation_timepoint.data.x.max())))
         ax.set_aspect(1.0, adjustable='box')
 
+class PressureHexgridPlotter:
+    @dataclasses.dataclass
+    class Config:
+        p_max:float|None=None
+        p_min:float|None=None
+        cmap:str|matplotlib.colors.LinearSegmentedColormap='hot_r'
+        draw_colorbar:bool=True
+        ylim:tuple[int]=None
+        xlim:tuple[int]=None
+        gridsize=25
+        cell_type:str=None
+
+    def plot(fig:plt.Figure, ax:plt.Axes, simulation_timepoint, frame_num, timepoint, *, sim=None, config:Config=None):
+        if config is None: config = PressureHexgridPlotter.Config()
+        data = simulation_timepoint.data if config.cell_type is None else simulation_timepoint.data[simulation_timepoint.data['cell_type']==config.cell_type]
+
+        p_min = config.p_min if config.p_min is not None else data.pressure.min()
+        p_max = config.p_max if config.p_max is not None else data.pressure.max()
+        cm = ax.hexbin(*data[['x','y']].to_numpy().T, C=data['pressure'].to_numpy(), gridsize=config.gridsize, reduce_C_function=np.mean, vmin=p_min, vmax=p_max, cmap=config.cmap, rasterized=True)
+        ax.set_ylim(*(config.ylim if config.ylim is not None else (0, sim.parameters['HEIGHT']) if sim is not None else (simulation_timepoint.data.y.min(), simulation_timepoint.data.y.max())))
+        ax.set_xlim(*(config.xlim if config.xlim is not None else (0, sim.parameters['WIDTH']) if sim is not None else (simulation_timepoint.data.x.min(), simulation_timepoint.data.x.max())))
+        ax.set_aspect(1.0, adjustable='box')
+        if config.draw_colorbar: fig.colorbar(cm)
+
