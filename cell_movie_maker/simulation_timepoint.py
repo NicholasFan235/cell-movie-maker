@@ -76,7 +76,7 @@ class SimulationTimepoint:
         self.data['tissue_stress'] = 1 - self.data['radius']/self.data['target_radius']
         self.data.loc[~np.isfinite(self.data.tissue_stress), 'tissue_stress'] = -1
 
-        if 'potency' in self.data and 'CD8InitialPotency' in self.sim.parameters:
+        if self.sim.parameters and 'potency' in self.data and 'CD8InitialPotency' in self.sim.parameters:
             self.data['exhaustion %'] = 1-self.data['potency']/self.sim.parameters['CD8InitialPotency']
 
     
@@ -151,6 +151,10 @@ class SimulationTimepoint:
         for c in self.data.columns:
             domain.add_labels(c, self.data[c])
         return domain
+    
+    def append_analysis(self, analyser):
+        df = analyser.analyse(self, self.sim).set_index('cell_id')
+        self.data = self.data.drop(df.columns, axis=1, errors='ignore').join(df, on='cell_id', how='left')
 
 
 class MacrophageSimulationTimepoint(SimulationTimepoint):

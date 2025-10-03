@@ -11,10 +11,42 @@ def chunk(l, n):
         yield l[i:i+n]
 
 class ParametersIngest:
+    """
+    Class to write simulation parameters to database
+    '''
+
+    Attributes
+    ----------
+    db : csdc.Connection
+        CSDC Database connection
+    """
     def __init__(self, db:csdc.Connection):
+        """
+        Constructor
+        
+        Parameters
+        ----------
+        db : csdc.Connection
+            Database connection
+        """
         self.db:csdc.Connection = db
 
-    def ingest_experiment(self, experiment:typing.Type[Experiment], disable_tqdm:bool=False):
+    def ingest_experiment(self, experiment:typing.Type[Experiment], disable_tqdm:bool=False)->None:
+        """
+        Write parameters of each simulation in experiment to database
+        Infers which parameters vary across simulations within experiment
+        
+        Arguments
+        ---------
+        experiment : Experiment
+            Experiment containing simulations whose parameters will be stored
+        disable_tqdm : bool, optional (default=False)
+            If true disables tqdm printing a progress bar
+
+        Returns
+        -------
+        None
+        """
         parameters = []
         sims_data = []
         for sim_folder in tqdm.tqdm(experiment.sim_folders, disable=disable_tqdm):
@@ -30,5 +62,5 @@ class ParametersIngest:
         self.db.commit()
         self.db.close_connection()
     
-    def ingest_simulation(self, simulation:typing.Type[Simulation], varied_params:set|list=None):
+    def ingest_simulation(self, simulation:typing.Type[Simulation], varied_params:set|list=None)->None:
         raise NotImplementedError

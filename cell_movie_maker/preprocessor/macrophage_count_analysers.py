@@ -15,5 +15,5 @@ class MacrophagePhenotypeCount(AbstractAnalyser):
         self.threshold = phenotype_percent
 
     def analyse(self, tp:MacrophageSimulationTimepoint, sim=None):
-        return int(len(tp.macrophages_data[tp.macrophages_data.phenotype*100 <= self.threshold]))
+        return int(len(tp.macrophages_data[tp.macrophages_data.phenotype <= self.threshold]))
     

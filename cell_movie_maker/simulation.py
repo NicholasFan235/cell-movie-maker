@@ -30,7 +30,7 @@ class Simulation:
                 case _:
                     raise IndexError
 
-    def __init__(self, results_folder:str|pathlib.Path, sampling_timestep_multiple:int=60, timesteps_per_hour:int=120):
+    def __init__(self, results_folder:str|pathlib.Path, sampling_timestep_multiple:int=60, timesteps_per_hour:int=120, lightweight:bool=False):
         self.results_folder:pathlib.Path = pathlib.Path(results_folder)
         if not self.results_folder.name == 'results_from_time_0': self.results_folder = self.results_folder.joinpath('results_from_time_0')
         assert self.results_folder.is_dir(), f'{self.results_folder} does not exist, or is a file.'
@@ -46,7 +46,8 @@ class Simulation:
         self.get_filenames()
         self.read_parameters()
         self.timepoints = Simulation.Timepoints(self)
-        self.read_cellages()
+        if not lightweight:
+            self.read_cellages()
 
     def read_cellages(self):
         self.cell_ids = dict()

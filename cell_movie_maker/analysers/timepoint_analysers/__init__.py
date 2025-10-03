@@ -12,3 +12,5 @@ from .tumour_region_tcell_count_analyser import TumourRegionTCellCountAnalyser
 
 from .delta_analyser import DeltaAnalyser
 from .damage_morans_i import DamageGlobalMoransIAnalyser, BinaryDamageGlobalMoransIAnalyser, TumourDamageGlobalMoransIAnalyser
+from .distance_to_boundary_analyser import TumourDistanceToBoundaryAnalyser, TumourBoundaryDistanceDistributionAnalyser
+

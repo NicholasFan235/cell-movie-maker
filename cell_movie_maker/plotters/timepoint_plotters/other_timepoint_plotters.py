@@ -18,6 +18,7 @@ class LiverMetTimepointPlotter:
         collection = matplotlib.collections.PatchCollection(
             [matplotlib.patches.Circle((cell.x, cell.y), cell.radius, ec='none', fc='lightblue', alpha=0.5) for _, cell in data.iterrows()],
             edgecolors='none', facecolors='lightblue')
+        collection.set_rasterized(True)
         ax.add_collection(collection)
     
     def plot_tcells(fig:plt.Figure, ax:plt.Axes, simulation_timepoint):
@@ -25,6 +26,7 @@ class LiverMetTimepointPlotter:
         collection = matplotlib.collections.PatchCollection(
             [matplotlib.patches.Circle((cell.x, cell.y), cell.radius, ec='none', fc='pink', alpha=1) for _, cell in data.iterrows()],
             edgecolors='none', facecolors='pink')
+        collection.set_rasterized(True)
         ax.add_collection(collection)
     
     def plot_mets(fig:plt.Figure, ax:plt.Axes, simulation_timepoint):
@@ -32,6 +34,7 @@ class LiverMetTimepointPlotter:
         collection = matplotlib.collections.PatchCollection(
             [matplotlib.patches.Circle((cell.x, cell.y), cell.radius, ec='none', fc='red', alpha=1) for _, cell in data.iterrows()],
             edgecolors='none', facecolors='red')
+        collection.set_rasterized(True)
         ax.add_collection(collection)    
 
     def plot_neutrophils(fig:plt.Figure, ax:plt.Axes, simulation_timepoint):
@@ -39,6 +42,7 @@ class LiverMetTimepointPlotter:
         collection = matplotlib.collections.PatchCollection(
             [matplotlib.patches.Circle((cell.x, cell.y), cell.radius, ec='none', fc='darkblue', alpha=0.5) for _, cell in data.iterrows()],
             edgecolors='none', facecolors='darkblue')
+        collection.set_rasterized(True)
         ax.add_collection(collection)
 
     def plot_fibroblasts(fig:plt.Figure, ax:plt.Axes, simulation_timepoint):
@@ -46,6 +50,7 @@ class LiverMetTimepointPlotter:
         collection = matplotlib.collections.PatchCollection(
             [matplotlib.patches.Circle((cell.x, cell.y), cell.radius, ec='none', fc='yellow', alpha=0.5) for _, cell in data.iterrows()],
             edgecolors='none', facecolors='yellow')
+        collection.set_rasterized(True)
         ax.add_collection(collection)
 
     def plot(fig:plt.Figure, ax:plt.Axes, simulation_timepoint, frame_num=0, timepoint=0, *, config=None):
@@ -74,6 +79,7 @@ class MacrophageTimepointPlotter:
         xlim:tuple[int]=None
         phenotype_colorbar:bool=True
         background:str='lightblue'
+        add_cbar:bool=True
 
     def plot_macrophages(fig:plt.Figure, ax:plt.Axes, simulation_timepoint, *, config:Config=None):
         data = simulation_timepoint.macrophages_data
@@ -84,7 +90,7 @@ class MacrophageTimepointPlotter:
             edgecolors='none', facecolors=cmap(norm(data.phenotype.to_numpy())))
         collection.set_rasterized(True)
         ax.add_collection(collection)
-        if config is not None and config.phenotype_colorbar:
+        if config is not None and config.phenotype_colorbar and config.add_cbar:
             cbar = fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap), ax=ax, label='Macrophage Phenotype', ticks=[0,1])
             cbar.ax.set_yticklabels(['M1', 'M2'])
 
@@ -106,10 +112,10 @@ class MacrophageTimepointPlotter:
             b = 0.01 if sim is None else sim.parameters['TumourHypoxicConcentration']
             if cell.oxygen <= a:
                 # necrotic
-                c = 'white'
+                c = 'lightgrey'
             elif cell.oxygen <= b:
                 # hypoxic
-                c = 'darkorchid'
+                c = 'mediumpurple'
             else:
                 #healthy
                 c = 'purple'

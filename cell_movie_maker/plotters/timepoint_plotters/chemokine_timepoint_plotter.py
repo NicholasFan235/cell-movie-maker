@@ -59,7 +59,7 @@ class ChemokinePDETimepointPlotter:
         if config is None: config = ChemokinePDETimepointPlotter.Config()
         ax.set_xticks([])
         ax.set_yticks([])
-        data = simulation_timepoint.read_pde(config.chemokine)
+        data = simulation_timepoint.read_pde(*config.chemokine if isinstance(config.chemokine, tuple) else config.chemokine)
         kwargs = dict(
             cmap=config.cmap,
             vmin=config.vmin,

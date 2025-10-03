@@ -37,6 +37,11 @@ def process_timepoint(info:tuple):
 
 
 class TimepointAnalysisIngestParquet(AnalysisIngest):
+    """
+    (Deprecated) Analyse a slice of timepoints and write analysis to database using parquet format
+    '''
+    """
+
     def __init__(self, *args, timestep_slice:slice=slice(None, None, -4), **kwargs):
         super().__init__(*args, **kwargs)
         self.batch_size = 500

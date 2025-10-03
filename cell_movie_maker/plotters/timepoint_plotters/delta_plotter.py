@@ -46,8 +46,14 @@ class DamageDeltaTimepointPlotter:
         ax.add_collection(collection)
     
     def plot_boundary(fig:plt.Figure, ax:plt.Axes, simulation_timepoint, config:Config):
+        import shapely
         shape = alpha_shape(simulation_timepoint.tumour_data[['x','y']].to_numpy(), alpha=0.5)[0]
-        ax.add_patch(matplotlib.patches.Polygon(list(zip(*shape.exterior.xy)), fill=False, ec='black'))
+        if isinstance(shape, shapely.Polygon):
+            ax.add_patch(matplotlib.patches.Polygon(list(zip(*shape.exterior.xy)), fill=False, ec='black'))
+        if isinstance(shape, shapely.MultiPolygon):
+            for p in shape.geoms:
+                ax.add_patch(matplotlib.patches.Polygon(list(zip(*p.exterior.xy)), fill=False, ec='black'))
+
 
     def plot(fig:plt.Figure, ax:plt.Axes, simulation_timepoint, frame_num:int, timepoint:int, *, sim=None, config:Config=None):
         if config is None: config = DamageDeltaTimepointPlotter.Config()

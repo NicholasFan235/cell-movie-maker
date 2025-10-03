@@ -14,6 +14,7 @@ import enum
 import multiprocessing
 import itertools
 import logging
+import functools
 
 
 def chunk(l, n):
@@ -21,7 +22,21 @@ def chunk(l, n):
         yield l[i:i+n]
 
 
-def process_timepoint(info:tuple):
+def process_timepoint_json(info:tuple):
+    tp:SimulationTimepoint = info[0]
+    analyser:typing.Type[TimepointAnalyser] = info[1]
+    experiment_name = info[2]
+    try:
+        return dict(experiment=experiment_name,
+                    iteration=int(tp.id.lstrip('sim_')),
+                    timestep=tp.timestep,
+                    analysis_name=str(analyser),
+                    analysis_value=analyser.analyse(tp, tp.sim).to_json())
+    except Exception as e:
+        logging.debug(e)
+        return None
+
+def process_timepoint_parquet(info:tuple):
     tp:SimulationTimepoint = info[0]
     analyser:typing.Type[TimepointAnalyser] = info[1]
     experiment_name = info[2]
@@ -36,16 +51,64 @@ def process_timepoint(info:tuple):
         return None
 
 
-class SpecifiedTimepointAnalysisIngestParquet(AnalysisIngest):
+class SpecifiedTimepointAnalysisIngest(AnalysisIngest):
+    """
+    Class to analyse a specific list of timesteps from simulations and write analysis to database.  
+    Can store data using parquet or json (parquet is significantly faster)  
+
+    Attributes
+    ----------
+    timesteps : list[int]
+        List of timesteps to analyse from each simulation
+    batch_size : int
+        Number of simulations to process in each batch
+    nproc : int
+        Number of multiprocesses to use
+    mode : str
+        Data format to store to database (default = 'parquet')
+    """
+    
     def __init__(self, *args, timesteps:list[int], **kwargs):
+        """
+        Constructor
+        
+        Parameters
+        ----------
+        db : csdc.Connection
+            Database connection
+        timesteps : list[int]
+            List of timesteps to analyse in each simulation
+        skip_existing : bool, optional (default True)
+            Skip analysis if analysis with matching metadata is already in database
+        """
         super().__init__(*args, **kwargs)
         self.batch_size = 500
         self.timesteps = timesteps
         self.nproc = 50
+        self.mode:str = 'parquet'
 
 
     def ingest_experiment(self, experiment:Experiment, analyser:typing.Type[TimepointAnalyser]):
+        """
+        Perform analysis on simulation timepoints in experiment.  
+        Timepoints are selected based on how this class is configured.
+
+        Parameters
+        ----------
+        eperiment : Experiment
+            Experiment containing simulations to process
+        analyser : TimepointAnalyser
+            TimepointAnalyser class which performs analysis on each SimulationTimepoint
+        
+        Returns
+        -------
+        None
+        """
         skip_sim_timepoints = self.get_skip_sim_timepoints(experiment, str(analyser))
+        if self.mode == 'json': process_timepoint = process_timepoint_json
+        elif self.mode == 'parquet': process_timepoint = process_timepoint_parquet
+        else: raise RuntimeError(f'Mode \"{self.mode}\" not implemented, try "json" or "parquet"')
+
         for i, sims_batch in enumerate(chunk(experiment.sim_ids, self.batch_size)):
             to_process = []
             logging.info(f"Batch {i} / {len(experiment.sim_ids)//self.batch_size+1}")
@@ -79,7 +142,25 @@ class SpecifiedTimepointAnalysisIngestParquet(AnalysisIngest):
         self.db.close_connection()
 
     def ingest_simulation(self, sim:Simulation, analyser:typing.Type[TimepointAnalyser]):
+        """
+        Perform analysis on simulation timepoints in a simulation.  
+        Timepoints are selected based on how this class is configured.
+
+        Parameters
+        ----------
+        sim : Simulation
+            Simulation to process
+        analyser : TimepointAnalyser
+            TimepointAnalyser class which performs analysis on each SimulationTimepoint
+        
+        Returns
+        -------
+        None
+        """
         skip_sim_timepoints = self.get_skip_sim_timepoints(sim.name, str(analyser))
+        if self.mode == 'json': process_timepoint = process_timepoint_json
+        elif self.mode == 'parquet': process_timepoint = process_timepoint_parquet
+        else: raise RuntimeError(f'Mode \"{self.mode}\" not implemented, try "json" or "parquet"')
 
         timepoints = []
         for timestep in self.timesteps:

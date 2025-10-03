@@ -24,7 +24,7 @@ class TumourVesselPCFAnalyser(TimepointAnalyser):
         import muspan as ms
         domain = timepoint.to_muspan()
         p1 = ms.query.interpret_query(ms.query.query(domain, "cell_type", "is", "Tumour"))
-        p2 = ms.query.interpret_query(ms.query.query(domain, "cell_type", "is", "Blood Vessel"))
+        p2 = ms.query.interpret_query(ms.query.query(domain, "cell_type", "is", "Blood Vessel" & ms.query.query(domain, "target_radius", ">", 0)))
         if len(p1) == 0 or len(p2) == 0: raise RuntimeError("Cannot calculate PCF with 0 cells")
         r,g = ms.spatial_statistics.cross_pair_correlation_function(
             domain,

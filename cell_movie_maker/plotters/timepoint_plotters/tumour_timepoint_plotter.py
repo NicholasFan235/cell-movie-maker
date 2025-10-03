@@ -11,6 +11,8 @@ class TumourTimepointPlotter:
     class Config:
         ylim:tuple[int]=None
         xlim:tuple[int]=None
+        ec=None
+        lw=None
 
     def plot_stroma(fig:plt.Figure, ax:plt.Axes, simulation_timepoint):
         data = simulation_timepoint.stroma_data
@@ -20,13 +22,13 @@ class TumourTimepointPlotter:
         collection.set_rasterized(True)
         ax.add_collection(collection)
 
-    def plot_tumour(fig:plt.Figure, ax:plt.Axes, simulation_timepoint, *, sim=None):
+    def plot_tumour(fig:plt.Figure, ax:plt.Axes, simulation_timepoint, *, sim=None, config=None):
         data = simulation_timepoint.tumour_data
         patches = []
         colors = []
+        a = 0.01 if sim is None else sim.parameters['TumourNecroticConcentration']
+        b = 0.01 if sim is None else sim.parameters['TumourHypoxicConcentration']
         for _, cell in data.iterrows():
-            a = 0.01 if sim is None else sim.parameters['TumourNecroticConcentration']
-            b = 0.01 if sim is None else sim.parameters['TumourHypoxicConcentration']
             if cell.oxygen <= a:
                 # necrotic
                 c = 'lightgray'
@@ -38,7 +40,7 @@ class TumourTimepointPlotter:
                 c = 'purple'
             patches.append(matplotlib.patches.Circle((cell.x, cell.y), cell.radius, ec='black', fc=c))
             colors.append(matplotlib.colors.to_rgba(c))
-        collection = matplotlib.collections.PatchCollection(patches, edgecolors=np.array(colors), facecolors=np.array(colors))
+        collection = matplotlib.collections.PatchCollection(patches, edgecolors=config.ec if config and config.ec else None, facecolors=np.array(colors), linewidths= config.lw if config and config.lw else 1)
         collection.set_rasterized(True)
         #collection.set_facecolors(np.array(colors))
         ax.add_collection(collection)
@@ -59,7 +61,7 @@ class TumourTimepointPlotter:
         ax.margins(0.01)
         ax.set_title(f'{simulation_timepoint.name}/{simulation_timepoint.id} #{frame_num}')
         TumourTimepointPlotter.plot_stroma(fig, ax, simulation_timepoint)
-        TumourTimepointPlotter.plot_tumour(fig, ax, simulation_timepoint, sim=sim)
+        TumourTimepointPlotter.plot_tumour(fig, ax, simulation_timepoint, sim=sim, config=config)
         TumourTimepointPlotter.plot_blood_vessels(fig, ax, simulation_timepoint)
         ax.relim()
         ax.set_ylim(*(config.ylim if config.ylim is not None else (0, sim.parameters['HEIGHT']) if sim is not None else (simulation_timepoint.data.y.min(), simulation_timepoint.data.y.max())))

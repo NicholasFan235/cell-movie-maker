@@ -23,6 +23,10 @@ def process_sim(info:tuple):
     return dict(experiment=sim.name, iteration=sim.iteration, analysis_name=str(analyser), analysis_value=analyser.analyse(sim).to_parquet(index=True), timestep=-1)
 
 class SimulationAnalysisIngestParquet(AnalysisIngest):
+    """
+    (Deprecated) Analyse a simulation and write analysis to database using parquet format
+    '''
+    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.nproc = 50
